@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="h-screen bg-[url('images/registerBgImage.jpg')] bg-cover bg-center bg-no-repeat flex items-center justify-center min-h-screen">
+
+    <form id="registerForm" action="signin.html" onsubmit="register(event)" method="post" novalidate
+    class="bg-[url('images/regImage.png')] bg-cover bg-center py-4 px-11 shadow-xl rounded-2xl w-full max-w-md">
+
+    <h2 class="text-gray-500 drop-shadow-md text-2xl font-bold italic font-serif ml-2 my-5">Register</h2>
+
+    <input type="email" placeholder="Enter your email address" id="newEmailId"
+    class="bg-blue-100 mb-5 px-5 py-2 shadow-xl border-pink-300 border-2 rounded-2xl w-full focus:ring-1 focus:outline-none focus:ring-pink-300"><br>
+
+    <input type="password" placeholder="Enter your password" id="newPasswordId"
+    class="bg-blue-100 mb-5 px-5 py-2 shadow-xl border-pink-300 border-2 rounded-2xl w-full focus:ring-1 focus:outline-none focus:ring-pink-300"><br>
+
+    <div class="xlex items-center justify-between">
+
+    <input type="submit" value="create account" id="createBtn"
+    class="bg-pink-400 shadow-md hover:bg-pink-500 text-white border-2 rounded-2xl font-bold px-4 py-2 cursor-pointer">
+
+    <input type="reset" value="reset"
+    class="bg-pink-400 shadow-md hover:bg-pink-500 text-white border-2 rounded-2xl font-bold px-4 py-2 cursor-pointer"><br>
+
+    <button id="loginPageBtn" class="px-2 py-4 font-serif font-bold text-gray-600 italic " type="button" onclick="signinPage()">Sign in</button>
+
+    </div>
+    </form>
+    <script src="js/signin.js"></script>
+</body>
+</html>
