@@ -1,0 +1,96 @@
+/* Full page background */
+.login-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    font-family: Arial, sans-serif;
+}
+
+/* Card */
+.login-card {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    width: 350px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+/* Title */
+.login-title {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Form */
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Form Group */
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Input fields */
+.form-group input[type="email"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+/* Radio buttons */
+.radio-group {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 5px;
+}
+
+/* Button */
+.login-btn {
+    margin-top: 10px;
+    padding: 12px;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.login-btn:hover {
+    background: #5a67d8;
+}
+
+/* Signup text */
+.signup-text {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+/* Error message */
+.error-msg {
+    color: red;
+    margin-top: 10px;
+    font-size: 14px;
+}

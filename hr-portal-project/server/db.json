@@ -1,0 +1,87 @@
+{
+  "logins": [
+    {
+      "emailId": "hr@gmail.com",
+      "password": "hr@123",
+      "typeOfUser": "hr",
+      "id": "2299"
+    },
+    {
+      "id": "1354",
+      "emailId": "Bob@gmail.com",
+      "password": "bob@123",
+      "typeOfUser": "employee"
+    },
+    {
+      "id": "1da2",
+      "emailId": "Alice@gmail.com",
+      "password": "alice@123",
+      "typeOfUser": "employee"
+    },
+    {
+      "id": "1fe5",
+      "emailId": "raj@gmail.com",
+      "password": "raj@123",
+      "typeOfUser": "employee"
+    }
+  ],
+  "employees": [
+    {
+      "id": "4f29",
+      "emailId": "Bob@gmail.com",
+      "department": "IT",
+      "password": "bob@123",
+      "age": "34"
+    },
+    {
+      "id": "2a2c",
+      "emailId": "Alice@gmail.com",
+      "department": "Non-IT",
+      "password": "alice@123",
+      "age": "38"
+    },
+    {
+      "id": "c61c",
+      "emailId": "Charlie@gmail.com",
+      "department": "Marketing"
+    },
+    {
+      "id": "504e",
+      "emailId": "raj@gmail.com",
+      "department": "IT",
+      "password": "raj@123",
+      "age": "36"
+    }
+  ],
+  "leaveInformation": [
+    {
+      "id": "2088",
+      "emailId": "Bob@gmail.com",
+      "reason": "Not feeling well",
+      "numberOfDays": "2",
+      "status": "Approved"
+    },
+    {
+      "id": "e59a",
+      "emailId": "Alice@gmail.com",
+      "reason": "going for vacation",
+      "numberOfDays": "5",
+      "status": "Denied"
+    },
+    {
+      "id": "e9ed",
+      "emailId": "Bob@gmail.com",
+      "reason": "Party",
+      "numberOfDays": "1",
+      "status": "Denied"
+    },
+    {
+      "id": "4922",
+      "emailId": "raj@gmail.com",
+      "reason": "Sick Leave",
+      "numberOfDays": "4",
+      "status": "Approved"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
