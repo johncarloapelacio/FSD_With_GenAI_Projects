@@ -1,0 +1,57 @@
+/* Container */
+.table-container {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Card */
+.table-card {
+    background: #d8a3d8;
+    padding: 25px;
+    border-radius: 1rem;
+    width: 100%;
+    max-width: 700px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* Title */
+.table-card h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Table */
+.employee-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Header */
+.employee-table thead {
+    background: #536200;
+    color: white;
+}
+
+.employee-table th {
+    padding: 12px;
+    text-align: left;
+}
+
+/* Rows */
+.employee-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Hover Effect */
+.employee-table tbody tr:hover {
+    background: #f7fafc;
+}
+
+/* No data */
+.no-data {
+    text-align: center;
+    padding: 15px;
+    color: #888;
+}

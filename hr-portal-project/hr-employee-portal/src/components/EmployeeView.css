@@ -1,0 +1,42 @@
+/* Container */
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+/* Card */
+.profile-card {
+    background: #cacaca;
+    padding: 30px 35px;
+    border-radius: 1rem;
+    width: 400px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+/* Title */
+.profile-card h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #000000;
+}
+
+/* Rows */
+.profile-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+/* Labels */
+.profile-row span:first-child {
+    font-weight: bold;
+    color: #6b0000;
+}
+
+/* Values */
+.profile-row span:last-child {
+    color: #000000;
+}

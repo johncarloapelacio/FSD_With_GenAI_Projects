@@ -1,0 +1,56 @@
+/* Main Container */
+.dashboard-container {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background: #e7e9ec;
+}
+
+/* Header */
+.dashboard-header {
+    background: #cb96cb;
+    color: #fff;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Logout Button */
+.logout-btn {
+    background: #5e5c5c;
+    border: none;
+    padding: 8px 15px;
+    color: white;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    background: #404040;
+}
+
+/* Navigation Bar */
+.dashboard-nav {
+    background: #465500;
+    padding: 10px 20px;
+    display: flex;
+    gap: 20px;
+}
+
+/* Nav Links */
+.dashboard-nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.dashboard-nav a:hover {
+    color: #cb96cb;
+}
+
+/* Content Area */
+.dashboard-content {
+    padding: 20px;
+}

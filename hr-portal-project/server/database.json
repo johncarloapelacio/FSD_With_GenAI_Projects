@@ -1,0 +1,55 @@
+{
+  "credentials": [
+    {
+      "emailId": "johncarlo.apelacio@gmail.com",
+      "password": "abcd1234",
+      "typeOfUser": "hr",
+      "id": "2299"
+    },
+    {
+      "id": "f4c5",
+      "emailId": "apelacio.john@gmail.com",
+      "password": "12345",
+      "typeOfUser": "employee"
+    }
+  ],
+  "employeesInfo": [
+    {
+      "id": "238d",
+      "emailId": "johndoe@gmail.com",
+      "department": "Founders",
+      "fname": "John",
+      "lname": "Doe",
+      "password": "sample",
+      "age": "25",
+      "signedUp": true
+    },
+    {
+      "id": "efd8",
+      "emailId": "apelacio.john@gmail.com",
+      "department": "Software Eningeering",
+      "fname": "John Carlo",
+      "lname": "Apelacio",
+      "password": "12345",
+      "age": "37",
+      "signedUp": true
+    }
+  ],
+  "leaveInfo": [
+    {
+      "id": "b8bf",
+      "emailId": "johndoe@gmail.com",
+      "reason": "Project Test",
+      "numberOfDays": "1",
+      "status": "Denied"
+    },
+    {
+      "id": "a14e",
+      "emailId": "apelacio.john@gmail.com",
+      "reason": "Sick",
+      "numberOfDays": "2",
+      "status": "Approved"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
