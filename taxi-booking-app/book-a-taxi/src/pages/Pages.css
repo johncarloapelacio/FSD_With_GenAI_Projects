@@ -3,6 +3,12 @@
   margin-bottom: 40px;
 }
 
+.booking-form > .btn {
+  display: block;
+  margin: 24px auto 0;
+  min-width: 220px;
+}
+
 .features-section {
   margin-top: 50px;
   padding-top: 40px;

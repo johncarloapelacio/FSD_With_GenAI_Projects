@@ -8,6 +8,7 @@ function SignUp() {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
+    age: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -31,6 +32,16 @@ function SignUp() {
       newErrors.lastName = 'Last name is required';
     } else if (formData.lastName.length < 2) {
       newErrors.lastName = 'Last name must be at least 2 characters';
+    }
+
+    // Age validation
+    if (!formData.age) {
+      newErrors.age = 'Age is required';
+    } else {
+      const parsedAge = parseInt(formData.age, 10);
+      if (Number.isNaN(parsedAge) || parsedAge < 1 || parsedAge > 120) {
+        newErrors.age = 'Please enter a valid age between 1 and 120';
+      }
     }
 
     // Email validation
@@ -92,6 +103,7 @@ function SignUp() {
         body: JSON.stringify({
           firstName: formData.firstName,
           lastName: formData.lastName,
+          age: parseInt(formData.age, 10),
           email: formData.email,
           password: formData.password,
         }),
@@ -165,6 +177,22 @@ function SignUp() {
                 />
                 {errors.lastName && <span className="error-message">{errors.lastName}</span>}
               </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="age">Age</label>
+              <input
+                type="number"
+                id="age"
+                name="age"
+                min="1"
+                max="120"
+                value={formData.age}
+                onChange={handleChange}
+                className={errors.age ? 'form-control error' : 'form-control'}
+                placeholder="Enter your age"
+              />
+              {errors.age && <span className="error-message">{errors.age}</span>}
             </div>
 
             <div className="form-group">

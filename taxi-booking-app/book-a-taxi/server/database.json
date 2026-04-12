@@ -17,6 +17,15 @@
       "age": 37,
       "password": "54321",
       "createdAt": "2026-04-12T09:05:33.340Z"
+    },
+    {
+      "id": "1775986375455",
+      "firstName": "Yoshi",
+      "lastName": "SSBU",
+      "email": "yoshiskills@gmail.com",
+      "age": null,
+      "password": "yoshi",
+      "createdAt": "2026-04-12T09:32:55.455Z"
     }
   ],
   "bookings": [
