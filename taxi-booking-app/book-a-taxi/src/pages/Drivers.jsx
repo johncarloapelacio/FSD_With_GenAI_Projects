@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { apiUrl } from '../api';
 import './Pages.css';
 
 function Drivers() {
@@ -17,54 +18,48 @@ function Drivers() {
     }
   });
   const [selectedDriver, setSelectedDriver] = useState(null);
+  const [displayedDrivers, setDisplayedDrivers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Mock driver data
-  const mockDrivers = [
-    {
-      id: 1,
-      name: 'John Smith',
-      rating: 4.8,
-      reviews: 234,
-      vehicleType: 'Sedan',
-      vehicleNumber: 'ABC 123',
-      price: '$25.00',
-      estimatedTime: '5 mins away',
-      avatar: '👨‍💼',
-    },
-    {
-      id: 2,
-      name: 'Sarah Johnson',
-      rating: 4.9,
-      reviews: 189,
-      vehicleType: 'SUV',
-      vehicleNumber: 'XYZ 789',
-      price: '$32.00',
-      estimatedTime: '8 mins away',
-      avatar: '👩‍💼',
-    },
-    {
-      id: 3,
-      name: 'Mike Davis',
-      rating: 4.7,
-      reviews: 312,
-      vehicleType: 'Sedan',
-      vehicleNumber: 'DEF 456',
-      price: '$24.00',
-      estimatedTime: '3 mins away',
-      avatar: '👨‍💼',
-    },
-    {
-      id: 4,
-      name: 'Emma Wilson',
-      rating: 4.6,
-      reviews: 156,
-      vehicleType: 'Comfort',
-      vehicleNumber: 'GHI 789',
-      price: '$28.00',
-      estimatedTime: '12 mins away',
-      avatar: '👩‍💼',
-    },
-  ];
+  // Function to randomly select 4 drivers from an array
+  const getRandomDrivers = (drivers) => {
+    const shuffled = [...drivers].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 4).map((driver, index) => ({
+      id: driver.id,
+      name: driver.name,
+      rating: driver.rating,
+      reviews: Math.floor(Math.random() * 300) + 50,
+      vehicleType: 'Premium Taxi',
+      vehicleNumber: driver.plate,
+      price: `$${(Math.random() * 15 + 20).toFixed(2)}`,
+      estimatedTime: `${Math.floor(Math.random() * 10) + 2} mins away`,
+      avatar: index % 2 === 0 ? '👨‍💼' : '👩‍💼',
+    }));
+  };
+
+  // Fetch drivers from backend and randomly select 4
+  useEffect(() => {
+    const fetchDrivers = async () => {
+      try {
+        const response = await fetch(apiUrl('/drivers'));
+        if (response.ok) {
+          const drivers = await response.json();
+          const randomDrivers = getRandomDrivers(drivers);
+          setDisplayedDrivers(randomDrivers);
+        } else {
+          setError('Failed to load drivers');
+        }
+      } catch (err) {
+        console.error('Error fetching drivers:', err);
+        setError('Could not connect to server. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDrivers();
+  }, []);
 
   const handleSelectDriver = (driver) => {
     setSelectedDriver(driver.id);
@@ -83,7 +78,7 @@ function Drivers() {
       return;
     }
 
-    const selectedDriverData = mockDrivers.find((d) => d.id === selectedDriver);
+    const selectedDriverData = displayedDrivers.find((d) => d.id === selectedDriver);
     const completeBooking = {
       ...bookingData,
       selectedDriver: selectedDriverData,
@@ -112,11 +107,38 @@ function Drivers() {
     );
   }
 
+  if (loading) {
+    return (
+      <div className="container">
+        <div className="loading-spinner">Loading available drivers...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container drivers-container">
+        <div className="drivers-header">
+          <h1 className="heading">Available Drivers</h1>
+          <p className="subheading">Select a driver for your journey</p>
+        </div>
+        <div className="auth-error" style={{ marginTop: '20px' }}>
+          ⚠️ {error}
+        </div>
+        <div className="booking-actions">
+          <button onClick={handleBackHome} className="btn btn-secondary">
+            ← Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container drivers-container">
       <div className="drivers-header">
         <h1 className="heading">Available Drivers</h1>
-        <p className="subheading">Select a driver for your journey</p>
+        <p className="subheading">Select a driver for your journey (randomly selected from 52 drivers)</p>
       </div>
 
       <div className="booking-summary">
@@ -141,7 +163,7 @@ function Drivers() {
       </div>
 
       <div className="drivers-list">
-        {mockDrivers.map((driver) => (
+        {displayedDrivers.map((driver) => (
           <div
             key={driver.id}
             className={`driver-card ${selectedDriver === driver.id ? 'selected' : ''}`}

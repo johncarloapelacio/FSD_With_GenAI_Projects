@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { apiUrl } from '../api';
 import './Pages.css';
 
 function Confirmation() {
@@ -71,7 +72,7 @@ function Confirmation() {
         status: 'pending',
       };
 
-      const response = await fetch('http://localhost:3001/api/bookings', {
+      const response = await fetch(apiUrl('/bookings'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

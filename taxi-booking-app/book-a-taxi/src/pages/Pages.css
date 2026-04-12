@@ -481,6 +481,8 @@
   padding: 25px;
   text-align: center;
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .service-card:hover {
@@ -584,7 +586,7 @@
   font-weight: 600;
   transition: all 0.3s ease;
   width: 100%;
-  margin-top: 15px;
+  margin-top: auto;
 }
 
 .btn-service:hover {

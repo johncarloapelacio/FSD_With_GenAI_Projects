@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { apiUrl } from '../api';
 import './Pages.css';
 
 function MyBookings() {
@@ -8,6 +9,7 @@ function MyBookings() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [cancelingBookingId, setCancelingBookingId] = useState(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -21,12 +23,14 @@ function MyBookings() {
 
   const fetchBookings = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/bookings');
+      const response = await fetch(apiUrl('/bookings'));
       if (response.ok) {
         const data = await response.json();
         // Filter bookings for current user
         const user = JSON.parse(localStorage.getItem('user'));
-        const userBookings = data.filter(booking => booking.userId === user.id);
+        const userBookings = data.filter(
+          (booking) => booking.userId === user.id && (booking.status || '').toLowerCase() !== 'cancelled'
+        );
         setBookings(userBookings);
       } else {
         setError('Failed to load bookings');
@@ -62,6 +66,35 @@ function MyBookings() {
         return '#17a2b8';
       default:
         return '#6c757d';
+    }
+  };
+
+  const handleCancelBooking = async (bookingId) => {
+    const confirmed = window.confirm('Are you sure you want to cancel this booking?');
+    if (!confirmed) {
+      return;
+    }
+
+    setCancelingBookingId(bookingId);
+    setError(null);
+
+    try {
+      const response = await fetch(apiUrl(`/bookings/${bookingId}`), {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        setError(data.error || 'Failed to cancel booking');
+        return;
+      }
+
+      setBookings((prev) => prev.filter((booking) => booking.id !== bookingId));
+    } catch (cancelError) {
+      setError('Could not connect to server. Please try again.');
+      console.error('Error canceling booking:', cancelError);
+    } finally {
+      setCancelingBookingId(null);
     }
   };
 
@@ -169,8 +202,12 @@ function MyBookings() {
 
                 <div className="booking-actions">
                   {booking.status.toLowerCase() === 'pending' && (
-                    <button className="btn btn-danger btn-small">
-                      Cancel Booking
+                    <button
+                      className="btn btn-danger btn-small"
+                      onClick={() => handleCancelBooking(booking.id)}
+                      disabled={cancelingBookingId === booking.id}
+                    >
+                      {cancelingBookingId === booking.id ? 'Canceling...' : 'Cancel Booking'}
                     </button>
                   )}
                   {booking.status.toLowerCase() === 'confirmed' && (

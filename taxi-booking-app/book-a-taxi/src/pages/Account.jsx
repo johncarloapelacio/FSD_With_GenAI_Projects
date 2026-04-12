@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { apiUrl } from '../api';
 import './Pages.css';
 
 function Account() {
@@ -25,6 +26,7 @@ function Account() {
   const [bookings, setBookings] = useState([]);
   const [bookingsLoading, setBookingsLoading] = useState(false);
   const [bookingsError, setBookingsError] = useState(null);
+  const [cancelingBookingId, setCancelingBookingId] = useState(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -110,10 +112,12 @@ function Account() {
     setBookingsLoading(true);
     setBookingsError(null);
     try {
-      const response = await fetch('http://localhost:3001/api/bookings');
+      const response = await fetch(apiUrl('/bookings'));
       if (response.ok) {
         const data = await response.json();
-        const userBookings = data.filter((booking) => booking.userId === targetUser.id);
+        const userBookings = data.filter(
+          (booking) => booking.userId === targetUser.id && (booking.status || '').toLowerCase() !== 'cancelled'
+        );
         setBookings(userBookings);
       } else {
         setBookingsError('Failed to load bookings');
@@ -133,6 +137,35 @@ function Account() {
 
   const handleBackToAccount = () => {
     setViewMode('account');
+  };
+
+  const handleCancelBooking = async (bookingId) => {
+    const confirmed = window.confirm('Are you sure you want to cancel this booking?');
+    if (!confirmed) {
+      return;
+    }
+
+    setCancelingBookingId(bookingId);
+    setBookingsError(null);
+
+    try {
+      const response = await fetch(apiUrl(`/bookings/${bookingId}`), {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        setBookingsError(data.error || 'Failed to cancel booking');
+        return;
+      }
+
+      setBookings((prev) => prev.filter((booking) => booking.id !== bookingId));
+    } catch (error) {
+      setBookingsError('Could not connect to server. Please try again.');
+      console.error('Error canceling booking:', error);
+    } finally {
+      setCancelingBookingId(null);
+    }
   };
 
   const validatePasswordForm = () => {
@@ -184,7 +217,7 @@ function Account() {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3001/api/auth/profile', {
+      const response = await fetch(apiUrl('/auth/profile'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -230,7 +263,7 @@ function Account() {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3001/api/auth/password', {
+      const response = await fetch(apiUrl('/auth/password'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -276,7 +309,7 @@ function Account() {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3001/api/auth/account', {
+      const response = await fetch(apiUrl('/auth/account'), {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -390,6 +423,36 @@ function Account() {
                       <div className="price-amount">${booking.price}</div>
                       <div className="price-label">Total</div>
                     </div>
+                  </div>
+
+                  {booking.specialRequests && (
+                    <div className="booking-special-requests">
+                      <span className="requests-label">Special Requests:</span>
+                      <span className="requests-value">{booking.specialRequests}</span>
+                    </div>
+                  )}
+
+                  <div className="booking-actions">
+                    {booking.status.toLowerCase() === 'pending' && (
+                      <button
+                        type="button"
+                        className="btn btn-danger btn-small"
+                        onClick={() => handleCancelBooking(booking.id)}
+                        disabled={cancelingBookingId === booking.id}
+                      >
+                        {cancelingBookingId === booking.id ? 'Canceling...' : 'Cancel Booking'}
+                      </button>
+                    )}
+                    {booking.status.toLowerCase() === 'confirmed' && (
+                      <button type="button" className="btn btn-secondary btn-small">
+                        Contact Driver
+                      </button>
+                    )}
+                    {booking.status.toLowerCase() === 'completed' && (
+                      <button type="button" className="btn btn-primary btn-small">
+                        Rate & Review
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
