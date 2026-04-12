@@ -1,0 +1,163 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "firstName": "John Carlo",
+      "lastName": "Apelacio",
+      "age": 37,
+      "email": "johncarlo.apelacio@gmail.com",
+      "password": "12345",
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "1775984733340",
+      "firstName": "John",
+      "lastName": "Concepcion",
+      "email": "jc.apelacio@gmail.com",
+      "age": 37,
+      "password": "54321",
+      "createdAt": "2026-04-12T09:05:33.340Z"
+    }
+  ],
+  "bookings": [
+    {
+      "id": "1775983393736",
+      "userId": "1",
+      "pickupLocation": "Marshall",
+      "dropoffLocation": "College of AI",
+      "dateTime": "2026-04-13T12:00",
+      "passengers": 1,
+      "serviceType": "Sedan",
+      "typeOfService": "Sedan",
+      "price": 25,
+      "specialRequests": "",
+      "status": "pending",
+      "createdAt": "2026-04-12T08:43:13.736Z"
+    },
+    {
+      "id": "1775984250622",
+      "userId": "1",
+      "pickupLocation": "Marshall",
+      "dropoffLocation": "College of AI",
+      "dateTime": "2026-04-13T12:00",
+      "passengers": 1,
+      "serviceType": "Premium",
+      "price": 24,
+      "specialRequests": "",
+      "status": "pending",
+      "createdAt": "2026-04-12T08:57:30.622Z"
+    },
+    {
+      "id": "1775984822692",
+      "userId": "1775984733340",
+      "pickupLocation": "AAG",
+      "dropoffLocation": "JCA",
+      "dateTime": "2026-04-13T12:00",
+      "passengers": 1,
+      "serviceType": "Premium",
+      "typeOfService": "Premium",
+      "price": 32,
+      "specialRequests": "Love",
+      "status": "pending",
+      "createdAt": "2026-04-12T09:07:02.692Z"
+    }
+  ],
+  "services": [
+    {
+      "id": "1",
+      "name": "Standard Taxi",
+      "description": "Comfortable sedan for up to 4 passengers",
+      "basePrice": 15,
+      "pricePerKm": 2.5,
+      "capacity": 4,
+      "features": [
+        "Air conditioning",
+        "GPS tracking",
+        "Professional driver"
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Luxury Sedan",
+      "description": "Premium sedan with extra amenities",
+      "basePrice": 25,
+      "pricePerKm": 4,
+      "capacity": 4,
+      "features": [
+        "Air conditioning",
+        "GPS tracking",
+        "Professional driver",
+        "Leather seats",
+        "WiFi"
+      ]
+    },
+    {
+      "id": "3",
+      "name": "SUV",
+      "description": "Spacious SUV for larger groups",
+      "basePrice": 30,
+      "pricePerKm": 5,
+      "capacity": 7,
+      "features": [
+        "Air conditioning",
+        "GPS tracking",
+        "Professional driver",
+        "Extra space",
+        "All-wheel drive"
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Van",
+      "description": "Large van for group transportation",
+      "basePrice": 40,
+      "pricePerKm": 6,
+      "capacity": 12,
+      "features": [
+        "Air conditioning",
+        "GPS tracking",
+        "Professional driver",
+        "Ample space",
+        "Group friendly"
+      ]
+    }
+  ],
+  "drivers": [
+    {
+      "id": "1",
+      "name": "Michael Johnson",
+      "rating": 4.8,
+      "vehicle": "Toyota Camry",
+      "plate": "ABC-123",
+      "phone": "+1-555-0101",
+      "experience": "8 years"
+    },
+    {
+      "id": "2",
+      "name": "Sarah Williams",
+      "rating": 4.9,
+      "vehicle": "Honda Accord",
+      "plate": "XYZ-789",
+      "phone": "+1-555-0102",
+      "experience": "6 years"
+    },
+    {
+      "id": "3",
+      "name": "David Brown",
+      "rating": 4.7,
+      "vehicle": "Ford Explorer",
+      "plate": "DEF-456",
+      "phone": "+1-555-0103",
+      "experience": "10 years"
+    },
+    {
+      "id": "4",
+      "name": "Emma Davis",
+      "rating": 4.6,
+      "vehicle": "Chevrolet Suburban",
+      "plate": "GHI-789",
+      "phone": "+1-555-0104",
+      "experience": "5 years"
+    }
+  ]
+}
