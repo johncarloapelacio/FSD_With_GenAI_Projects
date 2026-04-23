@@ -100,7 +100,7 @@ I am actively expanding my capabilities in:
 - SQL Databases  
 - AI-Powered Productivity Tools  
 - Automation Solutions
-- 
+
 ---
 
 # Let's Connect
