@@ -1,8 +1,8 @@
-# John Carlo Apelacio | Full Stack Development Portfolio
+# John Carlo Apelacio | Full Stack Developer Portfolio
 
-Welcome to my technical project portfolio. I am a results-driven operations, data, and administrative professional transitioning into software development with hands-on experience building modern web applications through a Full Stack Development Program with Generative AI.
+Welcome to my project portfolio. I am a results-driven operations, data, and administrative professional transitioning into software development with hands-on experience building practical web applications through a Full Stack Development Program with Generative AI.
 
-My background combines real-world business operations, data systems, workflow optimization, and technical execution--allowing me to build practical solutions that are both functional and user-focused.
+My background combines business operations, analytics, workflow optimization, and technical execution—allowing me to build solutions that are both user-focused and business-minded.
 
 ---
 
@@ -21,100 +21,110 @@ My background combines real-world business operations, data systems, workflow op
 
 ## 1. Online Food Ordering Application
 
-A responsive food ordering web application that allows users to browse menu items, add products to cart, manage orders, and complete a streamlined checkout experience.
+A responsive e-commerce style ordering platform that allows users to browse menu items, manage a shopping cart, and complete checkout smoothly.
 
-### Key Features:
-- Dynamic product listings  
-- Shopping cart functionality  
-- Quantity updates  
+### Key Features
+- Dynamic product catalog  
+- Add/remove cart items  
+- Quantity adjustments  
 - Order total calculations  
-- Responsive UI design  
-- Clean user navigation  
+- Responsive mobile-friendly UI  
+- Clean checkout flow  
 
-### Technologies Used:
+### Technologies
 JavaScript, HTML, CSS
 
-### Project Folder:
-`online-food-ordering-app`
+### View Project
+[Open Project Folder](https://github.com/johncarloapelacio/FSD_With_GenAI_Projects/tree/main/online-food-ordering-app)
+
+### What I Built
+Built front-end ordering logic, cart state management, responsive layout, and user-focused purchase flow.
 
 ---
 
 ## 2. Taxi Booking Application
 
-A modern transportation booking interface that simulates a real-world taxi reservation platform with user-friendly booking flow and scheduling functionality.
+A transportation booking platform simulating real-world ride reservation workflows with intuitive scheduling and trip booking.
 
-### Key Features:
+### Key Features
 - Ride booking workflow  
-- Pickup/dropoff logic  
+- Pickup/dropoff form logic  
 - Scheduling interface  
 - Responsive design  
-- User-focused booking experience  
+- Clean booking UX  
 
-### Technologies Used:
+### Technologies
 JavaScript, HTML, CSS
 
-### Project Folder:
-`taxi-booking-app`
+### View Project
+[Open Project Folder](https://github.com/johncarloapelacio/FSD_With_GenAI_Projects/tree/main/taxi-booking-app)
+
+### What I Built
+Built booking flow logic, form interactions, user navigation, and mobile-friendly interface design.
 
 ---
 
 ## 3. HR Portal Project
 
-An employee-focused portal designed to centralize HR functions and internal workflow processes.
+An internal employee portal designed to centralize HR-related workflows and improve employee self-service processes.
 
-### Key Features:
-- Employee information workflows  
-- Portal navigation system  
-- Structured UI components  
-- Administrative functionality  
+### Key Features
+- Structured portal navigation  
+- Employee workflow interface  
+- Administrative dashboard concepts  
+- Organized UI components  
 
-### Technologies Used:
+### Technologies
 JavaScript, HTML, CSS
 
-### Project Folder:
-`hr-portal-project`
+### View Project
+[Open Project Folder](https://github.com/johncarloapelacio/FSD_With_GenAI_Projects/tree/main/hr-portal-project)
+
+### What I Built
+Built interface components, navigation structure, and user-friendly portal workflows.
 
 ---
 
-# Why I'm Different
+# Why I’m Different
 
-I bring more than coding ability. My prior experience includes:
+I bring more than coding ability. My professional background includes:
 
 - Managing secure databases for 500+ clients  
-- Building reporting systems and operational workflows  
+- Building reporting systems and workflow processes  
 - Supporting grant proposals that helped increase funding 5x  
-- Advanced Excel analytics and dashboarding  
-- Strong communication and business professionalism  
+- Advanced Excel analytics and dashboards  
+- Strong business communication and professionalism  
 
-This allows me to approach development with both technical skill and real business value.
+This allows me to approach software development with both technical skill and business value.
 
 ---
 
 # Current Focus
 
-I am actively expanding my capabilities in:
-
 - Full Stack Development  
 - React Applications  
 - Backend APIs  
 - SQL Databases  
-- AI-Powered Productivity Tools  
+- AI Productivity Tools  
 - Automation Solutions
 
 ---
 
-# Let's Connect
+# Let’s Connect
 
-**LinkedIn:** (Add your LinkedIn URL here)  
-**GitHub:** https://github.com/johncarloapelacio
+**GitHub:** https://github.com/johncarloapelacio  
+**LinkedIn:** https://www.linkedin.com/in/john-carlo-apelacio-714846268/
 
 I am open to opportunities in:
 
-- Junior Full Stack Development
-- Junior Web Administrator  
+- Junior Full Stack Development  
 - Technical Operations  
 - Business Systems Analyst  
 - Data / Automation Roles  
 - Product Support Engineering
 
 ---
+
+## Repository Description (Use in GitHub About Section)
+
+Full stack and web application projects by John Carlo Apelacio featuring JavaScript apps, UI workflows, and practical business-focused solutions.
