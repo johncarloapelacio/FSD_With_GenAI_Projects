@@ -2,9 +2,8 @@
 .leave-container {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     padding: 40px 20px;
-    min-height: calc(100vh - 200px);
 }
 
 /* Card */
@@ -91,17 +90,4 @@
 
 .apply-btn:active {
     transform: translateY(0);
-}
-
-/* Message */
-.message {
-    margin-top: 16px;
-    padding: 12px;
-    border-radius: 1rem;
-    text-align: center;
-    font-weight: 500;
-    font-size: 14px;
-    background-color: #f2dee1;
-    color: #b91b1b;
-    border: 1px solid #e24643;
 }

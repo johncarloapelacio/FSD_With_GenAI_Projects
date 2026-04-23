@@ -1,35 +1,35 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { API_ENDPOINTS } from "../config/api";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchLeaveRequests,
+  selectLeaveState,
+  selectPendingLeaveRequests,
+  updateLeaveStatus,
+} from "../store/slices/leaveSlice";
 import "./ViewAllLeaveInfo.css";
 
 const ViewAllLeaveInfo = () => {
-  const [leaveRequests, setLeaveRequests] = useState([]);
+  // Loads pending requests and mutation status from Redux leave domain.
+  const dispatch = useDispatch();
+  const leaveRequests = useSelector(selectPendingLeaveRequests);
+  const { status } = useSelector(selectLeaveState);
   const [message, setMessage] = useState("");
 
+  // Fetches leave requests once for the HR review table.
   useEffect(() => {
-    loadLeaveRequests();
-  }, [message]);
-
-  const loadLeaveRequests = async () => {
-    try {
-      const { data } = await axios.get(API_ENDPOINTS.LEAVE);
-      const pending = data.filter(req => req.status === "Pending");
-      setLeaveRequests(pending);
-    } catch (error) {
-      console.error("Load leave requests error:", error);
+    if (status === "idle") {
+      dispatch(fetchLeaveRequests());
     }
-  };
+  }, [dispatch, status]);
 
+  // Updates a leave request status and refreshes UI through Redux state updates.
   const handleChangeStatus = async (request, status) => {
     setMessage("");
     try {
-      const updatedLeave = { ...request, status };
-      await axios.patch(`${API_ENDPOINTS.LEAVE}/${request.id}`, updatedLeave);
+      await dispatch(updateLeaveStatus({ request, status })).unwrap();
       setMessage("Status updated successfully");
-    } catch (error) {
-      setMessage("Failed to update status. Please try again.");
-      console.error("Change status error:", error);
+    } catch (errorMessage) {
+      setMessage(errorMessage || "Failed to update status. Please try again.");
     }
   };
 
@@ -75,14 +75,14 @@ const ViewAllLeaveInfo = () => {
             ) : (
               <tr>
                 <td colSpan="4" className="no-data">
-                  No pending leave requests
+                  {status === "loading" ? "Loading..." : "No pending leave requests"}
                 </td>
               </tr>
             )}
           </tbody>
         </table>
 
-        {message && <p className="message">{message}</p>}
+        {message && <p className="app-message">{message}</p>}
       </div>
     </div>
   );

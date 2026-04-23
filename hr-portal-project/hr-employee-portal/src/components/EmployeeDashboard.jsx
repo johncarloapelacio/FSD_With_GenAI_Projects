@@ -1,35 +1,29 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { API_ENDPOINTS } from "../config/api";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchEmployees,
+  selectEmployeesState,
+} from "../store/slices/employeesSlice";
+import { logoutUser } from "../store/slices/authSlice";
 import "./EmployeeDashboard.css";
 
 const EmployeeDashboard = () => {
-  const [employeeName, setEmployeeName] = useState("");
+  // Core hooks and selectors for employee dashboard data and navigation.
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { status } = useSelector(selectEmployeesState);
 
+  // Loads employee records once so greeting/profile data can be resolved locally.
   useEffect(() => {
-    loadEmployeeGreeting();
-  }, []);
-
-  const loadEmployeeGreeting = async () => {
-    try {
-      const email = sessionStorage.getItem("userEmail");
-      if (!email) {
-        navigate("/");
-        return;
-      }
-
-      const { data } = await axios.get(API_ENDPOINTS.EMPLOYEES);
-      const employee = data.find(emp => emp.emailId === email);
-      setEmployeeName(employee?.fname || "");
-    } catch (error) {
-      console.error("Load employee greeting error:", error);
+    if (status === "idle") {
+      dispatch(fetchEmployees());
     }
-  };
+  }, [dispatch, status]);
 
+  // Clears session auth state and routes user to login.
   const handleLogout = () => {
-    sessionStorage.removeItem("userEmail");
+    dispatch(logoutUser());
     navigate("/");
   };
 
@@ -37,19 +31,17 @@ const EmployeeDashboard = () => {
     <div className="emp-dashboard-container">
       <div className="emp-header">
         <h2>Employee Dashboard</h2>
-        <button className="emp-logout-btn" onClick={handleLogout}>Logout</button>
+        <button className="emp-logout-btn" onClick={handleLogout}>Log Out</button>
       </div>
 
-      <div className="emp-welcome">
-        <h3>Welcome, {employeeName}!</h3>
-      </div>
-
+      {/* Navigation bar with persistent links to all employee sub-sections. */}
       <div className="emp-nav">
         <Link to="viewEmployee">Profile</Link>
         <Link to="applyLeave">Apply Leave</Link>
         <Link to="viewLeaveStatus">Leave Status</Link>
       </div>
 
+      {/* Outlet renders the active child route: index welcome, profile, leave form, or leave status. */}
       <div className="emp-content">
         <Outlet />
       </div>

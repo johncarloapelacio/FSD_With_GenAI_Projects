@@ -1,10 +1,16 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../store/slices/authSlice";
 import "./HRDashboard.css";
 
 const HRDashboard = () => {
+  // Dashboard-level hooks for logout dispatch and route transitions.
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // Clears auth state and returns user to public login page.
   const handleLogout = () => {
+    dispatch(logoutUser());
     navigate("/");
   };
 
@@ -12,7 +18,7 @@ const HRDashboard = () => {
     <div className="dashboard-container">
       <div className="dashboard-header">
         <h2>HR Dashboard</h2>
-        <button className="logout-btn" onClick={handleLogout}>Logout</button>
+        <button className="logout-btn" onClick={handleLogout}>Log Out</button>
       </div>
 
       <div className="dashboard-nav">

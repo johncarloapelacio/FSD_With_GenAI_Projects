@@ -1,171 +1,303 @@
+// Dashboard storage keys and API endpoint keep session and menu access centralized.
+const STORAGE_KEYS = {
+    activeAccount: "activeAccount",
+    dashboardAccess: "dashKey"
+};
 
-//Prevents access to dashboard without dashKey, and if an account is already signed in
-if(!localStorage.getItem("dashKey")){
-    window.location.href = "signin.html";
-}
+const MENU_API_URL = "https://www.themealdb.com/api/json/v1/1/search.php?f=a";
 
-//To prevent directly opening a second dashboard window while user is logged in
-localStorage.removeItem("dashKey");
+// Shared UI state lets the page render from one source of truth.
+const state = {
+    cart: [],
+    cartInView: false,
+    total: 0
+};
 
-//Allows a user to sign in if the dashboard window is exited (effectively signing out the current user);
-window.addEventListener('beforeunload', function () {
-//     // Deactivates account when user leaves or refreshes window
-    this.localStorage.removeItem("activeAccount");
+const elements = {};
+
+// App bootstrap validates access, caches elements, wires events, and loads the menu.
+document.addEventListener("DOMContentLoaded", () => {
+    const activeAccount = localStorage.getItem(STORAGE_KEYS.activeAccount);
+
+    if (!activeAccount) {
+        window.location.href = "signin.html";
+        return;
+    }
+
+    localStorage.removeItem(STORAGE_KEYS.dashboardAccess);
+    cacheElements();
+    bindEvents();
+    updateActiveAccount(activeAccount);
+    updateCartCount();
+    setView("menu");
+    renderMenuLoadingState();
+    loadMenu();
 });
 
-//Display's the email address of the active account
-let activeAccount = localStorage.getItem("activeAccount");
-document.getElementById("emailDisplay").innerHTML = activeAccount;
+// DOM element caching prevents repeated document queries during rendering.
+function cacheElements() {
+    elements.emailDisplay = document.getElementById("emailDisplay");
+    elements.itemsInCart = document.getElementById("itemsInCart");
+    elements.menuDisplay = document.getElementById("menuDisplay");
+    elements.cartDisplay = document.getElementById("cartDisplay");
+    elements.cartItem = document.getElementById("cartItem");
+    elements.menuToggle = document.getElementById("menuButton");
+    elements.cartToggle = document.getElementById("cartButton");
+    elements.checkoutButton = document.getElementById("checkoutButton");
+    elements.signOutButton = document.getElementById("signOutButton");
+}
 
-let cart = []; //Create empty array for cart
+// Event delegation keeps menu and cart interactions efficient as content rerenders.
+function bindEvents() {
+    elements.menuToggle.addEventListener("click", displayMenu);
+    elements.cartToggle.addEventListener("click", displayCart);
+    elements.checkoutButton.addEventListener("click", checkOut);
+    elements.signOutButton.addEventListener("click", signOut);
 
-let itemsInCart = 0;
+    elements.menuDisplay.addEventListener("click", (event) => {
+        const button = event.target.closest("button[data-item-id]");
 
+        if (!button) {
+            return;
+        }
 
-//show total items in cart
-document.getElementById("itemsInCart").innerHTML = `Items in Cart: ${itemsInCart}`;
+        addItem(Number(button.dataset.itemId), button.dataset.itemName, Number(button.dataset.price));
+    });
 
+    elements.cartItem.addEventListener("click", (event) => {
+        const button = event.target.closest("button[data-quantity-change]");
 
-let menuDisplay = document.getElementById("menuDisplay");
-let cartDisplay = document.getElementById("cartDisplay");
+        if (!button) {
+            return;
+        }
 
-let cartInView = false; //tracks whether cart display is in view; later used for checkout functionality
+        changeQty(Number(button.dataset.itemId), Number(button.dataset.quantityChange));
+    });
+}
 
-menuDisplay.style.display = ""; //no change to menu display
-cartDisplay.style.display = "none"; //remove cart display from view
+// View toggling keeps only the requested section visible at a time.
+function setView(view) {
+    state.cartInView = view === "cart";
+    elements.menuDisplay.style.display = state.cartInView ? "none" : "grid";
+    elements.cartDisplay.style.display = state.cartInView ? "block" : "none";
+}
 
 function displayMenu() {
-    menuDisplay.style.display = ""; //no change to cart display
-    cartDisplay.style.display = "none"; //remove menu display from view
-    cartInView = false;
+    setView("menu");
 }
 
 function displayCart() {
-    cartDisplay.style.display = ""; //no change to display
-    menuDisplay.style.display = "none"; //remove cart display from view
-    cartInView = true;
+    setView("cart");
 }
 
-//sign out function
+// Session helpers update the active account banner and handle sign-out cleanup.
+function updateActiveAccount(email) {
+    elements.emailDisplay.textContent = email;
+}
+
 function signOut() {
-    window.location.href ="signin.html" //Sends user back to sign in page
+    localStorage.removeItem(STORAGE_KEYS.activeAccount);
+    localStorage.removeItem(STORAGE_KEYS.dashboardAccess);
+    window.location.href = "signin.html";
 }
 
-function addItem(itemId, itemName, price){
-    // look for item in cart; if found, return item; otherwise return undefined (falsy)
-    let itemAdded  = cart.find(c=>c.Id === itemId); // check if added item is already in cart
-    
-    if(itemAdded){
-        itemAdded.Qty += 1; // if added item is found in cart, increase quantity by 1
-    }else {
-        cart.push({Id: itemId, Name: itemName, Price: price, Qty: 1}); // add new item to cart
-    }
-    refreshCart(); //refresh items to be displayed in cart
+// Price formatting is deterministic so the same item keeps the same price every render.
+function getItemPrice(itemId) {
+    const baseCents = 799 + (Number(itemId) % 1300);
+    return Number((baseCents / 100).toFixed(2));
 }
 
-//shows the menu and relevant item details, with button to add item to cart
+function formatCurrency(amount) {
+    return `$${amount.toFixed(2)}`;
+}
+
+// Menu rendering uses DOM nodes instead of repeated innerHTML concatenation.
+function renderMenuLoadingState() {
+    elements.menuDisplay.innerHTML = "<p class=\"menu-message\">Loading menu items...</p>";
+}
+
+function renderMenuErrorState() {
+    elements.menuDisplay.innerHTML = "<p class=\"menu-message\">Unable to load the menu right now. Please refresh the page.</p>";
+}
+
 function showItems(items) {
-    items.forEach(item => {
-        //sets a random reasonable price for item using item id
-        let price = Math.trunc((item.idMeal/2000 - Math.random()*10)*100)/100;
+    elements.menuDisplay.innerHTML = "";
+    const fragment = document.createDocumentFragment();
 
-        menuDisplay.innerHTML +=`
-        <div class="bg-[url('images/marbleBG.png')] bg-cover p-4 rounded-4xl shadow-md flex flex-col items-center">
-            <div class="w-full p-2 mb-2 overflow-hidden flex items-center justify-center">
-                <img src="${item.strMealThumb}" alt="${item.strMeal}"
-                    class="object-cover w-full h-full rounded-lg max-h-48" />
-            </div>
-            <h3 class="text-xl text-orange-200 font-semibold text-center">${item.strMeal}</h3>
-            <p class="text-gray-200 text-sm text-center">Price: $${price}</p>
-            <input type="button" value = "ADD TO CART"
-                onclick="addItem(${item.idMeal},'${item.strMeal}',${price})"
-                class="bg-purple-300 text-green-900 p-2 font-sans font-bold italic rounded-4xl hover:bg-purple-400 transition-colors duration-200 cursor-pointer w-full mt-2" />
-        </div>
-    `
-    }
-)
-}
+    items.forEach((item) => {
+        const price = getItemPrice(item.idMeal);
+        const card = document.createElement("article");
+        card.className = "bg-[url('images/marbleBG.png')] bg-cover p-4 rounded-4xl shadow-md flex flex-col items-center h-full";
 
-//refreshes the cart display with current items in cart
-function refreshCart() {
-    let cartItem = document.getElementById("cartItem");
-    cartItem.innerHTML = ""; //clear previous cart items to display refreshed cart
-    itemsInCart = 0; //clear items in cart for recount
-    let total = 0; //reset total to zero for recalculation
-    cart.forEach(item => {
-        cartItem.innerHTML += `
-            <div class="bg-black rounded-4xl shadow p-4 mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
-                <div>
-                    <h3 class="text-xl text-orange-200 font-semibold font-semibold mb-1">${item.Name}</h3>
-                    <p class="text-gray-200 mb-1">Price: <span class="font-medium">$${item.Price}</span></p>
-                    <p class="text-gray-200 mb-2">Quantity: <span class="font-medium">${item.Qty}</span></p>
-                </div>
-                <div class="flex space-x-2 mt-2 md:mt-0">
-                    <input type="button" value="+" onClick="changeQty(${item.Id}, 1)"
-                        class="bg-green-800 hover:bg-green-900 text-white text-xl font-bold py-1 px-3 rounded-2xl cursor-pointer"/>
-                    <input type="button" value="-" onClick="changeQty(${item.Id}, -1)"
-                        class="bg-purple-400 hover:bg-purple-500 text-black text-xl font-bold py-1 px-3 rounded-2xl cursor-pointer"/>
-                </div>
-            </div>
-        `;
-        total += item.Price * item.Qty;
-        //gives the calculated total to two decimal places
-        dollarTotal = total.toFixed(2);
+        const imageWrapper = document.createElement("div");
+        imageWrapper.className = "w-full p-2 mb-2 overflow-hidden flex items-center justify-center";
+
+        const image = document.createElement("img");
+        image.src = item.strMealThumb;
+        image.alt = item.strMeal;
+        image.loading = "lazy";
+        image.className = "object-cover w-full h-full rounded-lg max-h-48";
+        imageWrapper.appendChild(image);
+
+        const title = document.createElement("h3");
+        title.className = "text-xl text-orange-200 font-semibold text-center";
+        title.textContent = item.strMeal;
+
+        const priceText = document.createElement("p");
+        priceText.className = "text-gray-200 text-sm text-center";
+        priceText.textContent = `Price: ${formatCurrency(price)}`;
+
+        const addButton = document.createElement("button");
+        addButton.type = "button";
+        addButton.dataset.itemId = String(item.idMeal);
+        addButton.dataset.itemName = item.strMeal;
+        addButton.dataset.price = String(price);
+        addButton.className = "bg-purple-300 text-green-900 p-2 pb-2 font-sans font-bold italic rounded-4xl hover:bg-purple-400 transition-colors duration-200 cursor-pointer w-full mt-auto";
+        addButton.textContent = "ADD TO CART";
+
+        card.append(imageWrapper, title, priceText, addButton);
+        fragment.appendChild(card);
     });
-    if(cart.length > 0) {
-        cartItem.innerHTML += `<div class="text-center"><h3 class="text-3xl font-bold">Total Amount: <span class="text-green-900">$${dollarTotal}</span></h3></div>`;
-            //update number of items in cart
-        cart.forEach(item => {
-            itemsInCart += item.Qty;
-        })
-    }
-    document.getElementById("itemsInCart").innerHTML = `Items in Cart: ${itemsInCart}`; //display number of items in cart
+
+    elements.menuDisplay.appendChild(fragment);
 }
 
-//increments or decrements the passed items quantity
+// Cart updates recalculate totals once and rerender the full cart display from state.
+function addItem(itemId, itemName, price) {
+    const existingItem = state.cart.find((item) => item.id === itemId);
+
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        state.cart.push({ id: itemId, name: itemName, price, quantity: 1 });
+    }
+
+    refreshCart();
+}
+
+function refreshCart() {
+    state.total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    renderCart();
+    updateCartCount();
+}
+
+function renderCart() {
+    elements.cartItem.innerHTML = "";
+
+    if (state.cart.length === 0) {
+        elements.cartItem.innerHTML = "<p class=\"cart-message\">Your cart is empty. Add something from the menu to get started.</p>";
+        return;
+    }
+
+    const fragment = document.createDocumentFragment();
+
+    state.cart.forEach((item) => {
+        const itemCard = document.createElement("article");
+        itemCard.className = "bg-black rounded-4xl shadow p-4 mb-4 flex flex-col md:flex-row md:items-center md:justify-between";
+
+        const content = document.createElement("div");
+
+        const title = document.createElement("h3");
+        title.className = "text-xl text-orange-200 font-semibold mb-1";
+        title.textContent = item.name;
+
+        const price = document.createElement("p");
+        price.className = "text-gray-200 mb-1";
+        price.textContent = `Price: ${formatCurrency(item.price)}`;
+
+        const quantity = document.createElement("p");
+        quantity.className = "text-gray-200 mb-2";
+        quantity.textContent = `Quantity: ${item.quantity}`;
+
+        content.append(title, price, quantity);
+
+        const controls = document.createElement("div");
+        controls.className = "flex space-x-2 mt-2 md:mt-0";
+
+        const incrementButton = document.createElement("button");
+        incrementButton.type = "button";
+        incrementButton.dataset.itemId = String(item.id);
+        incrementButton.dataset.quantityChange = "1";
+        incrementButton.className = "bg-green-800 hover:bg-green-900 text-white text-xl font-bold py-1 px-3 rounded-2xl cursor-pointer";
+        incrementButton.textContent = "+";
+
+        const decrementButton = document.createElement("button");
+        decrementButton.type = "button";
+        decrementButton.dataset.itemId = String(item.id);
+        decrementButton.dataset.quantityChange = "-1";
+        decrementButton.className = "bg-purple-400 hover:bg-purple-500 text-black text-xl font-bold py-1 px-3 rounded-2xl cursor-pointer";
+        decrementButton.textContent = "-";
+
+        controls.append(incrementButton, decrementButton);
+        itemCard.append(content, controls);
+        fragment.appendChild(itemCard);
+    });
+
+    const totalWrapper = document.createElement("div");
+    totalWrapper.className = "text-center";
+
+    const totalTitle = document.createElement("h3");
+    totalTitle.className = "text-3xl font-bold";
+    totalTitle.innerHTML = `Total Amount: <span class="text-green-900">${formatCurrency(state.total)}</span>`;
+
+    totalWrapper.appendChild(totalTitle);
+    fragment.appendChild(totalWrapper);
+    elements.cartItem.appendChild(fragment);
+}
+
+function updateCartCount() {
+    const itemCount = state.cart.reduce((count, item) => count + item.quantity, 0);
+    elements.itemsInCart.textContent = `Items in Cart: ${itemCount}`;
+}
+
 function changeQty(itemId, change) {
-    cart = cart.map(item => {
-            if(item.Id === itemId){
-                item.Qty += change; // increment or decrement item quantity
+    state.cart = state.cart
+        .map((item) => {
+            if (item.id === itemId) {
+                return { ...item, quantity: item.quantity + change };
             }
-        return item;
-        }).filter(item => item.Qty != 0); // remove item from cart if quantity is decremented to 0  
 
-        refreshCart(); // update cart section in dashboard page after changing quantity
+            return item;
+        })
+        .filter((item) => item.quantity > 0);
+
+    refreshCart();
 }
 
-//simulates checkout of ordered items in cart
+// Checkout either switches to the cart view or generates a receipt for the current order.
 function checkOut() {
-    //checks if cart is in view, and puts the cart display in view if it is not
-    if(!cartInView) {
+    if (!state.cartInView) {
         displayCart();
-    }else{
-    if (cart.length == 0) {//checks if the cart is empty and alerts user if it is
-        alert("your cart is empty!");
-    }else{
-        //creates array receipt using array cart for generating a receipt in alert message
-        let receipt = [];
-        for (let i = 0; i < cart.length ; i++) {
-            receipt.push(cart[i].Name);
-            receipt.push(cart[i].Price);
-            receipt.push(cart[i].Qty)
+        return;
+    }
+
+    if (state.cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+    }
+
+    const receiptLines = state.cart.map((item) => `${item.name} | ${formatCurrency(item.price)} | Qty: ${item.quantity}`);
+    const totalCharged = formatCurrency(state.total);
+
+    state.cart = [];
+    refreshCart();
+    alert(`Checkout Successful!\n\nReceipt:\n\n${receiptLines.join("\n")}\n\nTotal Charged: ${totalCharged}\nThank you for choosing John Carlo's!`);
+}
+
+// Menu loading fetches data once and renders a fallback message if the API fails.
+async function loadMenu() {
+    try {
+        const response = await fetch(MENU_API_URL);
+
+        if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`);
         }
-        cart = [];//empties cart
-        //alerts user of successfull checkout and generates a receit within the alert message
-        alert(`Checkout Successful!\n\nReceipt:\n\n${receipt.join('\n')}\n\nTotal Charged: ${dollarTotal}\nThank you for choosing John Carlo's!`);
-        refreshCart();
-     }
+
+        const menu = await response.json();
+        showItems(menu.meals || []);
+    } catch (error) {
+        console.error(error);
+        renderMenuErrorState();
     }
 }
-
-
-let URLmenu = "https://www.themealdb.com/api/json/v1/1/search.php?f=a"
-
-//retrieve menu info from above URL
-fetch(URLmenu).then(response => response.json()).then(menu => {
-    console.log(menu);
-    showItems(menu.meals);
-}).catch(error =>{
-    console.log(error);
-})
 

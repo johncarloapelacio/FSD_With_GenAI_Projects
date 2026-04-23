@@ -133,16 +133,3 @@
 .signup-text a:hover {
     text-decoration: underline;
 }
-
-/* Error message */
-.error-msg {
-    margin-top: 16px;
-    padding: 12px;
-    border-radius: 1rem;
-    background-color: #f2dee1;
-    color: #b91b1b;
-    border: 1px solid #e24643;
-    text-align: center;
-    font-weight: 500;
-    font-size: 14px;
-}

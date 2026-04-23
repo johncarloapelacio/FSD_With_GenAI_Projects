@@ -1,18 +1,23 @@
-import axios from "axios";
 import { useState } from "react";
-import { API_ENDPOINTS } from "../config/api";
+import { useDispatch, useSelector } from "react-redux";
+import { selectLoggedInEmail } from "../store/slices/authSlice";
+import { applyLeaveRequest } from "../store/slices/leaveSlice";
 import "./ApplyLeave.css";
 
 const ApplyLeave = () => {
+  // Local leave form state with Redux-authenticated user context.
+  const dispatch = useDispatch();
   const [form, setForm] = useState({ reason: "", numberOfDays: "" });
   const [message, setMessage] = useState("");
-  const email = sessionStorage.getItem("userEmail");
+  const email = useSelector(selectLoggedInEmail);
 
+  // Generic input handler for leave form fields.
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
+  // Validates form and submits leave request through Redux thunk.
   const handleApplyLeave = async (event) => {
     event.preventDefault();
     setMessage("");
@@ -23,17 +28,17 @@ const ApplyLeave = () => {
     }
 
     try {
-      await axios.post(API_ENDPOINTS.LEAVE, {
-        emailId: email,
-        reason: form.reason,
-        numberOfDays: form.numberOfDays,
-        status: "Pending",
-      });
+      await dispatch(
+        applyLeaveRequest({
+          email,
+          reason: form.reason,
+          numberOfDays: form.numberOfDays,
+        })
+      ).unwrap();
       setMessage("Leave applied successfully");
       setForm({ reason: "", numberOfDays: "" });
-    } catch (error) {
-      setMessage("Failed to apply leave. Please try again.");
-      console.error("Apply leave error:", error);
+    } catch (errorMessage) {
+      setMessage(errorMessage || "Failed to apply leave. Please try again.");
     }
   };
 
@@ -72,7 +77,7 @@ const ApplyLeave = () => {
           </button>
         </form>
 
-        {message && <p className="message">{message}</p>}
+        {message && <p className="app-message">{message}</p>}
       </div>
     </div>
   );

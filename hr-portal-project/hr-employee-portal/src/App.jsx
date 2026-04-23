@@ -9,23 +9,38 @@ import EmployeeView from "./components/EmployeeView"
 import ApplyLeave from "./components/ApplyLeave"
 import ViewAllLeaveInfo from "./components/ViewAllLeaveInfo"
 import ViewLeaveStatus from "./components/ViewLeaveStatus"
+import ProtectedRoute from "./components/ProtectedRoute"
+import HRWelcome from "./components/HRWelcome"
+import EmployeeWelcome from "./components/EmployeeWelcome"
 
 function App() {
   return (
+    // Top-level route map for public and protected application areas.
     <Routes>
-        <Route path="" element={<Login/>}/> 
-        <Route path="signUp" element={<SignUp/>}/> 
+        {/* Public routes: authentication and account onboarding. */}
+        <Route path="/" element={<Login/>}/> 
+        <Route path="/signUp" element={<SignUp/>}/> 
 
-        <Route path="hrHome" element={<HRDashboard/>}>
-          <Route path="addEmployee" element={<AddEmployee/>}></Route>
-          <Route path="viewEmployees" element={<ViewAllEmployees/>}></Route>
-          <Route path="viewAllLeaveInfo" element={<ViewAllLeaveInfo/>}></Route>
+        {/* HR-only route tree guarded by role-based protection. */}
+        <Route element={<ProtectedRoute requiredUserType="hr" />}>
+          <Route path="/hrHome" element={<HRDashboard/>}>
+            {/* Index route shows welcome message when no sub-route is active. */}
+            <Route index element={<HRWelcome/>} />
+            <Route path="addEmployee" element={<AddEmployee/>}></Route>
+            <Route path="viewEmployees" element={<ViewAllEmployees/>}></Route>
+            <Route path="viewAllLeaveInfo" element={<ViewAllLeaveInfo/>}></Route>
+          </Route>
         </Route>
  
-        <Route path="employeeHome" element={<EmployeeDashboard/>}>
-          <Route path="viewEmployee" element={<EmployeeView/>}></Route>
-          <Route path="applyLeave" element={<ApplyLeave/>}></Route>
-          <Route path="viewLeaveStatus" element={<ViewLeaveStatus/>}></Route>
+        {/* Employee-only route tree guarded by role-based protection. */}
+        <Route element={<ProtectedRoute requiredUserType="employee" />}>
+          <Route path="/employeeHome" element={<EmployeeDashboard/>}>
+            {/* Index route shows welcome message when no sub-route is active. */}
+            <Route index element={<EmployeeWelcome/>} />
+            <Route path="viewEmployee" element={<EmployeeView/>}></Route>
+            <Route path="applyLeave" element={<ApplyLeave/>}></Route>
+            <Route path="viewLeaveStatus" element={<ViewLeaveStatus/>}></Route>
+          </Route>
         </Route>
 
       </Routes>

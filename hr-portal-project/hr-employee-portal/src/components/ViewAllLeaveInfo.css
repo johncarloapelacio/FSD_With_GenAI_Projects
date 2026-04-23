@@ -77,14 +77,6 @@
     background: #d70000;
 }
 
-/* Message */
-.message {
-    margin-top: 15px;
-    text-align: center;
-    font-weight: bold;
-    color: #536200;
-}
-
 /* No Data */
 .no-data {
     text-align: center;

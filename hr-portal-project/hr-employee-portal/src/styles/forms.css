@@ -143,37 +143,6 @@
     background: #024f00;
 }
 
-/* Message Styling */
-.message,
-.error-msg,
-.success-msg {
-    margin-top: 16px;
-    padding: 12px;
-    border-radius: 1rem;
-    text-align: center;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-.error-msg {
-    background-color: #f2dee1;
-    color: #b91b1b;
-    border: 1px solid #e24643;
-}
-
-.success-msg {
-    background-color: #dbe8dc;
-    color: #0e5113;
-    border: 1px solid #74ba77;
-}
-
-.message {
-    color: #c62222;
-    background-color: #f2dee1;
-    border: 1px solid #e24643;
-}
-
 /* Form Text - Secondary Links */
 .form-text,
 .signin-link,

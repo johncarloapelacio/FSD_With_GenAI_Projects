@@ -20,6 +20,7 @@
     background: #5e5c5c;
     border: none;
     padding: 8px 15px;
+    font-size: calc(1.05em * 0.97);
     color: white;
     border-radius: 1rem;
     cursor: pointer;
@@ -53,4 +54,80 @@
 /* Content Area */
 .dashboard-content {
     padding: 20px;
+}
+
+/* HR Welcome Screen */
+.hr-welcome-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+}
+
+.hr-welcome-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    padding: 40px 48px;
+    max-width: 560px;
+    width: 100%;
+    text-align: center;
+}
+
+.hr-welcome-icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+}
+
+.hr-welcome-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 8px;
+}
+
+.hr-welcome-email {
+    font-size: 0.9rem;
+    color: #888;
+    margin: 0 0 16px;
+}
+
+.hr-welcome-subtitle {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 28px;
+}
+
+.hr-welcome-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+}
+
+.hr-welcome-action-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #f5f3ff;
+    border-left: 4px solid #cb96cb;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    color: #444;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.hr-welcome-action-item:hover {
+    background: #ede9ff;
+    border-left-color: #a060a0;
+    color: #222;
+}
+
+.hr-welcome-action-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
 }

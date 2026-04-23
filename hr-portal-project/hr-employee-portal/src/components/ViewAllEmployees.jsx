@@ -1,26 +1,24 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { API_ENDPOINTS } from "../config/api";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchEmployees,
+  selectAllEmployees,
+  selectEmployeesState,
+} from "../store/slices/employeesSlice";
 import "./ViewAllEmployees.css";
 
 const ViewAllEmployees = () => {
-  const [employees, setEmployees] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Pulls employee list and request status from centralized Redux state.
+  const dispatch = useDispatch();
+  const employees = useSelector(selectAllEmployees);
+  const { status } = useSelector(selectEmployeesState);
 
+  // Fetch employees once when entering this screen.
   useEffect(() => {
-    loadEmployees();
-  }, []);
-
-  const loadEmployees = async () => {
-    try {
-      const { data } = await axios.get(API_ENDPOINTS.EMPLOYEES);
-      setEmployees(data);
-    } catch (error) {
-      console.error("Load employees error:", error);
-    } finally {
-      setLoading(false);
+    if (status === "idle") {
+      dispatch(fetchEmployees());
     }
-  };
+  }, [dispatch, status]);
 
   return (
     <div className="table-container">
@@ -46,7 +44,7 @@ const ViewAllEmployees = () => {
             ) : (
               <tr>
                 <td colSpan="2" className="no-data">
-                  {loading ? "Loading..." : "No employees found"}
+                  {status === "loading" ? "Loading..." : "No employees found"}
                 </td>
               </tr>
             )}

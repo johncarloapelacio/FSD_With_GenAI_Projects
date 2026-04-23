@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { apiUrl } from '../api';
 import './Pages.css';
 
+// Login screen with client-side validation and backend authentication request.
 function Login() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ function Login() {
   const [apiError, setApiError] = useState(null);
 
   const validateForm = () => {
+    // Validate required credentials before making API request.
     const newErrors = {};
 
     // Email validation
@@ -34,6 +36,7 @@ function Login() {
   };
 
   const handleChange = (e) => {
+    // Update controlled form values and clear field-level errors.
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -50,6 +53,7 @@ function Login() {
   };
 
   const handleSubmit = async (e) => {
+    // Submit credentials, persist session on success, and redirect.
     e.preventDefault();
     const newErrors = validateForm();
 

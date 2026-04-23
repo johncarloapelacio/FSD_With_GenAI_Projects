@@ -20,6 +20,7 @@
     background: #5e5c5c;
     border: none;
     padding: 8px 15px;
+    font-size: calc(1.05em * 0.97);
     color: white;
     border-radius: 1rem;
     cursor: pointer;
@@ -60,4 +61,75 @@
 /* Content Area */
 .emp-content {
     padding: 20px;
+}
+
+/* Employee Welcome Screen */
+.emp-welcome-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+}
+
+.emp-welcome-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    padding: 40px 48px;
+    max-width: 560px;
+    width: 100%;
+    text-align: center;
+}
+
+.emp-welcome-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 8px;
+}
+
+.emp-welcome-email {
+    font-size: 0.9rem;
+    color: #888;
+    margin: 0 0 16px;
+}
+
+.emp-welcome-subtitle {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 28px;
+}
+
+.emp-welcome-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+}
+
+.emp-welcome-action-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff8e1;
+    border-left: 4px solid #d9a516;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    color: #444;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.emp-welcome-action-item:hover {
+    background: #fff0b3;
+    border-left-color: #b07f00;
+    color: #222;
+}
+
+.emp-welcome-action-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
 }

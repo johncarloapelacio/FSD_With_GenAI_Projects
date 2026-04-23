@@ -1,114 +1,137 @@
+// Authentication storage keys and validation rules shared by register and sign-in flows.
+const STORAGE_KEYS = {
+    accounts: "accounts",
+    activeAccount: "activeAccount",
+    dashboardAccess: "dashKey"
+};
 
+const MIN_PASSWORD_LENGTH = 5;
+const EMAIL_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/i;
 
-//This JS file is conceptually divided into two sections: Registration and Sign In Validation.
-// It is uses localStorage to store mutiple valid credentials (username and password)
+// Local storage helpers keep reads and writes consistent across both pages.
+function getStoredAccounts() {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.accounts) || "[]");
+}
 
+function saveStoredAccounts(accounts) {
+    localStorage.setItem(STORAGE_KEYS.accounts, JSON.stringify(accounts));
+}
 
-//REGITRATION PAGE CODE//
+// Shared field validation prevents duplicated branching in the form handlers.
+function validateCredentials(email, password) {
+    if (!email) {
+        return "Email required";
+    }
 
-//function to return to sign in page
-function signinPage(){
+    if (!EMAIL_PATTERN.test(email)) {
+        return "Please enter an email with the required pattern\nThe special characters % . + _ - are allowed only before the @ symbol\nExample: ab%12.Cd+23_Ef-45@gh67.IJkl";
+    }
+
+    if (!password) {
+        return "Password required";
+    }
+
+    if (password.length < MIN_PASSWORD_LENGTH) {
+        return `Password must be at least ${MIN_PASSWORD_LENGTH} characters long`;
+    }
+
+    return "";
+}
+
+// Page navigation helpers remain available to the current button markup.
+function signinPage() {
     window.location.href = "signin.html";
 }
 
-//pushes new valid credentials object into users array if userEmail isn't already in it, and then stores users array in localStorage
-function register(event){ 
-    //immediately prevent default form submission
-    event.preventDefault();
-    
-    //Sets users equal to array of accounts stored in localStorage; if localStorage is empty, declare users as empty array
-    let users = JSON.parse(localStorage.getItem("accounts") || "[]");
-
-    //set form submission tracker
-    let isValid = false;
-
-    //get form Id for custom validation submission
-    const form = document.getElementById("registerForm");
-
-    let userEmail = document.getElementById("newEmailId").value.trim();
-    let userPassword = document.getElementById("newPasswordId").value.trim();
-
-    //set common email pattern
-    let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/i
-
-    if (userEmail.length == 0){ //check if user left email field blank
-        alert("Email required")
-    }else if (!emailPattern.test(userEmail)){ //check if user email input matches required pattern
-        alert("Please enter an email with the required pattern\nThe special characters % . + _ -  are allowed only before @ symbol\nExample: ab%12.Cd+23_Ef-45@gh67.IJkl")
-    }else if(userPassword.length == 0){ //check if user left password field blank
-        alert("Password required")
-    }else if(userPassword.length < 5){ //check if user password input is at least 5 characters long
-        alert("Password must be at least 5 characters long")
-    }else{
-        users.forEach(credentials =>{
-            if(userEmail == credentials.un){ // search if email already exists in users array
-                isValid = true; //If a match is found, set form submission tracker to true
-            }})
-
-            if (isValid){ //Tell the user that account already exists, and to please sign in. Then...
-                alert("Account already exists. Please sign in.\nForgot your password? Sorry, buddy... Just create another account! :D");
-                form.submit(); //send them back to the sign in page!
-            }else{
-        users.push({un: userEmail, pw: userPassword}); // pushes newly created credentials into users array
-        localStorage.setItem("accounts", JSON.stringify(users)); //stores updated users array data into localStorage
-        alert("Account created!")
-        form.submit();
-    }
-    }
-}
-
-
-//SIGN IN PAGE CODE//
-
-//function to return to sign in page
-function registerPage(){
+function registerPage() {
     window.location.href = "register.html";
 }
 
-function validation(event) {
-    //immediately prevent default form submission
+// Registration flow rejects duplicates and stores only normalized credentials.
+function register(event) {
     event.preventDefault();
 
-    //retrieves array of accounts from localStorage and assigns it to users; if localStorage is empty, it assigns an empty array to users
-    let users = JSON.parse(localStorage.getItem("accounts") || "[]");
+    const form = document.getElementById("registerForm");
+    const email = document.getElementById("newEmailId").value.trim();
+    const password = document.getElementById("newPasswordId").value.trim();
+    const validationMessage = validateCredentials(email, password);
 
-    //set form submission tracker
-    let isValid = false;
-
-    //Get from Id for custom validation submission
-    const form = document.getElementById("signinForm");
-    
-    let email = document.getElementById("emailId").value.trim();
-    let password = document.getElementById("pwId").value.trim();
-
-    //set common email pattern
-    let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/i
-
-    if (email.length == 0){ //check if user left email field blank
-        alert("Email required")
-    }else if (!emailPattern.test(email)){ //check if user email input matches required pattern
-        alert("Please enter an email with the required pattern\nThe special characters % . + _ -  are allowed only before @ symbol\nExample: ab%12.Cd+23_Ef-45@gh67.IJkl")
-    }else if(password.length == 0){ //check if user left password field blank
-        alert("Password required")
-    }else if(password.length < 5){ //check if user password input is at least 5 characters long
-        alert("Password must be at least 5 characters long")
-    }else{
-        users.forEach(credentials => { //check if user email and password input matches any credentials in array users
-        if(email == credentials.un && password == credentials.pw){
-            isValid = true; //if match is found, set form submission tracker to true
-        }})
-
-        if(isValid){ //if form submission tracker is true...
-            if (localStorage.getItem("activeAccount")){ //Prevent sign in if there is already an account signed in
-                alert("There's already an account signed in. Please sign out of current account before signing in.");
-            }else{
-            alert("Welcome!"); //Welcome user...
-            localStorage.setItem("dashKey", true); //Provides a one-instance access to dashboard
-            localStorage.setItem("activeAccount", email); //Stores current user's email in localStorage for access on dashboard.html
-            form.submit(); //and submit form
-            }
-        }else{
-            alert("Invalid credentials"); // else alert the user of invalid credentials entered
-        }
-        }
+    if (validationMessage) {
+        alert(validationMessage);
+        return;
     }
+
+    const accounts = getStoredAccounts();
+    const accountExists = accounts.some((credentials) => credentials.un === email);
+
+    if (accountExists) {
+        alert("Account already exists. Please sign in.");
+        form.reset();
+        signinPage();
+        return;
+    }
+
+    accounts.push({ un: email, pw: password });
+    saveStoredAccounts(accounts);
+    alert("Account created!");
+    form.reset();
+    signinPage();
+}
+
+// Sign-in flow validates the active session before granting one dashboard entry.
+function validation(event) {
+    event.preventDefault();
+
+    const form = document.getElementById("signinForm");
+    const email = document.getElementById("emailId").value.trim();
+    const password = document.getElementById("pwId").value.trim();
+    const validationMessage = validateCredentials(email, password);
+
+    if (validationMessage) {
+        alert(validationMessage);
+        return;
+    }
+
+    const accounts = getStoredAccounts();
+    const matchingAccount = accounts.find((credentials) => credentials.un === email && credentials.pw === password);
+
+    if (!matchingAccount) {
+        alert("Invalid credentials");
+        return;
+    }
+
+    if (localStorage.getItem(STORAGE_KEYS.activeAccount)) {
+        alert("There's already an account signed in. Please sign out of the current account before signing in.");
+        return;
+    }
+
+    localStorage.setItem(STORAGE_KEYS.dashboardAccess, "true");
+    localStorage.setItem(STORAGE_KEYS.activeAccount, email);
+    form.reset();
+    alert("Welcome!");
+    window.location.href = "dashboard.html";
+}
+
+// Page-specific event wiring removes reliance on inline form submission behavior.
+document.addEventListener("DOMContentLoaded", () => {
+    const registerForm = document.getElementById("registerForm");
+    const signinForm = document.getElementById("signinForm");
+    const loginPageButton = document.getElementById("loginPageBtn");
+    const registerPageButton = document.getElementById("registerBtn");
+
+    if (registerForm) {
+        registerForm.addEventListener("submit", register);
+    }
+
+    if (signinForm) {
+        signinForm.addEventListener("submit", validation);
+    }
+
+    if (loginPageButton) {
+        loginPageButton.addEventListener("click", signinPage);
+    }
+
+    if (registerPageButton) {
+        registerPageButton.addEventListener("click", registerPage);
+    }
+});

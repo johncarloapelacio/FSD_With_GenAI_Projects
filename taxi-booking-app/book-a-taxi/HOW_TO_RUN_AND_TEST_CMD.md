@@ -2,6 +2,14 @@
 
 This guide is for anyone cloning your GitHub repository and running the project from Command Prompt (CMD) on Windows.
 
+## Important Disclaimer
+
+This application is a dummy/demo environment for learning and testing.
+- No real-world ride bookings are performed.
+- No real financial transactions or payment processing occur.
+- No real customer service operations are provided.
+- Use only test/demo data.
+
 ## 1. Prerequisites
 
 Install the following first:

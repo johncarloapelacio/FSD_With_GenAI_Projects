@@ -1,28 +1,28 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { API_ENDPOINTS } from "../config/api";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { selectLoggedInEmail } from "../store/slices/authSlice";
+import {
+  fetchLeaveRequests,
+  selectLeaveByEmail,
+  selectLeaveState,
+} from "../store/slices/leaveSlice";
 import "./ViewLeaveStatus.css";
 
 const ViewLeaveStatus = () => {
-  const [leaveRequests, setLeaveRequests] = useState([]);
+  // Derives logged-in employee leave history from Redux state.
+  const dispatch = useDispatch();
+  const email = useSelector(selectLoggedInEmail);
+  const { status } = useSelector(selectLeaveState);
+  const leaveRequests = useSelector((state) => selectLeaveByEmail(state, email));
 
+  // Fetches leave data once so status table has current records.
   useEffect(() => {
-    loadLeaveStatus();
-  }, []);
-
-  const loadLeaveStatus = async () => {
-    try {
-      const email = sessionStorage.getItem("userEmail");
-      if (!email) return;
-
-      const { data } = await axios.get(API_ENDPOINTS.LEAVE);
-      const userLeaves = data.filter(req => req.emailId === email);
-      setLeaveRequests(userLeaves);
-    } catch (error) {
-      console.error("Load leave status error:", error);
+    if (status === "idle") {
+      dispatch(fetchLeaveRequests());
     }
-  };
+  }, [dispatch, status]);
 
+  // Maps domain status values to corresponding CSS classes.
   const getStatusClass = (status) => {
     const statusClasses = {
       "Approved": "status approved",
@@ -49,7 +49,7 @@ const ViewLeaveStatus = () => {
           <tbody>
             {leaveRequests.length > 0 ? (
               leaveRequests.map(request => (
-                <tr key={request.id}>
+                <tr key={request.id} className="leave-status-row">
                   <td>{request.reason}</td>
                   <td>{request.numberOfDays}</td>
                   <td>
@@ -62,7 +62,7 @@ const ViewLeaveStatus = () => {
             ) : (
               <tr>
                 <td colSpan="3" className="no-data">
-                  No leave records found
+                  {status === "loading" ? "Loading..." : "No leave records found"}
                 </td>
               </tr>
             )}

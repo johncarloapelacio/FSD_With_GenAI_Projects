@@ -1,5 +1,6 @@
 import './Pages.css';
 
+// Static informational page describing product story, values, and highlights.
 function About() {
   return (
     <div className="container about-main">

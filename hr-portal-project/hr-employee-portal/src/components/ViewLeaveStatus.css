@@ -45,8 +45,8 @@
 }
 
 /* Hover */
-.leave-status-table tbody tr:hover {
-    background: #f7fafc;
+.leave-status-row:hover {
+    background: transparent;
 }
 
 /* Status Badges */
@@ -63,7 +63,7 @@
 }
 
 .status.approved {
-    background: #f2d026;
+    background: #d9a516;
 }
 
 .status.denied {

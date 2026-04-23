@@ -1,7 +1,10 @@
-import axios from "axios";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { API_ENDPOINTS } from "../config/api";
+import {
+  completeEmployeeSignup,
+  verifyEmployeeEmail,
+} from "../store/slices/employeesSlice";
 import "./SignUp.css";
 
 const initialFormState = {
@@ -15,15 +18,21 @@ const initialFormState = {
 };
 
 const SignUp = () => {
+  // Hook setup for dispatching signup flow actions.
+  const dispatch = useDispatch();
+
+  // Form state tracks both verification and completion steps.
   const [form, setForm] = useState(initialFormState);
   const [isVerificationStep, setIsVerificationStep] = useState(true);
   const [message, setMessage] = useState("");
 
+  // Generic input handler for both signup steps.
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
+  // Step 1: verifies that the entered email belongs to an eligible employee.
   const handleVerifyEmail = async (event) => {
     event.preventDefault();
     setMessage("");
@@ -34,32 +43,20 @@ const SignUp = () => {
     }
 
     try {
-      const { data } = await axios.get(API_ENDPOINTS.EMPLOYEES);
-      const employee = data.find(emp => emp.emailId === form.email);
-
-      if (!employee) {
-        setMessage("You are not part of the organization");
-        return;
-      }
-
-      if (employee.signedUp) {
-        setMessage("You are already signed up");
-        return;
-      }
-
-      setForm(prev => ({
+      const payload = await dispatch(verifyEmployeeEmail(form.email)).unwrap();
+      setForm((prev) => ({
         ...prev,
-        employeeId: employee.id,
-        department: employee.department,
-        email: employee.emailId,
+        employeeId: payload.employeeId,
+        department: payload.department,
+        email: payload.email,
       }));
       setIsVerificationStep(false);
-    } catch (error) {
-      setMessage("Verification failed. Please try again.");
-      console.error("Verification error:", error);
+    } catch (errorMessage) {
+      setMessage(errorMessage || "Verification failed. Please try again.");
     }
   };
 
+  // Step 2: submits signup details and finalizes employee account creation.
   const handleSignUp = async (event) => {
     event.preventDefault();
     setMessage("");
@@ -70,31 +67,13 @@ const SignUp = () => {
     }
 
     try {
-      const employeeData = {
-        fname: form.firstName,
-        lname: form.lastName,
-        emailId: form.email,
-        password: form.password,
-        department: form.department,
-        age: form.age,
-        signedUp: true,
-      };
-
-      const loginData = {
-        emailId: form.email,
-        password: form.password,
-        typeOfUser: "employee",
-      };
-
-      await axios.patch(`${API_ENDPOINTS.EMPLOYEES}/${form.employeeId}`, employeeData);
-      await axios.post(API_ENDPOINTS.CREDENTIALS, loginData);
+      await dispatch(completeEmployeeSignup(form)).unwrap();
 
       setMessage("Sign Up successful");
       setForm(initialFormState);
       setIsVerificationStep(true);
-    } catch (error) {
-      setMessage("Sign up failed. Please try again.");
-      console.error("Sign up error:", error);
+    } catch (errorMessage) {
+      setMessage(errorMessage || "Sign up failed. Please try again.");
     }
   };
 
@@ -182,7 +161,7 @@ const SignUp = () => {
           </form>
         )}
 
-        {message && <p className="message">{message}</p>}
+        {message && <p className="app-message">{message}</p>}
 
         <p className="signin-link">
           Already have an account? <Link to="/">Sign In</Link>

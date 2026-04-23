@@ -2,9 +2,11 @@ import { useMemo, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Pages.css';
 
+// Primary booking form page with flexible date/time parsing and draft restore.
 function Home() {
   const navigate = useNavigate();
   const location = useLocation();
+  // Restore a pending draft after auth redirects so users do not lose form input.
   const initialDraft = useMemo(() => {
     const draft = sessionStorage.getItem('pendingBookingDraft');
     if (!draft) {
@@ -212,6 +214,7 @@ function Home() {
   };
 
   const formatTimeForDisplay = (timeString) => {
+    // Convert 24-hour HH:MM values into user-friendly 12-hour text.
     if (!timeString) return '';
 
     const [hoursString, minutesString] = timeString.split(':');
@@ -228,6 +231,7 @@ function Home() {
   };
 
   const handleChange = (e) => {
+    // Update form state and normalize free-form date/time input.
     const { name, value } = e.target;
 
     if (name === 'pickupDate') {
@@ -293,6 +297,7 @@ function Home() {
   };
 
   const validateForm = () => {
+    // Validate booking fields before moving to driver selection.
     const newErrors = {};
 
     if (!bookingData.pickupLocation.trim()) {
@@ -343,6 +348,7 @@ function Home() {
   };
 
   const handleSubmit = (e) => {
+    // Redirect unauthenticated users to login and preserve draft; otherwise continue flow.
     e.preventDefault();
 
     // If user is not logged in, redirect immediately before validating booking fields.

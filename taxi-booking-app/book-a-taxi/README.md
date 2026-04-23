@@ -2,6 +2,13 @@
 
 Book a Taxi is a React + Vite frontend with an Express backend and JSON file storage.
 
+## Important Disclaimer
+- This project is a demo/dummy site for development and testing only.
+- It does not provide real-world ride bookings.
+- It does not process real financial transactions or payments.
+- It does not provide real customer service operations.
+- Do not use this project in production as-is.
+
 ## Tech Stack
 - Frontend: React, React Router, Vite
 - Backend: Node.js, Express

@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom';
 
+// Guard component that blocks access when no authenticated user is stored.
 function ProtectedRoute({ children }) {
   const location = useLocation();
   let user = null;
@@ -15,7 +16,7 @@ function ProtectedRoute({ children }) {
   }
 
   if (!user) {
-    // Redirect to login page with return url
+    // Preserve source route so the app can return after authentication.
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

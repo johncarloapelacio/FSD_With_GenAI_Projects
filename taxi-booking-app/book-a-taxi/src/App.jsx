@@ -13,11 +13,13 @@ import Navigation from './components/Navigation';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
+// Root app shell with route table for public and protected pages.
 function App() {
   return (
     <Router>
       <Navigation />
       <main className="app-main">
+        {/* Application route configuration */}
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
@@ -28,8 +30,10 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<Contact />} />
+          {/* Authenticated-only routes */}
           <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
           <Route path="/my-bookings" element={<ProtectedRoute><MyBookings /></ProtectedRoute>} />
+          {/* Catch-all fallback */}
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </main>

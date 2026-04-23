@@ -3,6 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { apiUrl } from '../api';
 import './Pages.css';
 
+// Registration screen with validation and post-signup route restoration.
 function SignUp() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,6 +20,7 @@ function SignUp() {
   const [apiError, setApiError] = useState(null);
 
   const validateForm = () => {
+    // Validate signup fields before creating account.
     const newErrors = {};
 
     // First name validation
@@ -70,6 +72,7 @@ function SignUp() {
   };
 
   const handleChange = (e) => {
+    // Keep form controlled while clearing stale errors/messages.
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -86,6 +89,7 @@ function SignUp() {
   };
 
   const handleSubmit = async (e) => {
+    // Create account in backend, then store session and redirect.
     e.preventDefault();
     const newErrors = validateForm();
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './Pages.css';
 
+// Contact form with client-side validation and demo submission feedback.
 function Contact() {
   const [formData, setFormData] = useState({
     name: '',
@@ -14,20 +15,46 @@ function Contact() {
   const [errors, setErrors] = useState({});
 
   const validateEmail = (email) => {
+    // Basic RFC-style email shape validation.
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   };
 
+  const formatPhoneNumber = (input) => {
+    // Normalize user input to (###) ###-#### for consistent storage/display.
+    const digitsOnly = input.replace(/\D/g, '');
+
+    // Accept common US-style entries like "+1 555..." by trimming a leading country code.
+    const normalizedDigits =
+      digitsOnly.length === 11 && digitsOnly.startsWith('1')
+        ? digitsOnly.slice(1)
+        : digitsOnly;
+
+    const limitedDigits = normalizedDigits.slice(0, 10);
+    const len = limitedDigits.length;
+
+    if (len === 0) return '';
+    if (len < 4) return `(${limitedDigits}`;
+    if (len < 7) return `(${limitedDigits.slice(0, 3)}) ${limitedDigits.slice(3)}`;
+    return `(${limitedDigits.slice(0, 3)}) ${limitedDigits.slice(3, 6)}-${limitedDigits.slice(6)}`;
+  };
+
   const validatePhone = (phone) => {
-    const re = /^[\d\s+()-]+$/;
-    return re.test(phone) && phone.replace(/\D/g, '').length >= 10;
+    // Require complete formatted US-style 10-digit number.
+    const formattedPhone = formatPhoneNumber(phone);
+    const re = /^\(\d{3}\) \d{3}-\d{4}$/;
+    return re.test(formattedPhone);
   };
 
   const handleChange = (e) => {
+    // Keep form fields controlled and apply phone formatting on input.
     const { name, value } = e.target;
+
+    const nextValue = name === 'phone' ? formatPhoneNumber(value) : value;
+
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: nextValue,
     }));
     // Clear error for this field when user starts typing
     if (errors[name]) {
@@ -39,6 +66,7 @@ function Contact() {
   };
 
   const handleSubmit = (e) => {
+    // Validate all fields, then show a simulated success response.
     e.preventDefault();
     const newErrors = {};
 
@@ -191,7 +219,7 @@ function Contact() {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                placeholder="+1 (555) 123-4567"
+                placeholder="(555) 123-4567"
                 className={errors.phone ? 'input-error' : ''}
               />
               {errors.phone && <span className="error-message">{errors.phone}</span>}

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { apiUrl } from '../api';
 import './Pages.css';
 
+// Driver selection page that finalizes a user's choice before confirmation.
 function Drivers() {
   const navigate = useNavigate();
   const [bookingData] = useState(() => {
@@ -22,7 +23,7 @@ function Drivers() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Function to randomly select 4 drivers from an array
+  // Randomize and map backend driver records into UI display cards.
   const getRandomDrivers = (drivers) => {
     const shuffled = [...drivers].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, 4).map((driver, index) => ({
@@ -38,7 +39,7 @@ function Drivers() {
     }));
   };
 
-  // Fetch drivers from backend and randomly select 4
+  // Load drivers from backend when the page mounts.
   useEffect(() => {
     const fetchDrivers = async () => {
       try {
@@ -62,10 +63,12 @@ function Drivers() {
   }, []);
 
   const handleSelectDriver = (driver) => {
+    // Store currently selected driver ID.
     setSelectedDriver(driver.id);
   };
 
   const handleConfirmBooking = () => {
+    // Persist selected driver with booking draft and navigate to confirmation page.
     if (!selectedDriver) {
       alert('Please select a driver');
       return;
@@ -89,6 +92,7 @@ function Drivers() {
   };
 
   const handleBackHome = () => {
+    // Return to booking form.
     navigate('/home');
   };
 

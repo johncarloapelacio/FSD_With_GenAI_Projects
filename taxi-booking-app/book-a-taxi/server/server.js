@@ -6,14 +6,14 @@ const path = require('path');
 const app = express();
 const PORT = 3001;
 
-// Middleware
+// Core middleware for CORS and JSON body parsing.
 app.use(cors());
 app.use(express.json());
 
-// Database file path
+// Flat-file datastore path used for demo persistence.
 const DB_PATH = path.join(__dirname, 'database.json');
 
-// Helper functions for database operations
+// Read full database snapshot from local JSON file.
 const readDatabase = () => {
   try {
     const data = fs.readFileSync(DB_PATH, 'utf8');
@@ -24,6 +24,7 @@ const readDatabase = () => {
   }
 };
 
+// Persist full database snapshot back to local JSON file.
 const writeDatabase = (data) => {
   try {
     fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
@@ -32,7 +33,7 @@ const writeDatabase = (data) => {
   }
 };
 
-// Authentication endpoints
+// Authentication endpoints.
 app.post('/api/auth/signup', (req, res) => {
   const { firstName, lastName, email, password, age } = req.body;
 
@@ -187,7 +188,7 @@ app.delete('/api/auth/account', (req, res) => {
   res.json({ message: 'Account deleted successfully' });
 });
 
-// Booking endpoints
+// Booking CRUD endpoints.
 app.get('/api/bookings', (req, res) => {
   const db = readDatabase();
   res.json(db.bookings);
@@ -265,7 +266,7 @@ app.delete('/api/bookings/:id', (req, res) => {
   res.json({ message: 'Booking deleted successfully' });
 });
 
-// Services and drivers endpoints
+// Services and drivers reference endpoints.
 app.get('/api/services', (req, res) => {
   const db = readDatabase();
   res.json(db.services);
@@ -276,7 +277,7 @@ app.get('/api/drivers', (req, res) => {
   res.json(db.drivers);
 });
 
-// Start server
+// Start HTTP server and print available route summary.
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   console.log('Available endpoints:');

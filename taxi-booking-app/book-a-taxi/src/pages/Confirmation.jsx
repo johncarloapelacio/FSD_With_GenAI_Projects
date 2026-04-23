@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { apiUrl } from '../api';
 import './Pages.css';
 
+// Booking confirmation page that submits selected ride details to backend.
 function Confirmation() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -13,6 +14,7 @@ function Confirmation() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
+    // Restore authenticated user and booking payload from navigation/session state.
     // Check if user is authenticated (but don't redirect)
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -45,6 +47,7 @@ function Confirmation() {
   }, [navigate, location.state]);
 
   const handleConfirmBooking = async () => {
+    // Build backend payload and create booking record.
     if (!bookingData) return;
 
     // Check if user is authenticated
@@ -102,7 +105,7 @@ function Confirmation() {
   };
 
   const handleEditBooking = () => {
-    // Go back to home page with current booking data
+    // Return to booking form with current values for editing.
     navigate('/home', { state: { bookingData } });
   };
 

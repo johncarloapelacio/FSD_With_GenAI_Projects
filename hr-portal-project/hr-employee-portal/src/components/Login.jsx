@@ -1,22 +1,43 @@
-import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { API_ENDPOINTS } from "../config/api";
+import {
+  clearAuthError,
+  loginUser,
+  selectAuth,
+  selectIsAuthenticated,
+} from "../store/slices/authSlice";
 import "./Login.css";
 
 const Login = () => {
+  // Local form state and transient validation message for login UX.
   const [form, setForm] = useState({ email: "", password: "", userType: "" });
   const [message, setMessage] = useState("");
+
+  // Redux and navigation hooks for auth flow orchestration.
+  const dispatch = useDispatch();
+  const { error, status, userType } = useSelector(selectAuth);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   const navigate = useNavigate();
+
+  // Redirect users to their role dashboard after successful authentication.
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+    navigate(userType === "hr" ? "/hrHome" : "/employeeHome");
+  }, [isAuthenticated, navigate, userType]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
+  // Validates form inputs and dispatches login thunk.
   const handleSignIn = async (event) => {
     event.preventDefault();
     setMessage("");
+    dispatch(clearAuthError());
 
     if (!form.email || !form.password || !form.userType) {
       setMessage("All fields are required");
@@ -24,29 +45,10 @@ const Login = () => {
     }
 
     try {
-      const { data } = await axios.get(API_ENDPOINTS.CREDENTIALS);
-      const user = data.find(record =>
-        record.emailId === form.email &&
-        record.password === form.password &&
-        record.typeOfUser === form.userType
-      );
-
-      if (!user) {
-        setMessage("Invalid Email / Password / User Type");
-        return;
-      }
-
-      if (form.userType === "hr") {
-        alert("HR login successful");
-        navigate("/hrHome");
-      } else {
-        sessionStorage.setItem("userEmail", form.email);
-        alert("Employee login successful");
-        navigate("/employeeHome");
-      }
-    } catch (error) {
-      setMessage("Login failed. Please try again.");
-      console.error("Login error:", error);
+      await dispatch(loginUser(form)).unwrap();
+      alert(form.userType === "hr" ? "HR login successful" : "Employee login successful");
+    } catch {
+      return;
     }
   };
 
@@ -103,14 +105,17 @@ const Login = () => {
             </div>
           </div>
 
-          <button type="submit" className="login-btn">Sign In</button>
+          <button type="submit" className="login-btn" disabled={status === "loading"}>
+            {status === "loading" ? "Signing in..." : "Sign In"}
+          </button>
         </form>
 
         <p className="signup-text">
           Don't have an account? <Link to="signUp">Sign Up</Link>
         </p>
 
-        {message && <p className="error-msg">{message}</p>}
+        {message && <p className="app-message">{message}</p>}
+        {error && <p className="app-message">{error}</p>}
       </div>
     </div>
   );

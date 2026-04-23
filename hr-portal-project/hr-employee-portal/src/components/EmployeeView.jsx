@@ -1,27 +1,26 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { API_ENDPOINTS } from "../config/api";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchEmployees,
+  selectEmployeeByEmail,
+  selectEmployeesState,
+} from "../store/slices/employeesSlice";
+import { selectLoggedInEmail } from "../store/slices/authSlice";
 import "./EmployeeView.css";
 
 const EmployeeView = () => {
-  const [employeeProfile, setEmployeeProfile] = useState({});
+  // Resolves the logged-in employee profile from Redux state by email key.
+  const dispatch = useDispatch();
+  const email = useSelector(selectLoggedInEmail);
+  const { status } = useSelector(selectEmployeesState);
+  const employeeProfile = useSelector((state) => selectEmployeeByEmail(state, email)) || {};
 
+  // Ensures employee data is loaded before rendering profile fields.
   useEffect(() => {
-    loadEmployeeProfile();
-  }, []);
-
-  const loadEmployeeProfile = async () => {
-    try {
-      const email = sessionStorage.getItem("userEmail");
-      if (!email) return;
-
-      const { data } = await axios.get(API_ENDPOINTS.EMPLOYEES);
-      const employee = data.find(emp => emp.emailId === email);
-      setEmployeeProfile(employee || {});
-    } catch (error) {
-      console.error("Load employee profile error:", error);
+    if (status === "idle") {
+      dispatch(fetchEmployees());
     }
-  };
+  }, [dispatch, status]);
 
   return (
     <div className="profile-container">

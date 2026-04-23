@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './Navigation.css';
 
+// Top navigation with auth-aware links and responsive mobile menu behavior.
 function Navigation() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -9,6 +10,7 @@ function Navigation() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
+    // Keep local component auth state synchronized with localStorage.
     const syncUserFromStorage = () => {
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
@@ -34,6 +36,7 @@ function Navigation() {
   }, [location.pathname]);
 
   const handleLogout = () => {
+    // Clear local session and redirect to login.
     localStorage.removeItem('user');
     setUser(null);
     setMenuOpen(false);
@@ -41,10 +44,12 @@ function Navigation() {
   };
 
   const toggleMenu = () => {
+    // Toggle mobile navigation menu.
     setMenuOpen(!menuOpen);
   };
 
   const closeMenu = () => {
+    // Close mobile menu when navigation happens.
     setMenuOpen(false);
   };
 

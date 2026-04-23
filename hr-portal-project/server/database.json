@@ -11,6 +11,12 @@
       "emailId": "apelacio.john@gmail.com",
       "password": "12345",
       "typeOfUser": "employee"
+    },
+    {
+      "id": "7c62",
+      "emailId": "kingofssbu@gmail.com",
+      "password": "54321",
+      "typeOfUser": "employee"
     }
   ],
   "employeesInfo": [
@@ -33,6 +39,16 @@
       "password": "12345",
       "age": "37",
       "signedUp": true
+    },
+    {
+      "id": "d258",
+      "emailId": "kingofssbu@gmail.com",
+      "department": "Game Tester",
+      "fname": "Dupoy",
+      "lname": "Concepcion",
+      "password": "54321",
+      "age": "37",
+      "signedUp": true
     }
   ],
   "leaveInfo": [
@@ -49,7 +65,20 @@
       "reason": "Sick",
       "numberOfDays": "2",
       "status": "Approved"
+    },
+    {
+      "id": "3a92",
+      "emailId": "apelacio.john@gmail.com",
+      "reason": "Vacation",
+      "numberOfDays": "4",
+      "status": "Approved"
+    },
+    {
+      "id": "961b",
+      "emailId": "kingofssbu@gmail.com",
+      "reason": "Sharpen up Yoshi skills",
+      "numberOfDays": "11",
+      "status": "Denied"
     }
-  ],
-  "$schema": "./node_modules/json-server/schema.json"
+  ]
 }

@@ -2,12 +2,14 @@ import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Pages.css';
 
+// Service catalog page that pre-selects a service and routes user into booking flow.
 function Services() {
   const navigate = useNavigate();
   const redirectTimerRef = useRef(null);
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
 
+  // Static service options displayed as selectable cards.
   const services = [
     {
       id: 1,
@@ -76,6 +78,7 @@ function Services() {
   ];
 
   useEffect(() => {
+    // Clear pending redirect timer when component unmounts.
     return () => {
       if (redirectTimerRef.current) {
         clearTimeout(redirectTimerRef.current);
@@ -84,6 +87,7 @@ function Services() {
   }, []);
 
   const handleServiceBooking = (service) => {
+    // Debounce card interactions and redirect based on auth state.
     if (isRedirecting) {
       return;
     }
