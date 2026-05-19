@@ -35,6 +35,107 @@ function writeDatabase(data) {
   }
 }
 
+function findUserIndexById(users, userId) {
+  return (users || []).findIndex((u) => String(u.id) === String(userId));
+}
+
+function updateUserProfile(req, res, userId) {
+  const db = readDatabase();
+  const userIndex = findUserIndexById(db.users, userId);
+
+  if (userIndex === -1) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  const { firstName, lastName, age } = req.body;
+
+  db.users[userIndex] = {
+    ...db.users[userIndex],
+    firstName: firstName !== undefined ? firstName : db.users[userIndex].firstName,
+    lastName: lastName !== undefined ? lastName : db.users[userIndex].lastName,
+    age: age !== undefined ? age : db.users[userIndex].age,
+  };
+
+  if (writeDatabase(db)) {
+    return res.json({
+      success: true,
+      user: {
+        id: db.users[userIndex].id,
+        email: db.users[userIndex].email,
+        firstName: db.users[userIndex].firstName,
+        lastName: db.users[userIndex].lastName,
+        age: db.users[userIndex].age,
+      },
+    });
+  }
+
+  return res.status(500).json({ error: 'Failed to update profile' });
+}
+
+function changeUserPassword(req, res, userId) {
+  const db = readDatabase();
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ error: 'Current and new passwords are required' });
+  }
+
+  const userIndex = findUserIndexById(db.users, userId);
+
+  if (userIndex === -1) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  if (db.users[userIndex].password !== currentPassword) {
+    return res.status(401).json({ error: 'Current password is incorrect' });
+  }
+
+  db.users[userIndex].password = newPassword;
+
+  if (writeDatabase(db)) {
+    return res.json({
+      success: true,
+      message: 'Password changed successfully',
+    });
+  }
+
+  return res.status(500).json({ error: 'Failed to change password' });
+}
+
+function deleteUserAccount(req, res, userId) {
+  const db = readDatabase();
+  const password = req.body.password || req.body.currentPassword;
+
+  if (!password) {
+    return res.status(400).json({ error: 'Password is required for account deletion' });
+  }
+
+  const userIndex = findUserIndexById(db.users, userId);
+
+  if (userIndex === -1) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  if (db.users[userIndex].password !== password) {
+    return res.status(401).json({ error: 'Password is incorrect' });
+  }
+
+  const deletedUser = db.users.splice(userIndex, 1)[0];
+
+  if (writeDatabase(db)) {
+    return res.json({
+      success: true,
+      message: 'Account deleted successfully',
+      user: {
+        id: deletedUser.id,
+        email: deletedUser.email,
+      },
+    });
+  }
+
+  return res.status(500).json({ error: 'Failed to delete account' });
+}
+
 // Get all bookings
 app.get('/api/bookings', (req, res) => {
   const db = readDatabase();
@@ -184,6 +285,7 @@ app.post('/api/auth/signup', (req, res) => {
         email: newUser.email,
         firstName: newUser.firstName,
         lastName: newUser.lastName,
+        age: newUser.age,
       },
       message: 'Account created successfully',
     });
@@ -241,106 +343,41 @@ app.get('/api/auth/profile/:userId', (req, res) => {
 
 // Update user profile
 app.put('/api/auth/profile/:userId', (req, res) => {
-  const db = readDatabase();
-  const userIndex = (db.users || []).findIndex(u => u.id === req.params.userId);
+  return updateUserProfile(req, res, req.params.userId);
+});
 
-  if (userIndex === -1) {
-    return res.status(404).json({ error: 'User not found' });
+// Backward-compatible profile update endpoint for clients sending userId in request body.
+app.put('/api/auth/profile', (req, res) => {
+  if (!req.body.userId) {
+    return res.status(400).json({ error: 'userId is required' });
   }
-
-  const { firstName, lastName, age } = req.body;
-
-  db.users[userIndex] = {
-    ...db.users[userIndex],
-    firstName: firstName !== undefined ? firstName : db.users[userIndex].firstName,
-    lastName: lastName !== undefined ? lastName : db.users[userIndex].lastName,
-    age: age !== undefined ? age : db.users[userIndex].age,
-  };
-
-  if (writeDatabase(db)) {
-    res.json({
-      success: true,
-      user: {
-        id: db.users[userIndex].id,
-        email: db.users[userIndex].email,
-        firstName: db.users[userIndex].firstName,
-        lastName: db.users[userIndex].lastName,
-        age: db.users[userIndex].age,
-      },
-    });
-  } else {
-    res.status(500).json({ error: 'Failed to update profile' });
-  }
+  return updateUserProfile(req, res, req.body.userId);
 });
 
 // Change password
 app.put('/api/auth/change-password/:userId', (req, res) => {
-  const db = readDatabase();
-  const { currentPassword, newPassword } = req.body;
+  return changeUserPassword(req, res, req.params.userId);
+});
 
-  if (!currentPassword || !newPassword) {
-    return res.status(400).json({ error: 'Current and new passwords are required' });
+// Backward-compatible password endpoint used by existing clients.
+app.put('/api/auth/password', (req, res) => {
+  if (!req.body.userId) {
+    return res.status(400).json({ error: 'userId is required' });
   }
-
-  const userIndex = (db.users || []).findIndex(u => u.id === req.params.userId);
-
-  if (userIndex === -1) {
-    return res.status(404).json({ error: 'User not found' });
-  }
-
-  // Verify current password
-  if (db.users[userIndex].password !== currentPassword) {
-    return res.status(401).json({ error: 'Current password is incorrect' });
-  }
-
-  // Update password
-  db.users[userIndex].password = newPassword;
-
-  if (writeDatabase(db)) {
-    res.json({
-      success: true,
-      message: 'Password changed successfully',
-    });
-  } else {
-    res.status(500).json({ error: 'Failed to change password' });
-  }
+  return changeUserPassword(req, res, req.body.userId);
 });
 
 // Delete account
 app.delete('/api/auth/account/:userId', (req, res) => {
-  const db = readDatabase();
-  const { password } = req.body;
+  return deleteUserAccount(req, res, req.params.userId);
+});
 
-  if (!password) {
-    return res.status(400).json({ error: 'Password is required for account deletion' });
+// Backward-compatible delete endpoint for clients sending userId in request body.
+app.delete('/api/auth/account', (req, res) => {
+  if (!req.body.userId) {
+    return res.status(400).json({ error: 'userId is required' });
   }
-
-  const userIndex = (db.users || []).findIndex(u => u.id === req.params.userId);
-
-  if (userIndex === -1) {
-    return res.status(404).json({ error: 'User not found' });
-  }
-
-  // Verify password
-  if (db.users[userIndex].password !== password) {
-    return res.status(401).json({ error: 'Password is incorrect' });
-  }
-
-  // Delete user
-  const deletedUser = db.users.splice(userIndex, 1)[0];
-
-  if (writeDatabase(db)) {
-    res.json({
-      success: true,
-      message: 'Account deleted successfully',
-      user: {
-        id: deletedUser.id,
-        email: deletedUser.email,
-      },
-    });
-  } else {
-    res.status(500).json({ error: 'Failed to delete account' });
-  }
+  return deleteUserAccount(req, res, req.body.userId);
 });
 
 // Health check

@@ -55,6 +55,40 @@ function Account() {
     setLoading(false);
   }, [navigate, location]);
 
+  useEffect(() => {
+    // Fetch latest profile so account fields (including age) reflect backend state.
+    const fetchUserProfile = async () => {
+      if (!user?.id) return;
+
+      try {
+        const response = await fetch(apiUrl(`/auth/profile/${user.id}`));
+        if (!response.ok) return;
+
+        const profile = await response.json();
+        const updatedUser = {
+          id: profile.id,
+          email: profile.email,
+          firstName: profile.firstName,
+          lastName: profile.lastName,
+          age: profile.age,
+        };
+
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        setFormData((prev) => ({
+          ...prev,
+          firstName: profile.firstName || '',
+          lastName: profile.lastName || '',
+          age: profile.age !== null && profile.age !== undefined ? String(profile.age) : '',
+        }));
+      } catch (error) {
+        console.error('Error loading profile:', error);
+      }
+    };
+
+    fetchUserProfile();
+  }, [user?.id]);
+
   const validateProfileForm = () => {
     // Validate profile fields before sending update request.
     const newErrors = {};
@@ -229,13 +263,12 @@ function Account() {
 
     setLoading(true);
     try {
-      const response = await fetch(apiUrl('/auth/profile'), {
+      const response = await fetch(apiUrl(`/auth/profile/${user.id}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: user.id,
           firstName: formData.firstName,
           lastName: formData.lastName,
           age: parseInt(formData.age, 10),
@@ -276,13 +309,12 @@ function Account() {
 
     setLoading(true);
     try {
-      const response = await fetch(apiUrl('/auth/password'), {
+      const response = await fetch(apiUrl(`/auth/change-password/${user.id}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: user.id,
           currentPassword: formData.currentPassword,
           newPassword: formData.newPassword,
         }),
@@ -323,14 +355,13 @@ function Account() {
 
     setLoading(true);
     try {
-      const response = await fetch(apiUrl('/auth/account'), {
+      const response = await fetch(apiUrl(`/auth/account/${user.id}`), {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: user.id,
-          currentPassword: formData.deleteCurrentPassword,
+          password: formData.deleteCurrentPassword,
         }),
       });
 

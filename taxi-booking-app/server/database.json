@@ -4,9 +4,9 @@
       "id": 1,
       "name": "Economy",
       "description": "Budget-friendly rides for everyday commute",
-      "basePrice": 5.00,
-      "pricePerMile": 1.50,
-      "pricePerMinute": 0.30,
+      "basePrice": 5,
+      "pricePerMile": 1.5,
+      "pricePerMinute": 0.3,
       "icon": "🚗",
       "capacity": 4,
       "features": [
@@ -19,9 +19,9 @@
       "id": 2,
       "name": "Comfort",
       "description": "Mid-range comfortable rides with extra space",
-      "basePrice": 8.00,
-      "pricePerMile": 2.00,
-      "pricePerMinute": 0.40,
+      "basePrice": 8,
+      "pricePerMile": 2,
+      "pricePerMinute": 0.4,
       "icon": "🚙",
       "capacity": 5,
       "features": [
@@ -35,8 +35,8 @@
       "id": 3,
       "name": "Premium",
       "description": "Luxury rides for special occasions",
-      "basePrice": 15.00,
-      "pricePerMile": 3.50,
+      "basePrice": 15,
+      "pricePerMile": 3.5,
       "pricePerMinute": 0.65,
       "icon": "🚘",
       "capacity": 4,
@@ -52,9 +52,9 @@
       "id": 4,
       "name": "XL",
       "description": "Large vehicle perfect for groups",
-      "basePrice": 12.00,
-      "pricePerMile": 2.80,
-      "pricePerMinute": 0.50,
+      "basePrice": 12,
+      "pricePerMile": 2.8,
+      "pricePerMinute": 0.5,
       "icon": "🚐",
       "capacity": 6,
       "features": [
@@ -123,16 +123,72 @@
       "yearsExperience": 4
     }
   ],
-  "bookings": [],
+  "bookings": [
+    {
+      "id": "BOOKING_1779182477164",
+      "userId": "USER_1779182373685",
+      "pickupLocation": "location 1",
+      "dropoffLocation": "location 2",
+      "dateTime": "2026-05-20T14:00",
+      "passengers": "1",
+      "serviceType": "Comfort",
+      "typeOfService": "Comfort",
+      "price": 22.47,
+      "specialRequests": "AC on at 65 degrees please",
+      "status": "confirmed",
+      "timestamp": "2026-05-19T09:21:17.164Z"
+    },
+    {
+      "id": "BOOKING_1779182525343",
+      "userId": "USER_1779182373685",
+      "pickupLocation": "abc",
+      "dropoffLocation": "def",
+      "dateTime": "2026-05-25T12:00",
+      "passengers": "4",
+      "serviceType": "XL",
+      "typeOfService": "XL",
+      "price": 20.43,
+      "specialRequests": "",
+      "status": "confirmed",
+      "timestamp": "2026-05-19T09:22:05.343Z"
+    }
+  ],
   "users": [
     {
       "id": "USER_1712973600000",
       "email": "johncarlo.apelacio@gmail.com",
-      "password": "12345",
+      "password": "54321",
       "firstName": "John Carlo",
       "lastName": "Apelacio",
-      "age": null,
+      "age": 37,
       "createdAt": "2026-04-12T00:00:00.000Z"
+    },
+    {
+      "id": "USER_1779182032894",
+      "email": "sample@rider.com",
+      "password": "12345",
+      "firstName": "Sample",
+      "lastName": "Rider",
+      "age": null,
+      "createdAt": "2026-05-19T09:13:52.894Z"
+    },
+    {
+      "id": "USER_1779182249420",
+      "email": "rider@sample.com",
+      "password": "1234567",
+      "firstName": "Rider",
+      "lastName": "Sample",
+      "age": null,
+      "createdAt": "2026-05-19T09:17:29.420Z"
+    },
+    {
+      "id": "USER_1779182373685",
+      "email": "johnsample@rider.com",
+      "password": "12345",
+      "firstName": "John Sample",
+      "lastName": "Rider",
+      "age": null,
+      "createdAt": "2026-05-19T09:19:33.685Z"
     }
   ]
 }

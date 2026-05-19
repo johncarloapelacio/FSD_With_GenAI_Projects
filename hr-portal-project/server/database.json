@@ -17,6 +17,12 @@
       "emailId": "kingofssbu@gmail.com",
       "password": "54321",
       "typeOfUser": "employee"
+    },
+    {
+      "id": "3678",
+      "emailId": "sample123@sample.com",
+      "password": "sample123",
+      "typeOfUser": "employee"
     }
   ],
   "employeesInfo": [
@@ -49,6 +55,16 @@
       "password": "54321",
       "age": "37",
       "signedUp": true
+    },
+    {
+      "id": "769e",
+      "emailId": "sample123@sample.com",
+      "department": "Sample Department",
+      "fname": "Sample",
+      "lname": "Last",
+      "password": "sample123",
+      "age": "35",
+      "signedUp": true
     }
   ],
   "leaveInfo": [
@@ -79,6 +95,20 @@
       "reason": "Sharpen up Yoshi skills",
       "numberOfDays": "11",
       "status": "Denied"
+    },
+    {
+      "id": "db8d",
+      "emailId": "sample123@sample.com",
+      "reason": "Long Vacation",
+      "numberOfDays": "60",
+      "status": "Denied"
+    },
+    {
+      "id": "d50a",
+      "emailId": "sample123@sample.com",
+      "reason": "Personal Time Off",
+      "numberOfDays": "2",
+      "status": "Approved"
     }
   ]
 }
