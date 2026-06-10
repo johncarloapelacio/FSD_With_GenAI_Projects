@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/head', { title: 'Login', css: 'auth' }) %>
+<body class="auth-page">
+  <main class="auth-shell">
+    <div class="auth-card">
+      <div class="auth-brand">Employee Management System</div>
+      <h1 class="auth-title">Sign In</h1>
+      <p class="auth-subtitle">Pick your account type, then sign in.</p>
+
+      <% if (error) { %>
+        <div class="alert alert-error" role="alert" data-cy="error"><%= error %></div>
+      <% } %>
+
+      <form method="POST" action="/login" class="form" novalidate>
+        <div class="field">
+          <span class="field-label">Account type</span>
+          <div class="segmented" data-cy="role-toggle">
+            <label class="seg-option">
+              <input type="radio" name="role" value="employee" data-cy="role-employee" <%= values.role !== 'admin' ? 'checked' : '' %> />
+              <span>Employee</span>
+            </label>
+            <label class="seg-option">
+              <input type="radio" name="role" value="admin" data-cy="role-admin" <%= values.role === 'admin' ? 'checked' : '' %> />
+              <span>Admin</span>
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" value="<%= values.email || '' %>" autocomplete="email" data-cy="email" required />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" autocomplete="current-password" data-cy="password" required />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" data-cy="submit">Login</button>
+      </form>
+
+      <div class="auth-links">
+        <a href="/signup">Need an account? Sign up</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/head', { title: 'Sign Up', css: 'auth' }) %>
+<body class="auth-page">
+  <main class="auth-shell">
+    <div class="auth-card">
+      <div class="auth-brand">Employee Management System</div>
+      <h1 class="auth-title">Create Account</h1>
+
+      <div class="alert alert-error" id="signup-error" data-cy="error" hidden></div>
+
+      <div class="field">
+        <span class="field-label">Account type</span>
+        <div class="segmented" data-cy="role-toggle">
+          <label class="seg-option">
+            <input type="radio" name="role" value="employee" data-cy="role-employee" checked />
+            <span>Employee</span>
+          </label>
+          <label class="seg-option">
+            <input type="radio" name="role" value="admin" data-cy="role-admin" />
+            <span>Admin</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Employee flow -->
+      <div id="employee-flow">
+        <!-- Step 1: confirm the person is already in the system -->
+        <form id="emp-verify-form" class="form" novalidate>
+          <div class="field">
+            <label for="emp-name">Full Name</label>
+            <input type="text" id="emp-name" autocomplete="name" data-cy="name" required />
+          </div>
+          <div class="field">
+            <label for="emp-email">Email</label>
+            <input type="email" id="emp-email" autocomplete="email" data-cy="email" required />
+          </div>
+          <div class="field">
+            <label for="emp-dob">Date of Birth</label>
+            <input type="text" id="emp-dob" placeholder="MM-DD-YYYY" autocomplete="off" data-cy="dob" required />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" data-cy="verify">Continue</button>
+        </form>
+
+        <!-- Step 2: finish the account (shown only after a match) -->
+        <form id="emp-complete-form" class="form" novalidate hidden>
+          <p class="card-sub" id="emp-matched-note" data-cy="matched-note">We found your record. Finish setting up your account.</p>
+          <div class="field">
+            <label for="emp-password">Password</label>
+            <input type="password" id="emp-password" autocomplete="new-password" data-cy="password" required />
+          </div>
+          <div class="field">
+            <label for="emp-contact">Phone Number</label>
+            <input type="text" id="emp-contact" placeholder="###-###-####" data-cy="contact" required />
+          </div>
+          <div class="field">
+            <label for="emp-location">Location</label>
+            <input type="text" id="emp-location" data-cy="location" required />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" data-cy="submit">Create Account</button>
+        </form>
+      </div>
+
+      <!-- Admin flow -->
+      <form id="admin-form" class="form" novalidate hidden>
+        <div class="field">
+          <label for="adm-name">Full Name</label>
+          <input type="text" id="adm-name" autocomplete="name" data-cy="admin-name" required />
+        </div>
+        <div class="field">
+          <label for="adm-email">Email</label>
+          <input type="email" id="adm-email" autocomplete="email" data-cy="admin-email" required />
+        </div>
+        <div class="field">
+          <label for="adm-dob">Date of Birth</label>
+          <input type="text" id="adm-dob" placeholder="MM-DD-YYYY" autocomplete="off" data-cy="admin-dob" required />
+        </div>
+        <div class="field">
+          <label for="adm-password">Password</label>
+          <input type="password" id="adm-password" autocomplete="new-password" data-cy="admin-password" required />
+        </div>
+        <div class="field">
+          <label for="adm-passcode">Admin Passcode</label>
+          <input type="password" id="adm-passcode" placeholder="Passcode Required" data-cy="passcode" required />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" data-cy="admin-submit">Create Account</button>
+      </form>
+
+      <!-- Success message (no automatic login) -->
+      <div id="signup-success" hidden>
+        <div class="alert alert-success" data-cy="success">Your account was created successfully.</div>
+        <a class="btn btn-primary btn-block" href="/login" data-cy="to-login">Go to login</a>
+      </div>
+
+      <div class="auth-links" id="signup-links">
+        <a href="/login">Already have an account? Log in</a>
+      </div>
+    </div>
+  </main>
+  <script src="/js/common.js"></script>
+  <script src="/js/signup.js"></script>
+</body>
+</html>

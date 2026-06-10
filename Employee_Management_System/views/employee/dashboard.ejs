@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head', { title: 'Employee Dashboard', css: 'employee' }) %>
+<body class="dash">
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="brand-mark">EMS</span>
+      <span class="brand-text">Employee Portal</span>
+    </div>
+    <div class="topbar-user">
+      <span class="user-chip" data-cy="topbar-name"><%= account.name %></span>
+      <form method="POST" action="/logout" class="inline-form">
+        <button type="submit" class="btn btn-ghost" data-cy="logout">Logout</button>
+      </form>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Sections">
+      <button class="nav-item active" data-section="directory" data-cy="nav-directory">Directory</button>
+      <button class="nav-item" data-section="account" data-cy="nav-account">My Account</button>
+    </nav>
+
+    <main class="content">
+      <!-- Directory section -->
+      <section class="section active" id="section-directory" data-section="directory">
+        <div class="card welcome-card">
+          <h1>Welcome, <%= account.name %>!</h1>
+          <p class="card-sub">Browse the company employee directory.</p>
+        </div>
+
+        <div class="card toolbar-card">
+          <div class="stat">
+            <span class="stat-label">Employees Listed</span>
+            <span class="stat-value" id="emp-count" data-cy="emp-count">0</span>
+          </div>
+        </div>
+
+        <h2 class="section-heading">Employee Directory</h2>
+        <div class="emp-grid" id="emp-grid" data-cy="directory-grid">
+          <div class="empty-state">Loading directory...</div>
+        </div>
+      </section>
+
+      <!-- My Account section -->
+      <section class="section" id="section-account" data-section="account">
+        <h1 class="section-title">My Account</h1>
+        <%- include('../partials/account', { account }) %>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" data-cy="toast" aria-live="polite"></div>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/account.js"></script>
+  <script src="/js/employee.js"></script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!-- The "My Account" section, shared by both dashboards. What you can edit
+     depends on your role: admins can change designation and department, while
+     employees can only change contact and location. Nobody can change their
+     name, email, joining date or date of birth here. -->
+<div class="card">
+  <div class="card-head">
+    <h2>My Profile</h2>
+    <p class="card-sub">A few details are set by HR and cannot be changed here.</p>
+  </div>
+
+  <div class="readonly-grid">
+    <div class="ro-item"><span class="ro-label">Name</span><span class="ro-value"><%= account.name %></span></div>
+    <div class="ro-item"><span class="ro-label">Email</span><span class="ro-value"><%= account.email %></span></div>
+    <div class="ro-item"><span class="ro-label">Role</span><span class="ro-value ro-cap"><%= account.role %></span></div>
+    <div class="ro-item"><span class="ro-label">Joining Date</span><span class="ro-value"><%= account.joiningDateText || 'N/A' %></span></div>
+    <div class="ro-item"><span class="ro-label">Date of Birth</span><span class="ro-value" data-cy="acct-dob-text"><%= account.dobText || 'N/A' %></span></div>
+    <div class="ro-item"><span class="ro-label">Age</span><span class="ro-value" data-cy="acct-age"><%= account.age != null ? account.age : 'N/A' %></span></div>
+    <% if (account.role !== 'admin') { %>
+      <div class="ro-item"><span class="ro-label">Designation</span><span class="ro-value"><%= account.designation || 'Not assigned' %></span></div>
+      <div class="ro-item"><span class="ro-label">Department</span><span class="ro-value"><%= account.department || 'Not assigned' %></span></div>
+    <% } %>
+  </div>
+
+  <form id="profile-form" class="form" novalidate>
+    <div class="form-grid">
+      <% if (account.role === 'admin') { %>
+      <div class="field">
+        <label for="acct-designation">Designation</label>
+        <input id="acct-designation" name="designation" value="<%= account.designation || '' %>" data-cy="acct-designation" />
+      </div>
+      <div class="field">
+        <label for="acct-department">Department</label>
+        <input id="acct-department" name="department" value="<%= account.department || '' %>" data-cy="acct-department" />
+      </div>
+      <% } %>
+      <div class="field">
+        <label for="acct-contact">Contact</label>
+        <input id="acct-contact" name="contact" placeholder="###-###-####" value="<%= account.contact || '' %>" data-cy="acct-contact" />
+      </div>
+      <div class="field">
+        <label for="acct-location">Location</label>
+        <input id="acct-location" name="location" value="<%= account.location || '' %>" data-cy="acct-location" />
+      </div>
+    </div>
+    <div class="form-msg" id="profile-msg" data-cy="profile-msg" role="status"></div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" data-cy="save-profile">Save Changes</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <h2>Change Password</h2>
+    <p class="card-sub">Use at least 6 characters.</p>
+  </div>
+  <form id="password-form" class="form" novalidate>
+    <div class="form-grid">
+      <div class="field">
+        <label for="cur-pass">Current Password</label>
+        <input id="cur-pass" name="currentPassword" type="password" autocomplete="current-password" data-cy="current-password" />
+      </div>
+      <div class="field">
+        <label for="new-pass">New Password</label>
+        <input id="new-pass" name="newPassword" type="password" autocomplete="new-password" data-cy="new-password" />
+      </div>
+      <div class="field">
+        <label for="confirm-pass">Confirm New Password</label>
+        <input id="confirm-pass" name="confirmPassword" type="password" autocomplete="new-password" data-cy="confirm-password" />
+      </div>
+    </div>
+    <div class="form-msg" id="password-msg" data-cy="password-msg" role="status"></div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" data-cy="save-password">Update Password</button>
+    </div>
+  </form>
+</div>

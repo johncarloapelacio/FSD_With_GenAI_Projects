@@ -1,0 +1,38 @@
+/* Employee dashboard theme: dark olive green, muted mustard yellow, grayscale. */
+:root {
+  --text: #23261a;
+  --text-muted: #6b6e5e;
+  --bg: #f1f1e8;
+  --surface: #ffffff;
+  --surface-2: #f0f1e5;
+  --border: #dcdcc9;
+
+  --primary: #54652b;        /* dark olive green */
+  --primary-600: #43521f;
+  --primary-contrast: #ffffff;
+
+  --accent: #c2a23b;         /* muted mustard yellow */
+  --accent-contrast: #2a2410;
+  --ink: #2f3a1c;
+
+  --ring: rgba(84, 101, 43, 0.22);
+
+  --danger: #9a4a2f;
+  --danger-contrast: #ffffff;
+  --danger-bg: #f3e6dd;
+  --danger-text: #7d3b22;
+  --danger-border: #dcc3b2;
+  --success-text: #3a5320;
+
+  --topbar-bg: #3a451e;
+  --topbar-text: #f2f2e6;
+  --sidebar-bg: #3a451e;
+  --sidebar-text: #d9d8c2;
+  --sidebar-hover-bg: #465428;
+  --sidebar-active-bg: #c2a23b;
+  --sidebar-active-text: #2a2410;
+
+  --thead-bg: #54652b;
+  --thead-text: #ffffff;
+  --row-hover: #eef0e0;
+}

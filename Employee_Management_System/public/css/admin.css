@@ -1,0 +1,38 @@
+/* Admin dashboard theme: black, burgundy, grayscale. */
+:root {
+  --text: #171516;
+  --text-muted: #6e676a;
+  --bg: #f2f2f3;
+  --surface: #ffffff;
+  --surface-2: #f5f1f2;
+  --border: #e3dee0;
+
+  --primary: #7a1f2b;        /* burgundy */
+  --primary-600: #5e1822;
+  --primary-contrast: #ffffff;
+
+  --accent: #7a1f2b;         /* burgundy accent */
+  --accent-contrast: #ffffff;
+  --ink: #1c1a1b;            /* near-black */
+
+  --ring: rgba(122, 31, 43, 0.22);
+
+  --danger: #8e1b2a;         /* delete button, a deep red */
+  --danger-contrast: #ffffff;
+  --danger-bg: #f7e3e6;
+  --danger-text: #7a1f2b;
+  --danger-border: #e6c0c6;
+  --success-text: #1e4d2b;
+
+  --topbar-bg: #141213;
+  --topbar-text: #f4f2f3;
+  --sidebar-bg: #1c1a1b;
+  --sidebar-text: #c9c3c5;
+  --sidebar-hover-bg: #2a2628;
+  --sidebar-active-bg: #7a1f2b;
+  --sidebar-active-text: #ffffff;
+
+  --thead-bg: #1c1a1b;
+  --thead-text: #ffffff;
+  --row-hover: #f5eef0;
+}

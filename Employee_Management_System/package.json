@@ -1,0 +1,25 @@
+{
+  "name": "employee_management_system",
+  "version": "1.0.0",
+  "description": "Full-stack Employee Management System (Node, Express, EJS, fs) with Cypress E2E tests.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node app.js",
+    "test": "cypress run",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "ejs": "^6.0.1",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "cypress": "^15.17.0"
+  }
+}

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head', { title: 'Admin Dashboard', css: 'admin' }) %>
+<body class="dash">
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="brand-mark">EMS</span>
+      <span class="brand-text">Admin Console</span>
+    </div>
+    <div class="topbar-user">
+      <span class="user-chip" data-cy="topbar-name"><%= account.name %></span>
+      <form method="POST" action="/logout" class="inline-form">
+        <button type="submit" class="btn btn-ghost" data-cy="logout">Logout</button>
+      </form>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Sections">
+      <button class="nav-item active" data-section="employees" data-cy="nav-employees">Employees</button>
+      <button class="nav-item" data-section="account" data-cy="nav-account">My Account</button>
+    </nav>
+
+    <main class="content">
+      <!-- Employees section -->
+      <section class="section active" id="section-employees" data-section="employees">
+        <div class="card welcome-card">
+          <h1>Welcome, <%= account.name %>!</h1>
+          <p class="card-sub">Manage your organization's employee directory.</p>
+        </div>
+
+        <div class="card toolbar-card">
+          <div class="stat">
+            <span class="stat-label">Total Employees</span>
+            <span class="stat-value" id="emp-count" data-cy="emp-count">0</span>
+          </div>
+          <button class="btn btn-primary" id="add-emp-btn" data-cy="add-employee">+ Add Employee</button>
+        </div>
+
+        <h2 class="section-heading">Employee Records</h2>
+        <div class="emp-grid" id="emp-grid" data-cy="emp-grid">
+          <div class="empty-state">Loading employees...</div>
+        </div>
+      </section>
+
+      <!-- My Account section -->
+      <section class="section" id="section-account" data-section="account">
+        <h1 class="section-title">My Account</h1>
+        <%- include('../partials/account', { account }) %>
+      </section>
+    </main>
+  </div>
+
+  <!-- Add / Edit employee modal -->
+  <div class="modal-overlay" id="emp-modal" data-cy="emp-modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="emp-modal-title">
+      <div class="modal-head">
+        <h3 id="emp-modal-title" data-cy="emp-modal-title">Add Employee</h3>
+        <button class="modal-close" id="emp-modal-close" aria-label="Close" data-cy="emp-modal-close">&times;</button>
+      </div>
+      <form id="emp-form" class="form" novalidate>
+        <input type="hidden" id="emp-id" name="id" />
+        <p class="card-sub modal-note">The employee adds their own phone number and location when they sign up.</p>
+        <div class="form-grid">
+          <div class="field">
+            <label for="emp-name">Full Name</label>
+            <input id="emp-name" name="name" data-cy="emp-name" required />
+          </div>
+          <div class="field">
+            <label for="emp-email">Email</label>
+            <input id="emp-email" name="email" type="email" data-cy="emp-email" required />
+          </div>
+          <div class="field">
+            <label for="emp-designation">Designation</label>
+            <input id="emp-designation" name="designation" data-cy="emp-designation" required />
+          </div>
+          <div class="field">
+            <label for="emp-department">Department</label>
+            <input id="emp-department" name="department" data-cy="emp-department" required />
+          </div>
+          <div class="field">
+            <label for="emp-dob">Date of Birth</label>
+            <input id="emp-dob" name="dob" type="text" placeholder="MM-DD-YYYY" autocomplete="off" data-cy="emp-dob" required />
+          </div>
+        </div>
+        <div class="form-msg" id="emp-msg" data-cy="emp-msg" role="alert"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="emp-cancel" data-cy="emp-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" data-cy="emp-save">Save Employee</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirm delete modal -->
+  <div class="modal-overlay" id="confirm-modal" data-cy="confirm-modal" aria-hidden="true">
+    <div class="modal-card modal-sm" role="dialog" aria-modal="true">
+      <div class="modal-head"><h3>Confirm Delete</h3></div>
+      <p class="confirm-text" id="confirm-text">Are you sure?</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="confirm-cancel" data-cy="confirm-cancel">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirm-ok" data-cy="confirm-ok">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" data-cy="toast" aria-live="polite"></div>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/account.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

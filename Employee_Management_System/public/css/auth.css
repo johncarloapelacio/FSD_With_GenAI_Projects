@@ -1,0 +1,36 @@
+/* Login / Sign-up theme: beige, brown, sky blue, grayscale. */
+:root {
+  --text: #3a2e24;
+  --text-muted: #7c6c5b;
+  --bg: #efe7d6;
+  --surface: #ffffff;
+  --surface-2: #f6efe2;
+  --border: #ddcdb4;
+
+  --primary: #6f4e37;        /* brown */
+  --primary-600: #553c29;
+  --primary-contrast: #ffffff;
+
+  --accent: #2f7fb0;         /* sky blue (links + accents) */
+  --accent-contrast: #ffffff;
+  --ink: #3a2e24;
+
+  --ring: rgba(111, 78, 55, 0.20);
+
+  --danger: #a23b2c;
+  --danger-contrast: #ffffff;
+  --danger-bg: #f6e1da;
+  --danger-text: #8a3324;
+  --danger-border: #dcae9f;
+  --success-text: #3a5f2e;
+}
+
+body.auth-page {
+  background:
+    radial-gradient(1100px 560px at 100% -12%, rgba(135, 206, 235, 0.55), transparent 60%),
+    radial-gradient(820px 480px at -12% 112%, rgba(135, 206, 235, 0.28), transparent 55%),
+    linear-gradient(160deg, #f4eddd 0%, #eadfca 100%);
+}
+
+.auth-badge-admin { background: #6f4e37; color: #ffffff; }
+.auth-badge-employee { background: #d4ebf6; color: #1f6088; }
