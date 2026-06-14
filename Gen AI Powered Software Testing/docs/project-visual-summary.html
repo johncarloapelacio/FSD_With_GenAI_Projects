@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gen AI Powered Software Testing CEP Visual Summary</title>
+  <style>
+    :root {
+      --ink: #18212f;
+      --muted: #667085;
+      --line: #d8dee8;
+      --page: #f6f8fb;
+      --panel: #ffffff;
+      --green: #198754;
+      --teal: #087f8c;
+      --amber: #b26a00;
+      --red: #bf3b3b;
+      --blue: #2166a5;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: Calibri, Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .page {
+      width: min(1180px, calc(100vw - 36px));
+      margin: 24px auto;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 18px;
+      align-items: stretch;
+      margin-bottom: 18px;
+    }
+
+    .hero,
+    .panel,
+    .metric,
+    .flow-step,
+    .artifact {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
+    }
+
+    .hero {
+      padding: 22px 24px;
+      border-left: 8px solid var(--teal);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 30px;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+
+    h3 {
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: 8px;
+      max-width: 780px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      padding: 14px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 28px;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .panel {
+      padding: 18px;
+    }
+
+    .wide {
+      grid-column: 1 / -1;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .flow-step {
+      padding: 14px;
+      min-height: 116px;
+      border-top: 5px solid var(--blue);
+    }
+
+    .flow-step:nth-child(2) {
+      border-top-color: var(--teal);
+    }
+
+    .flow-step:nth-child(3) {
+      border-top-color: var(--amber);
+    }
+
+    .flow-step:nth-child(4) {
+      border-top-color: var(--green);
+    }
+
+    .flow-step:nth-child(5) {
+      border-top-color: var(--red);
+    }
+
+    .flow-step p,
+    .artifact p,
+    li {
+      color: var(--muted);
+    }
+
+    .architecture {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .layer {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfcfe;
+    }
+
+    .layer strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .tag {
+      border-radius: 999px;
+      padding: 5px 9px;
+      background: #edf6f7;
+      color: #075c66;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .bar {
+      height: 22px;
+      border-radius: 999px;
+      background: #e8edf4;
+      overflow: hidden;
+      margin: 8px 0 12px;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, var(--green), var(--teal));
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    li + li {
+      margin-top: 5px;
+    }
+
+    .artifacts {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .artifact {
+      padding: 13px;
+      min-height: 90px;
+    }
+
+    .status {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 5px 8px;
+      border-radius: 6px;
+      color: #ffffff;
+      background: var(--green);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      header,
+      main,
+      .two-col,
+      .architecture {
+        grid-template-columns: 1fr;
+      }
+
+      .flow,
+      .artifacts {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <section class="hero">
+        <h1>Gen AI Powered Software Testing CEP</h1>
+        <p class="subtitle">
+          A runnable JavaScript and Jest testing framework for a banking KYC and AML platform, with synthetic data, automated tests, RTM coverage, and submission-ready documentation.
+        </p>
+        <div class="tag-row">
+          <span class="tag">KYC</span>
+          <span class="tag">AML</span>
+          <span class="tag">Synthetic Data</span>
+          <span class="tag">Jest</span>
+          <span class="tag">RTM</span>
+          <span class="tag">GenAI Process</span>
+        </div>
+      </section>
+
+      <section class="metrics">
+        <div class="metric"><strong>11/11</strong><span>Requirements covered</span></div>
+        <div class="metric"><strong>13</strong><span>Passing Jest tests</span></div>
+        <div class="metric"><strong>30</strong><span>KYC customers generated</span></div>
+        <div class="metric"><strong>84</strong><span>AML transactions generated</span></div>
+      </section>
+    </header>
+
+    <main>
+      <section class="panel wide">
+        <h2>End-to-End Project Flow</h2>
+        <div class="flow">
+          <div class="flow-step">
+            <h3>1. Problem Statement</h3>
+            <p>Build a GenAI-assisted testing approach for KYC and AML banking workflows.</p>
+          </div>
+          <div class="flow-step">
+            <h3>2. Requirements</h3>
+            <p>Chatbot, NLP, integration, KYC, AML, scalability, performance, and reporting requirements.</p>
+          </div>
+          <div class="flow-step">
+            <h3>3. Synthetic Data</h3>
+            <p>Seeded faker data creates realistic customers, screening fields, and AML transactions.</p>
+          </div>
+          <div class="flow-step">
+            <h3>4. Jest Execution</h3>
+            <p>Automated tests validate data quality, risk rules, coverage, and performance.</p>
+          </div>
+          <div class="flow-step">
+            <h3>5. Evidence</h3>
+            <p>RTM, test report, Agile plan, and GenAI write-up connect the work back to the rubric.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Architecture Snapshot</h2>
+        <div class="architecture">
+          <div class="layer">
+            <strong>src/requirements.js</strong>
+            Requirements, epics, stories, sprint plan, and prompt log.
+          </div>
+          <div class="layer">
+            <strong>src/generators</strong>
+            KYC customer and AML transaction data generation.
+          </div>
+          <div class="layer">
+            <strong>src/rules</strong>
+            KYC risk logic and AML alert evaluation rules.
+          </div>
+          <div class="layer">
+            <strong>src/reporting</strong>
+            RTM, test report, and execution summary builders.
+          </div>
+          <div class="layer">
+            <strong>tests</strong>
+            Jest coverage for requirements, data, rules, reports, and performance.
+          </div>
+          <div class="layer">
+            <strong>docs + reports</strong>
+            Human-readable submission artifacts and traceability evidence.
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Testing Evidence</h2>
+        <div class="bar"><span></span></div>
+        <p><strong>RTM coverage: 100%</strong></p>
+        <ul>
+          <li>5 Jest suites passed</li>
+          <li>13 automated tests passed</li>
+          <li>7 mapped test cases</li>
+          <li>Every must-have requirement has automated coverage</li>
+          <li>Generated data and reports are repeatable</li>
+        </ul>
+        <span class="status">Verified Passing</span>
+      </section>
+
+      <section class="panel">
+        <h2>What the Solution Proves</h2>
+        <ul>
+          <li>Requirements were created from the assignment and made testable.</li>
+          <li>Epics and user stories were estimated, prioritized, and placed into sprints.</li>
+          <li>KYC and AML test data is synthetic, realistic, and deterministic.</li>
+          <li>AML typologies include structuring, rapid movement, high-risk geography, and sanctions exposure.</li>
+          <li>Reports connect requirements, tests, execution status, and evidence.</li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <h2>GenAI Contribution</h2>
+        <ul>
+          <li>Helped translate a broad prompt into structured requirements.</li>
+          <li>Suggested acceptance criteria and compliance test areas.</li>
+          <li>Supported KYC and AML data model design.</li>
+          <li>Helped create traceable test cases and RTM reporting.</li>
+          <li>Improved planning speed while still requiring human validation.</li>
+        </ul>
+      </section>
+
+      <section class="panel wide">
+        <h2>Documents and Reports</h2>
+        <div class="artifacts">
+          <div class="artifact">
+            <h3>docs/requirements.md</h3>
+            <p>Requirement catalog with acceptance criteria.</p>
+          </div>
+          <div class="artifact">
+            <h3>docs/agile-plan.md</h3>
+            <p>Epics, user stories, points, priorities, and sprint plan.</p>
+          </div>
+          <div class="artifact">
+            <h3>reports/rtm.md</h3>
+            <p>Requirement-to-test traceability matrix.</p>
+          </div>
+          <div class="artifact">
+            <h3>reports/test-report.md</h3>
+            <p>Execution summary and risk notes.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+  </div>
+</body>
+</html>

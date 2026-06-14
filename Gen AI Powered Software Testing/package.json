@@ -1,0 +1,26 @@
+{
+  "name": "gen-ai-powered-software-testing",
+  "version": "1.0.0",
+  "description": "Generative AI assisted KYC and AML test framework with synthetic data, Jest tests, RTM, and project reports.",
+  "main": "src/index.js",
+  "scripts": {
+    "generate": "node scripts/generate-artifacts.js",
+    "test": "jest --runInBand",
+    "test:coverage": "jest --coverage --runInBand"
+  },
+  "keywords": [
+    "kyc",
+    "aml",
+    "testing",
+    "jest",
+    "synthetic-data",
+    "rtm"
+  ],
+  "author": "TechSpark Solutions Test Management Team",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "@faker-js/faker": "^9.9.0",
+    "jest": "^30.0.0"
+  }
+}

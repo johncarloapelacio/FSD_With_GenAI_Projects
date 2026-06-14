@@ -1,0 +1,248 @@
+[
+  {
+    "requirementId": "REQ-CHAT-001",
+    "category": "Chatbot Functionality",
+    "title": "Guided KYC onboarding conversation",
+    "priority": "Must Have",
+    "coverageStatus": "Covered",
+    "testCases": [
+      {
+        "testCaseId": "TC-REQ-001",
+        "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/requirements.test.js"
+      }
+    ]
+  },
+  {
+    "requirementId": "REQ-CHAT-002",
+    "category": "Chatbot Functionality",
+    "title": "Case status and escalation support",
+    "priority": "Must Have",
+    "coverageStatus": "Covered",
+    "testCases": [
+      {
+        "testCaseId": "TC-REQ-001",
+        "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/requirements.test.js"
+      }
+    ]
+  },
+  {
+    "requirementId": "REQ-NLP-001",
+    "category": "NLP Capabilities",
+    "title": "Intent recognition for banking compliance journeys",
+    "priority": "Must Have",
+    "coverageStatus": "Covered",
+    "testCases": [
+      {
+        "testCaseId": "TC-REQ-001",
+        "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/requirements.test.js"
+      }
+    ]
+  },
+  {
+    "requirementId": "REQ-NLP-002",
+    "category": "NLP Capabilities",
+    "title": "Entity extraction for KYC and AML fields",
+    "priority": "Should Have",
+    "coverageStatus": "Covered",
+    "testCases": [
+      {
+        "testCaseId": "TC-REQ-001",
+        "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/requirements.test.js"
+      }
+    ]
+  },
+  {
+    "requirementId": "REQ-INT-001",
+    "category": "Integration",
+    "title": "Core banking and CRM integration",
+    "priority": "Must Have",
+    "coverageStatus": "Covered",
+    "testCases": [
+      {
+        "testCaseId": "TC-REQ-001",
+        "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/requirements.test.js"
+      }
+    ]
+  },
+  {
+    "requirementId": "REQ-INT-002",
+    "category": "Integration",
+    "title": "Identity verification and sanctions screening integration",
+    "priority": "Must Have",
+    "coverageStatus": "Covered",
+    "testCases": [
+      {
+        "testCaseId": "TC-KYC-002",
+        "title": "KYC risk engine flags high-risk and sanctions customers",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/kyc.test.js"
+      },
+      {
+        "testCaseId": "TC-AML-002",
+        "title": "AML rules raise alerts for suspicious activity",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/aml.test.js"
+      },
+      {
+        "testCaseId": "TC-REQ-001",
+        "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/requirements.test.js"
+      }
+    ]
+  },
+  {
+    "requirementId": "REQ-KYC-001",
+    "category": "KYC Data",
+    "title": "Complete synthetic KYC customer profiles",
+    "priority": "Must Have",
+    "coverageStatus": "Covered",
+    "testCases": [
+      {
+        "testCaseId": "TC-KYC-001",
+        "title": "KYC generator creates complete synthetic customer profiles",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/kyc.test.js"
+      },
+      {
+        "testCaseId": "TC-KYC-002",
+        "title": "KYC risk engine flags high-risk and sanctions customers",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/kyc.test.js"
+      },
+      {
+        "testCaseId": "TC-REQ-001",
+        "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/requirements.test.js"
+      }
+    ]
+  },
+  {
+    "requirementId": "REQ-AML-001",
+    "category": "AML Monitoring",
+    "title": "Synthetic AML transaction scenarios",
+    "priority": "Must Have",
+    "coverageStatus": "Covered",
+    "testCases": [
+      {
+        "testCaseId": "TC-AML-001",
+        "title": "AML generator covers required suspicious typologies",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/aml.test.js"
+      },
+      {
+        "testCaseId": "TC-AML-002",
+        "title": "AML rules raise alerts for suspicious activity",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/aml.test.js"
+      },
+      {
+        "testCaseId": "TC-REQ-001",
+        "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/requirements.test.js"
+      }
+    ]
+  },
+  {
+    "requirementId": "REQ-SCALE-001",
+    "category": "Scalability",
+    "title": "Scalable test data generation",
+    "priority": "Should Have",
+    "coverageStatus": "Covered",
+    "testCases": [
+      {
+        "testCaseId": "TC-KYC-001",
+        "title": "KYC generator creates complete synthetic customer profiles",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/kyc.test.js"
+      },
+      {
+        "testCaseId": "TC-REQ-001",
+        "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/requirements.test.js"
+      },
+      {
+        "testCaseId": "TC-PERF-001",
+        "title": "Synthetic data generation meets local performance threshold",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/performance.test.js"
+      }
+    ]
+  },
+  {
+    "requirementId": "REQ-PERF-001",
+    "category": "Performance",
+    "title": "Performance expectations for compliance workflows",
+    "priority": "Should Have",
+    "coverageStatus": "Covered",
+    "testCases": [
+      {
+        "testCaseId": "TC-REQ-001",
+        "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/requirements.test.js"
+      },
+      {
+        "testCaseId": "TC-PERF-001",
+        "title": "Synthetic data generation meets local performance threshold",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/performance.test.js"
+      }
+    ]
+  },
+  {
+    "requirementId": "REQ-REP-001",
+    "category": "Reporting",
+    "title": "RTM and test report generation",
+    "priority": "Must Have",
+    "coverageStatus": "Covered",
+    "testCases": [
+      {
+        "testCaseId": "TC-REQ-001",
+        "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/requirements.test.js"
+      },
+      {
+        "testCaseId": "TC-REP-001",
+        "title": "RTM maps test cases to requirements and execution evidence",
+        "automated": true,
+        "status": "Passed",
+        "evidence": "tests/reporting.test.js"
+      }
+    ]
+  }
+]

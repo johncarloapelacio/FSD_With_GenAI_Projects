@@ -1,0 +1,130 @@
+GenAI in Testing 
+  
+Overview:   
+In this project, you will take on the role of a Test Manager at TechSpark Solutions, utilizing 
+generative AI tools to develop the framework for a KYC and anti-money laundering banking 
+development Platform. This initiative is designed not only to enhance your project 
+management skills using modern AI tools but also to provide practical experience in 
+translating complex requirements into structured deliverables.  
+Engaging in this project will help you understand the real-world applications of Generative AI 
+in streamlining project planning and execution. By crafting Test cases and synthetic data 
+along with reports with the aid of Generative AI, you will learn to leverage technology to 
+reduce complexity, increase efficiency, and improve the precision of project outcomes.  
+  
+Instructions:   
+• Review the learning materials in Lesson 3  
+• Carefully read the situation, task, actions, and result sections to grasp the  
+assignment fully  
+• Complete and submit your assignment via the Learning Management System (LMS)  
+• Carefully read the tasks outlined, focusing on leveraging generative AI tools to 
+optimize the development of the customer support platform  
+ 
+Situation:   
+You are a Test Manager at TechSpark Solutions, focused on employing generative AI tools to 
+meticulously craft test cases and test case execution for a forthcoming project. Your main 
+objective is to harness the capabilities of generative AI to streamline and optimize the 
+project planning process, ensuring that each component aligns seamlessly with the strategic 
+goals of the project.  
+  
+Task:   
+  
+1. Use prompts to create a comprehensive list of requirements covering chatbot 
+functionality, NLP capabilities, integration with existing systems, scalability needs, 
+and performance expectations  
+2. Generate synthetic customer data for KYC processes  
+3. Create synthetic data for anti-money laundering (AML) scenarios  
+4. Develop test cases based on predefined test scenarios  
+5. Map test reports to the Requirements Traceability Matrix (RTM)  
+  
+  
+  
+  
+
+  
+Action:  
+1. Use prompts to create a comprehensive list of requirements covering chatbot 
+functionality, NLP capabilities, integration with existing systems, scalability needs, 
+and performance expectations.  
+2. Generate synthetic data for KYC (Know Your Customer) use cases using JavaScript and 
+libraries like faker to create realistic test data for KYC processes.  
+3. Generate synthetic data for AML (Anti-Money Laundering) use cases with JavaScript, 
+employing faker to simulate data relevant to AML scenarios, such as generating 
+names, transactions, and other pertinent data fields.  
+4. Utilize prompts to generate test cases and scenarios for software testing, using 
+JavaScript to create dynamic and effective test scenarios.  
+5. Develop a detailed test report mapping with RTM (Requirements Traceability Matrix) 
+on the above test cases, using JavaScript to automate the generation of these reports 
+and ensure clear mapping to test requirements.  
+6. Execute the test cases using the Jest testing framework, which is a popular choice in 
+the JavaScript ecosystem for performing unit and integration testing.  
+  
+  
+Result:   
+You will explain how the development process, from the initial requirements gathering to 
+the final sprint execution, was enhanced using generative AI. Include detailed descriptions of 
+the epics and user stories created, how story points were estimated and prioritized, and how 
+the sprints were planned and adjusted in response to project dynamics using generative AI. 
+Additionally, document any challenges encountered and how they were resolved, 
+highlighting the integration of generative AI tools in enhancing the project's success and 
+meeting its objectives. Ensure the report reflects a critical analysis of the project outcomes, 
+demonstrating your understanding of applying generative AI tools in a practical software 
+development environment.  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+Rubric:  
+Your submission will be evaluated based on the following key criteria, each representing a 
+crucial aspect. These criteria are:   
+  
+Criteria  Complete or Incomplete  
+Requirements Gathering:   
+Requirement generation has been completed for the 
+AIdriven customer support platform.  
+  
+Epic and User Story Creation:   
+The requirements have been converted into epics and user 
+stories.  
+  
+Story Point Estimation and Prioritization:   
+The estimation and prioritization of story points have 
+been completed.  
+  
+Sprint Planning:   
+The division of user stories into sprints has been 
+completed.  
+  
+Sprint Execution and Progress Monitoring:   
+Planning for sprint execution and progress monitoring has 
+been completed.  
+  
+Conflict Resolution:   
+Conflict resolution arising from team members leaving 
+the project has been completed.  
+  
+Sprint Plan Review and Adjustment:   
+The adjustment of sprint planning and continuation of 
+execution has been completed.  
+  
+  

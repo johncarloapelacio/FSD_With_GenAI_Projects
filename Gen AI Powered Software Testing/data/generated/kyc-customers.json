@@ -1,0 +1,1052 @@
+[
+  {
+    "customerId": "CUST-00001",
+    "legalName": "Mr. Wendell Johns",
+    "dateOfBirth": "1994-07-19",
+    "email": "dina.stark-beier86@hotmail.com",
+    "phone": "+15567754981",
+    "address": {
+      "line1": "311 Marietta Rest",
+      "city": "Axelport",
+      "state": "Alaska",
+      "postalCode": "14429-2798",
+      "country": "HU"
+    },
+    "employment": {
+      "status": "student",
+      "occupation": "Future Program Facilitator",
+      "employer": "Hirthe Group",
+      "annualIncomeUsd": 345351,
+      "sourceOfFunds": "business_income"
+    },
+    "document": {
+      "type": "passport",
+      "documentId": "DOC-C5CXL3SLUB",
+      "issuingCountry": "HU",
+      "verified": true,
+      "expiresOn": "2031-08-12"
+    },
+    "screening": {
+      "isPep": false,
+      "sanctionsMatch": false,
+      "adverseMedia": false
+    },
+    "expectedRiskLevel": "low",
+    "createdAt": "2026-06-09T20:54:21.587Z"
+  },
+  {
+    "customerId": "CUST-00002",
+    "legalName": "Faith Dickinson",
+    "dateOfBirth": "1978-09-09",
+    "email": "autumn78@gmail.com",
+    "phone": "+15746352933",
+    "address": {
+      "line1": "97228 Schimmel River",
+      "city": "Flagstaff",
+      "state": "New Jersey",
+      "postalCode": "92292",
+      "country": "CI"
+    },
+    "employment": {
+      "status": "student",
+      "occupation": "Global Group Director",
+      "employer": "Hudson, Cruickshank and Orn",
+      "annualIncomeUsd": 222753,
+      "sourceOfFunds": "business_income"
+    },
+    "document": {
+      "type": "drivers_license",
+      "documentId": "DOC-HG766I7PYQ",
+      "issuingCountry": "CI",
+      "verified": true,
+      "expiresOn": "2032-10-08"
+    },
+    "screening": {
+      "isPep": false,
+      "sanctionsMatch": false,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "medium",
+    "createdAt": "2026-05-15T19:43:16.696Z"
+  },
+  {
+    "customerId": "CUST-00003",
+    "legalName": "Ronnie Schaefer",
+    "dateOfBirth": "1980-07-26",
+    "email": "emely98@gmail.com",
+    "phone": "+12158859470",
+    "address": {
+      "line1": "792 Polly Grove",
+      "city": "Osinskistad",
+      "state": "Texas",
+      "postalCode": "60189",
+      "country": "KP"
+    },
+    "employment": {
+      "status": "employed",
+      "occupation": "Principal Integration Liaison",
+      "employer": "Schmitt, Morissette and Ruecker",
+      "annualIncomeUsd": 47934,
+      "sourceOfFunds": "inheritance"
+    },
+    "document": {
+      "type": "national_id",
+      "documentId": "DOC-44AYP1942G",
+      "issuingCountry": "KP",
+      "verified": false,
+      "expiresOn": "2028-09-25"
+    },
+    "screening": {
+      "isPep": true,
+      "sanctionsMatch": true,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "high",
+    "createdAt": "2026-06-10T18:52:20.982Z"
+  },
+  {
+    "customerId": "CUST-00004",
+    "legalName": "Andres Gleichner",
+    "dateOfBirth": "1978-10-10",
+    "email": "arturo65@yahoo.com",
+    "phone": "+14172702944",
+    "address": {
+      "line1": "2289 Hane Flats",
+      "city": "Joplin",
+      "state": "Oregon",
+      "postalCode": "19788-6291",
+      "country": "GB"
+    },
+    "employment": {
+      "status": "employed",
+      "occupation": "Investor Operations Producer",
+      "employer": "Bergstrom - Hermiston",
+      "annualIncomeUsd": 436477,
+      "sourceOfFunds": "inheritance"
+    },
+    "document": {
+      "type": "national_id",
+      "documentId": "DOC-HTZ7D1C1T4",
+      "issuingCountry": "GB",
+      "verified": true,
+      "expiresOn": "2026-08-05"
+    },
+    "screening": {
+      "isPep": false,
+      "sanctionsMatch": false,
+      "adverseMedia": false
+    },
+    "expectedRiskLevel": "low",
+    "createdAt": "2026-05-31T16:18:30.056Z"
+  },
+  {
+    "customerId": "CUST-00005",
+    "legalName": "Tami Goldner-Crooks",
+    "dateOfBirth": "1963-06-19",
+    "email": "roslyn.mcclure50@hotmail.com",
+    "phone": "+19372053984",
+    "address": {
+      "line1": "587 N Maple Street",
+      "city": "Terrellview",
+      "state": "Oregon",
+      "postalCode": "83825",
+      "country": "PK"
+    },
+    "employment": {
+      "status": "retired",
+      "occupation": "Customer Assurance Officer",
+      "employer": "Koch and Sons",
+      "annualIncomeUsd": 252892,
+      "sourceOfFunds": "salary"
+    },
+    "document": {
+      "type": "national_id",
+      "documentId": "DOC-67OP4S474K",
+      "issuingCountry": "PK",
+      "verified": true,
+      "expiresOn": "2026-07-09"
+    },
+    "screening": {
+      "isPep": true,
+      "sanctionsMatch": false,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "medium",
+    "createdAt": "2026-05-15T07:06:15.015Z"
+  },
+  {
+    "customerId": "CUST-00006",
+    "legalName": "Bryant Veum",
+    "dateOfBirth": "1951-08-15",
+    "email": "scarlett38@hotmail.com",
+    "phone": "+15509960434",
+    "address": {
+      "line1": "751 Glover Mission",
+      "city": "North Kory",
+      "state": "Utah",
+      "postalCode": "32884-6516",
+      "country": "IR"
+    },
+    "employment": {
+      "status": "unemployed",
+      "occupation": "Global Paradigm Specialist",
+      "employer": "Sporer Inc",
+      "annualIncomeUsd": 62727,
+      "sourceOfFunds": "business_income"
+    },
+    "document": {
+      "type": "national_id",
+      "documentId": "DOC-P7JEPPPRQN",
+      "issuingCountry": "IR",
+      "verified": true,
+      "expiresOn": "2033-03-17"
+    },
+    "screening": {
+      "isPep": true,
+      "sanctionsMatch": true,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "high",
+    "createdAt": "2026-06-13T02:11:33.682Z"
+  },
+  {
+    "customerId": "CUST-00007",
+    "legalName": "Edmond Hammes-Baumbach",
+    "dateOfBirth": "1946-05-10",
+    "email": "brad38@gmail.com",
+    "phone": "+12083717099",
+    "address": {
+      "line1": "26463 Ziemann Groves",
+      "city": "Port Elishaside",
+      "state": "South Dakota",
+      "postalCode": "61532",
+      "country": "CA"
+    },
+    "employment": {
+      "status": "unemployed",
+      "occupation": "Forward Data Strategist",
+      "employer": "Schuppe - Kovacek",
+      "annualIncomeUsd": 86999,
+      "sourceOfFunds": "business_income"
+    },
+    "document": {
+      "type": "drivers_license",
+      "documentId": "DOC-5ZP2F9INFG",
+      "issuingCountry": "CA",
+      "verified": true,
+      "expiresOn": "2034-03-27"
+    },
+    "screening": {
+      "isPep": false,
+      "sanctionsMatch": false,
+      "adverseMedia": false
+    },
+    "expectedRiskLevel": "low",
+    "createdAt": "2026-05-28T19:04:08.682Z"
+  },
+  {
+    "customerId": "CUST-00008",
+    "legalName": "Ella Mosciski",
+    "dateOfBirth": "2006-07-09",
+    "email": "grace_runolfsson@yahoo.com",
+    "phone": "+12455247745",
+    "address": {
+      "line1": "856 Hall Street",
+      "city": "Spokane",
+      "state": "New Mexico",
+      "postalCode": "97356-1458",
+      "country": "KM"
+    },
+    "employment": {
+      "status": "retired",
+      "occupation": "International Metrics Facilitator",
+      "employer": "Bergstrom LLC",
+      "annualIncomeUsd": 205410,
+      "sourceOfFunds": "investment_income"
+    },
+    "document": {
+      "type": "drivers_license",
+      "documentId": "DOC-SYHHTN0R7L",
+      "issuingCountry": "KM",
+      "verified": true,
+      "expiresOn": "2030-03-08"
+    },
+    "screening": {
+      "isPep": false,
+      "sanctionsMatch": false,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "medium",
+    "createdAt": "2026-05-16T02:21:57.657Z"
+  },
+  {
+    "customerId": "CUST-00009",
+    "legalName": "Rodney Macejkovic-Hegmann",
+    "dateOfBirth": "1977-11-04",
+    "email": "josianne.schuster3@yahoo.com",
+    "phone": "+17703740343",
+    "address": {
+      "line1": "484 Clay Lane",
+      "city": "East Neldaport",
+      "state": "Iowa",
+      "postalCode": "78664-0325",
+      "country": "IR"
+    },
+    "employment": {
+      "status": "unemployed",
+      "occupation": "Forward Tactics Supervisor",
+      "employer": "Stamm, Hintz and Ziemann",
+      "annualIncomeUsd": 160924,
+      "sourceOfFunds": "salary"
+    },
+    "document": {
+      "type": "passport",
+      "documentId": "DOC-V4Y8D5CE9P",
+      "issuingCountry": "IR",
+      "verified": false,
+      "expiresOn": "2027-06-25"
+    },
+    "screening": {
+      "isPep": true,
+      "sanctionsMatch": true,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "high",
+    "createdAt": "2026-06-05T20:59:06.438Z"
+  },
+  {
+    "customerId": "CUST-00010",
+    "legalName": "Micheal Reichel",
+    "dateOfBirth": "1967-09-20",
+    "email": "may89@gmail.com",
+    "phone": "+19713985780",
+    "address": {
+      "line1": "4209 McLaughlin Extensions",
+      "city": "Port Gina",
+      "state": "New Jersey",
+      "postalCode": "52285",
+      "country": "JM"
+    },
+    "employment": {
+      "status": "employed",
+      "occupation": "Principal Web Liaison",
+      "employer": "Reilly, Padberg and Reichel",
+      "annualIncomeUsd": 77856,
+      "sourceOfFunds": "inheritance"
+    },
+    "document": {
+      "type": "drivers_license",
+      "documentId": "DOC-9F1LFZ83ZX",
+      "issuingCountry": "JM",
+      "verified": true,
+      "expiresOn": "2034-02-21"
+    },
+    "screening": {
+      "isPep": false,
+      "sanctionsMatch": false,
+      "adverseMedia": false
+    },
+    "expectedRiskLevel": "low",
+    "createdAt": "2026-06-05T11:02:58.650Z"
+  },
+  {
+    "customerId": "CUST-00011",
+    "legalName": "Ms. Willie Durgan",
+    "dateOfBirth": "1957-08-04",
+    "email": "kacie89@gmail.com",
+    "phone": "+17539564385",
+    "address": {
+      "line1": "714 W 3rd Street",
+      "city": "New Martyworth",
+      "state": "California",
+      "postalCode": "36376-7097",
+      "country": "MV"
+    },
+    "employment": {
+      "status": "self_employed",
+      "occupation": "National Implementation Supervisor",
+      "employer": "Luettgen - Ruecker",
+      "annualIncomeUsd": 260074,
+      "sourceOfFunds": "inheritance"
+    },
+    "document": {
+      "type": "national_id",
+      "documentId": "DOC-XBG7OYWO04",
+      "issuingCountry": "MV",
+      "verified": true,
+      "expiresOn": "2032-07-06"
+    },
+    "screening": {
+      "isPep": true,
+      "sanctionsMatch": false,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "medium",
+    "createdAt": "2026-05-22T14:18:01.352Z"
+  },
+  {
+    "customerId": "CUST-00012",
+    "legalName": "Rickey Mayer",
+    "dateOfBirth": "1958-12-27",
+    "email": "florence_turcotte@gmail.com",
+    "phone": "+18195867105",
+    "address": {
+      "line1": "79101 Mill Road",
+      "city": "Serenaville",
+      "state": "South Carolina",
+      "postalCode": "34788-5730",
+      "country": "RU"
+    },
+    "employment": {
+      "status": "retired",
+      "occupation": "District Operations Engineer",
+      "employer": "Ortiz LLC",
+      "annualIncomeUsd": 294157,
+      "sourceOfFunds": "inheritance"
+    },
+    "document": {
+      "type": "passport",
+      "documentId": "DOC-7DP2F01IU4",
+      "issuingCountry": "RU",
+      "verified": true,
+      "expiresOn": "2031-02-15"
+    },
+    "screening": {
+      "isPep": true,
+      "sanctionsMatch": true,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "high",
+    "createdAt": "2026-05-23T07:23:12.989Z"
+  },
+  {
+    "customerId": "CUST-00013",
+    "legalName": "Neal Torp",
+    "dateOfBirth": "1947-03-05",
+    "email": "scot26@yahoo.com",
+    "phone": "+14454103936",
+    "address": {
+      "line1": "4163 The Lane",
+      "city": "East Kaylinport",
+      "state": "Hawaii",
+      "postalCode": "36004",
+      "country": "GQ"
+    },
+    "employment": {
+      "status": "employed",
+      "occupation": "Product Brand Administrator",
+      "employer": "Schuppe Inc",
+      "annualIncomeUsd": 201035,
+      "sourceOfFunds": "salary"
+    },
+    "document": {
+      "type": "passport",
+      "documentId": "DOC-BAI4WZNUQO",
+      "issuingCountry": "GQ",
+      "verified": true,
+      "expiresOn": "2028-05-31"
+    },
+    "screening": {
+      "isPep": false,
+      "sanctionsMatch": false,
+      "adverseMedia": false
+    },
+    "expectedRiskLevel": "low",
+    "createdAt": "2026-05-30T03:13:22.019Z"
+  },
+  {
+    "customerId": "CUST-00014",
+    "legalName": "John Reilly",
+    "dateOfBirth": "1988-01-22",
+    "email": "marge_hessel53@yahoo.com",
+    "phone": "+16605336808",
+    "address": {
+      "line1": "9682 Michel Manors",
+      "city": "Vitaborough",
+      "state": "Massachusetts",
+      "postalCode": "26037",
+      "country": "FR"
+    },
+    "employment": {
+      "status": "employed",
+      "occupation": "Lead Web Officer",
+      "employer": "Fritsch, Cummings and Schmitt",
+      "annualIncomeUsd": 346638,
+      "sourceOfFunds": "investment_income"
+    },
+    "document": {
+      "type": "drivers_license",
+      "documentId": "DOC-VHITU270NL",
+      "issuingCountry": "FR",
+      "verified": true,
+      "expiresOn": "2027-04-20"
+    },
+    "screening": {
+      "isPep": false,
+      "sanctionsMatch": false,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "medium",
+    "createdAt": "2026-06-09T16:23:54.821Z"
+  },
+  {
+    "customerId": "CUST-00015",
+    "legalName": "Natalie Rice",
+    "dateOfBirth": "1990-11-22",
+    "email": "robbie83@yahoo.com",
+    "phone": "+19385701555",
+    "address": {
+      "line1": "1867 Tennyson Road",
+      "city": "Joeyborough",
+      "state": "Texas",
+      "postalCode": "40451-1844",
+      "country": "IR"
+    },
+    "employment": {
+      "status": "retired",
+      "occupation": "Legacy Mobility Director",
+      "employer": "Powlowski - Renner",
+      "annualIncomeUsd": 106987,
+      "sourceOfFunds": "inheritance"
+    },
+    "document": {
+      "type": "passport",
+      "documentId": "DOC-XRG6FCQROQ",
+      "issuingCountry": "IR",
+      "verified": false,
+      "expiresOn": "2030-11-12"
+    },
+    "screening": {
+      "isPep": true,
+      "sanctionsMatch": true,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "high",
+    "createdAt": "2026-05-18T05:21:59.156Z"
+  },
+  {
+    "customerId": "CUST-00016",
+    "legalName": "Ramiro Medhurst",
+    "dateOfBirth": "1941-04-21",
+    "email": "hellen.fahey@hotmail.com",
+    "phone": "+19804869244",
+    "address": {
+      "line1": "5856 Riverside Avenue",
+      "city": "Norman",
+      "state": "Delaware",
+      "postalCode": "20881-6455",
+      "country": "VA"
+    },
+    "employment": {
+      "status": "retired",
+      "occupation": "Product Data Engineer",
+      "employer": "Feil - Fritsch",
+      "annualIncomeUsd": 190091,
+      "sourceOfFunds": "business_income"
+    },
+    "document": {
+      "type": "drivers_license",
+      "documentId": "DOC-RP5786UF2N",
+      "issuingCountry": "VA",
+      "verified": true,
+      "expiresOn": "2033-03-23"
+    },
+    "screening": {
+      "isPep": false,
+      "sanctionsMatch": false,
+      "adverseMedia": false
+    },
+    "expectedRiskLevel": "low",
+    "createdAt": "2026-06-07T00:43:12.902Z"
+  },
+  {
+    "customerId": "CUST-00017",
+    "legalName": "Mrs. Ida Zemlak",
+    "dateOfBirth": "1978-12-25",
+    "email": "maxwell.keeling@gmail.com",
+    "phone": "+12379575420",
+    "address": {
+      "line1": "462 Bogan Avenue",
+      "city": "East Maximestead",
+      "state": "Arkansas",
+      "postalCode": "01052",
+      "country": "IO"
+    },
+    "employment": {
+      "status": "self_employed",
+      "occupation": "Direct Solutions Architect",
+      "employer": "Rohan LLC",
+      "annualIncomeUsd": 38828,
+      "sourceOfFunds": "investment_income"
+    },
+    "document": {
+      "type": "drivers_license",
+      "documentId": "DOC-M47ZYZI9GD",
+      "issuingCountry": "IO",
+      "verified": true,
+      "expiresOn": "2033-12-22"
+    },
+    "screening": {
+      "isPep": true,
+      "sanctionsMatch": false,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "medium",
+    "createdAt": "2026-05-16T05:17:13.740Z"
+  },
+  {
+    "customerId": "CUST-00018",
+    "legalName": "Robert Greenholt-Bradtke",
+    "dateOfBirth": "1956-07-07",
+    "email": "francisco_mcdermott@yahoo.com",
+    "phone": "+13756394402",
+    "address": {
+      "line1": "31656 Priory Road",
+      "city": "Margiestad",
+      "state": "Nevada",
+      "postalCode": "93485",
+      "country": "RU"
+    },
+    "employment": {
+      "status": "student",
+      "occupation": "National Creative Strategist",
+      "employer": "Rice Inc",
+      "annualIncomeUsd": 330306,
+      "sourceOfFunds": "business_income"
+    },
+    "document": {
+      "type": "drivers_license",
+      "documentId": "DOC-2MYD8JEC5I",
+      "issuingCountry": "RU",
+      "verified": true,
+      "expiresOn": "2027-01-24"
+    },
+    "screening": {
+      "isPep": true,
+      "sanctionsMatch": true,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "high",
+    "createdAt": "2026-05-27T13:05:01.866Z"
+  },
+  {
+    "customerId": "CUST-00019",
+    "legalName": "Merle Ward",
+    "dateOfBirth": "1993-12-14",
+    "email": "jaquelin_mcglynn@hotmail.com",
+    "phone": "+18407730979",
+    "address": {
+      "line1": "4148 Claremont Road",
+      "city": "Napa",
+      "state": "Oklahoma",
+      "postalCode": "52059",
+      "country": "TJ"
+    },
+    "employment": {
+      "status": "employed",
+      "occupation": "Central Applications Designer",
+      "employer": "Abshire - VonRueden",
+      "annualIncomeUsd": 210397,
+      "sourceOfFunds": "inheritance"
+    },
+    "document": {
+      "type": "drivers_license",
+      "documentId": "DOC-BWCJIOQS8H",
+      "issuingCountry": "TJ",
+      "verified": true,
+      "expiresOn": "2027-04-19"
+    },
+    "screening": {
+      "isPep": false,
+      "sanctionsMatch": false,
+      "adverseMedia": false
+    },
+    "expectedRiskLevel": "low",
+    "createdAt": "2026-05-18T04:59:23.419Z"
+  },
+  {
+    "customerId": "CUST-00020",
+    "legalName": "Janice Wehner",
+    "dateOfBirth": "1973-01-10",
+    "email": "dulce83@gmail.com",
+    "phone": "+19578623468",
+    "address": {
+      "line1": "50474 N Water Street",
+      "city": "South Vincenza",
+      "state": "Alabama",
+      "postalCode": "72952",
+      "country": "CC"
+    },
+    "employment": {
+      "status": "employed",
+      "occupation": "Principal Infrastructure Director",
+      "employer": "Wisoky - Schmidt",
+      "annualIncomeUsd": 212386,
+      "sourceOfFunds": "salary"
+    },
+    "document": {
+      "type": "drivers_license",
+      "documentId": "DOC-G57EM9N4DE",
+      "issuingCountry": "CC",
+      "verified": true,
+      "expiresOn": "2028-03-02"
+    },
+    "screening": {
+      "isPep": false,
+      "sanctionsMatch": false,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "medium",
+    "createdAt": "2026-05-25T21:10:37.978Z"
+  },
+  {
+    "customerId": "CUST-00021",
+    "legalName": "Lance Lueilwitz",
+    "dateOfBirth": "1941-12-08",
+    "email": "travon.crooks58@hotmail.com",
+    "phone": "+13414694318",
+    "address": {
+      "line1": "85673 Park Place",
+      "city": "Jermaineview",
+      "state": "Colorado",
+      "postalCode": "50126-9274",
+      "country": "IR"
+    },
+    "employment": {
+      "status": "employed",
+      "occupation": "Dynamic Intranet Liaison",
+      "employer": "Ziemann LLC",
+      "annualIncomeUsd": 236306,
+      "sourceOfFunds": "investment_income"
+    },
+    "document": {
+      "type": "drivers_license",
+      "documentId": "DOC-PYRLY82STZ",
+      "issuingCountry": "IR",
+      "verified": false,
+      "expiresOn": "2027-06-04"
+    },
+    "screening": {
+      "isPep": true,
+      "sanctionsMatch": true,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "high",
+    "createdAt": "2026-06-13T20:27:55.838Z"
+  },
+  {
+    "customerId": "CUST-00022",
+    "legalName": "Anna King",
+    "dateOfBirth": "1990-01-02",
+    "email": "ryleigh90@hotmail.com",
+    "phone": "+18494241864",
+    "address": {
+      "line1": "5024 Aufderhar Club",
+      "city": "North Ivory",
+      "state": "Massachusetts",
+      "postalCode": "04047-1210",
+      "country": "PA"
+    },
+    "employment": {
+      "status": "employed",
+      "occupation": "Legacy Creative Assistant",
+      "employer": "Vandervort and Sons",
+      "annualIncomeUsd": 216147,
+      "sourceOfFunds": "salary"
+    },
+    "document": {
+      "type": "national_id",
+      "documentId": "DOC-5V9KT9ESZC",
+      "issuingCountry": "PA",
+      "verified": true,
+      "expiresOn": "2034-02-06"
+    },
+    "screening": {
+      "isPep": false,
+      "sanctionsMatch": false,
+      "adverseMedia": false
+    },
+    "expectedRiskLevel": "low",
+    "createdAt": "2026-05-30T08:34:03.182Z"
+  },
+  {
+    "customerId": "CUST-00023",
+    "legalName": "Roland Williamson-Mayer",
+    "dateOfBirth": "1974-06-03",
+    "email": "eduardo.russel@hotmail.com",
+    "phone": "+14485498667",
+    "address": {
+      "line1": "2859 Denis Greens",
+      "city": "Durham",
+      "state": "New York",
+      "postalCode": "70229",
+      "country": "DM"
+    },
+    "employment": {
+      "status": "self_employed",
+      "occupation": "District Creative Manager",
+      "employer": "McKenzie - Donnelly",
+      "annualIncomeUsd": 208538,
+      "sourceOfFunds": "inheritance"
+    },
+    "document": {
+      "type": "passport",
+      "documentId": "DOC-MXB4T7HIWF",
+      "issuingCountry": "DM",
+      "verified": true,
+      "expiresOn": "2029-04-17"
+    },
+    "screening": {
+      "isPep": true,
+      "sanctionsMatch": false,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "medium",
+    "createdAt": "2026-06-04T08:00:43.363Z"
+  },
+  {
+    "customerId": "CUST-00024",
+    "legalName": "Phyllis Bartell",
+    "dateOfBirth": "1976-08-05",
+    "email": "antonietta.mante@hotmail.com",
+    "phone": "+12322195192",
+    "address": {
+      "line1": "91290 Maple Avenue",
+      "city": "Mansfield",
+      "state": "Montana",
+      "postalCode": "26363",
+      "country": "IR"
+    },
+    "employment": {
+      "status": "employed",
+      "occupation": "Direct Security Liaison",
+      "employer": "Huels LLC",
+      "annualIncomeUsd": 336109,
+      "sourceOfFunds": "business_income"
+    },
+    "document": {
+      "type": "passport",
+      "documentId": "DOC-ODDL95WSKR",
+      "issuingCountry": "IR",
+      "verified": true,
+      "expiresOn": "2031-10-05"
+    },
+    "screening": {
+      "isPep": true,
+      "sanctionsMatch": true,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "high",
+    "createdAt": "2026-05-22T22:28:16.215Z"
+  },
+  {
+    "customerId": "CUST-00025",
+    "legalName": "Brooke Jacobi",
+    "dateOfBirth": "1979-08-06",
+    "email": "fred97@gmail.com",
+    "phone": "+14493805130",
+    "address": {
+      "line1": "21905 Candace Roads",
+      "city": "Garden Grove",
+      "state": "Louisiana",
+      "postalCode": "60950",
+      "country": "ZA"
+    },
+    "employment": {
+      "status": "employed",
+      "occupation": "Corporate Security Agent",
+      "employer": "Lockman - Luettgen",
+      "annualIncomeUsd": 381472,
+      "sourceOfFunds": "inheritance"
+    },
+    "document": {
+      "type": "national_id",
+      "documentId": "DOC-URR5CNQD0I",
+      "issuingCountry": "ZA",
+      "verified": true,
+      "expiresOn": "2029-09-24"
+    },
+    "screening": {
+      "isPep": false,
+      "sanctionsMatch": false,
+      "adverseMedia": false
+    },
+    "expectedRiskLevel": "low",
+    "createdAt": "2026-06-06T00:04:02.807Z"
+  },
+  {
+    "customerId": "CUST-00026",
+    "legalName": "Barry Weber V",
+    "dateOfBirth": "1975-05-05",
+    "email": "maynard.kuphal94@gmail.com",
+    "phone": "+17924133458",
+    "address": {
+      "line1": "272 Homenick Estate",
+      "city": "Lake Carissa",
+      "state": "Colorado",
+      "postalCode": "08511",
+      "country": "RE"
+    },
+    "employment": {
+      "status": "student",
+      "occupation": "Principal Integration Strategist",
+      "employer": "Jerde - Halvorson",
+      "annualIncomeUsd": 239608,
+      "sourceOfFunds": "salary"
+    },
+    "document": {
+      "type": "passport",
+      "documentId": "DOC-ZRB1MQWDOY",
+      "issuingCountry": "RE",
+      "verified": true,
+      "expiresOn": "2031-08-11"
+    },
+    "screening": {
+      "isPep": false,
+      "sanctionsMatch": false,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "medium",
+    "createdAt": "2026-05-20T00:51:12.083Z"
+  },
+  {
+    "customerId": "CUST-00027",
+    "legalName": "Tabitha Funk",
+    "dateOfBirth": "1969-08-17",
+    "email": "abagail_swaniawski@yahoo.com",
+    "phone": "+18596229155",
+    "address": {
+      "line1": "5427 Blair Valleys",
+      "city": "Fort Howellshire",
+      "state": "Kansas",
+      "postalCode": "29930",
+      "country": "RU"
+    },
+    "employment": {
+      "status": "retired",
+      "occupation": "Lead Creative Technician",
+      "employer": "Becker - Johnston",
+      "annualIncomeUsd": 70435,
+      "sourceOfFunds": "inheritance"
+    },
+    "document": {
+      "type": "national_id",
+      "documentId": "DOC-JLJH0VYDKY",
+      "issuingCountry": "RU",
+      "verified": false,
+      "expiresOn": "2028-12-26"
+    },
+    "screening": {
+      "isPep": true,
+      "sanctionsMatch": true,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "high",
+    "createdAt": "2026-06-04T07:34:16.303Z"
+  },
+  {
+    "customerId": "CUST-00028",
+    "legalName": "Rickey McKenzie",
+    "dateOfBirth": "1948-12-14",
+    "email": "filiberto_crona@hotmail.com",
+    "phone": "+17164112052",
+    "address": {
+      "line1": "82288 Rolfson Overpass",
+      "city": "Macon-Bibb County",
+      "state": "Pennsylvania",
+      "postalCode": "92638-7295",
+      "country": "MF"
+    },
+    "employment": {
+      "status": "student",
+      "occupation": "Senior Configuration Technician",
+      "employer": "Hamill, Brekke and Macejkovic",
+      "annualIncomeUsd": 42798,
+      "sourceOfFunds": "salary"
+    },
+    "document": {
+      "type": "national_id",
+      "documentId": "DOC-WLV54QX44B",
+      "issuingCountry": "MF",
+      "verified": true,
+      "expiresOn": "2029-10-26"
+    },
+    "screening": {
+      "isPep": false,
+      "sanctionsMatch": false,
+      "adverseMedia": false
+    },
+    "expectedRiskLevel": "low",
+    "createdAt": "2026-05-23T14:36:31.228Z"
+  },
+  {
+    "customerId": "CUST-00029",
+    "legalName": "Mr. Ignacio Breitenberg",
+    "dateOfBirth": "1967-10-16",
+    "email": "arlo.brakus@hotmail.com",
+    "phone": "+12754528836",
+    "address": {
+      "line1": "287 Sipes Ferry",
+      "city": "Fort Jaydonfurt",
+      "state": "Minnesota",
+      "postalCode": "35212-2197",
+      "country": "NC"
+    },
+    "employment": {
+      "status": "unemployed",
+      "occupation": "Regional Integration Agent",
+      "employer": "Lindgren, Medhurst and Champlin",
+      "annualIncomeUsd": 108345,
+      "sourceOfFunds": "investment_income"
+    },
+    "document": {
+      "type": "passport",
+      "documentId": "DOC-D1P610YKN1",
+      "issuingCountry": "NC",
+      "verified": true,
+      "expiresOn": "2030-05-16"
+    },
+    "screening": {
+      "isPep": true,
+      "sanctionsMatch": false,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "medium",
+    "createdAt": "2026-05-18T12:07:34.002Z"
+  },
+  {
+    "customerId": "CUST-00030",
+    "legalName": "Glen Kshlerin",
+    "dateOfBirth": "2002-11-07",
+    "email": "newton34@gmail.com",
+    "phone": "+15229079583",
+    "address": {
+      "line1": "97650 Johnson Mews",
+      "city": "New Araceli",
+      "state": "Rhode Island",
+      "postalCode": "06495",
+      "country": "IR"
+    },
+    "employment": {
+      "status": "student",
+      "occupation": "Legacy Division Strategist",
+      "employer": "Hammes Inc",
+      "annualIncomeUsd": 153775,
+      "sourceOfFunds": "inheritance"
+    },
+    "document": {
+      "type": "passport",
+      "documentId": "DOC-BTUQKCYPGQ",
+      "issuingCountry": "IR",
+      "verified": true,
+      "expiresOn": "2031-04-25"
+    },
+    "screening": {
+      "isPep": true,
+      "sanctionsMatch": true,
+      "adverseMedia": true
+    },
+    "expectedRiskLevel": "high",
+    "createdAt": "2026-05-21T10:18:34.997Z"
+  }
+]
