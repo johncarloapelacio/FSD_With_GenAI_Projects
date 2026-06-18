@@ -11,54 +11,6 @@
       "location": "Glendale, CA",
       "joiningDate": "2026-06-09",
       "dob": "1989-03-30"
-    },
-    {
-      "id": 2,
-      "name": "Carlo Concepcion",
-      "email": "carlo.concepcion22@gmail.com",
-      "password": "1234567",
-      "designation": "Administrator",
-      "department": "",
-      "contact": "",
-      "location": "",
-      "joiningDate": "2026-06-10",
-      "dob": "2000-03-30"
-    },
-    {
-      "id": 3,
-      "name": "Ravi Deepal",
-      "email": "rdeepal@gmail.com",
-      "password": "789456",
-      "designation": "Administrator",
-      "department": "",
-      "contact": "",
-      "location": "",
-      "joiningDate": "2026-06-10",
-      "dob": "1999-12-12"
-    },
-    {
-      "id": 4,
-      "name": "John Doe",
-      "email": "johndoe@gmail.com",
-      "password": "12345678",
-      "designation": "Administrator",
-      "department": "",
-      "contact": "",
-      "location": "",
-      "joiningDate": "2026-06-10",
-      "dob": "2000-11-11"
-    },
-    {
-      "id": 5,
-      "name": "Sally Rivers",
-      "email": "sallyrivers@gmail.com",
-      "password": "44444444",
-      "designation": "Administrator",
-      "department": "",
-      "contact": "",
-      "location": "",
-      "joiningDate": "2026-06-10",
-      "dob": "2005-04-04"
     }
   ]
 }

@@ -149,3 +149,9 @@ public/
   js/                   common.js, signup.js, account.js, admin.js, employee.js
 cypress/                Cypress config, support, and e2e specs
 ```
+
+## TODOS
+
+- Only Admin adds admin
+- Admin checkmark for new and signup guard
+- Message for adding admin; must be human relations
