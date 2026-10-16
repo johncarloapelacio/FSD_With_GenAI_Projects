@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "generate": "node scripts/generate-artifacts.js",
-    "test": "jest --runInBand",
-    "test:coverage": "jest --coverage --runInBand"
+    "test": "node --experimental-vm-modules scripts/run-tests.js",
+    "test:coverage": "node --experimental-vm-modules scripts/run-tests.js --coverage"
   },
   "keywords": [
     "kyc",
@@ -20,7 +20,15 @@
   "license": "MIT",
   "type": "commonjs",
   "devDependencies": {
-    "@faker-js/faker": "^9.9.0",
-    "jest": "^30.0.0"
+    "@faker-js/faker": "^10.6.0",
+    "jest": "^30.5.2"
+  },
+  "engines": {
+    "node": ">=24.9.0"
+  },
+  "overrides": {
+    "@istanbuljs/load-nyc-config": {
+      "js-yaml": "^4.3.2"
+    }
   }
 }

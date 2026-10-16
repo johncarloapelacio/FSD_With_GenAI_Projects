@@ -1,94 +1,96 @@
 # Test Execution Report
 
-Generated: 2026-06-14T06:58:13.391Z
+Generated: 2026-10-16T07:00:09.286Z
 
 ## Summary
 
-- Requirements covered: 11/11 (100%)
-- Test cases: 7
-- Automated tests: 7
-- Passed mapped tests: 7
+- Catalog mapping: 11/11 (100%). This is not functional test coverage.
+- Requirements with local implementation checks: 5; partial simulation: 1; catalog review only: 5.
+- Catalog cases: 7; passed: 7; failed: 0; skipped: 0; not run: 0.
+- Observed Jest run: 43 passed / 43 assertions; 0 failed; 0 failed suites; 2255 ms. Overall success: true.
 
 ## Risks and Notes
 
-- External service integrations are represented by test doubles and synthetic screening fields.
-- Generated data is deterministic for repeatable evidence and does not represent real customers.
-- Performance threshold is local to this training project and should be recalibrated for enterprise environments.
+- Mapping completeness is not functional acceptance coverage or source-code coverage.
+- Chatbot, NLP, banking/CRM integration, live screening, retries, and log privacy are planned requirements; no such services are implemented or verified here.
+- Risk rules use synthetic fields and illustrative thresholds, not regulatory guidance or a production AML detection model. Large single wires are a proxy, not evidence of rapid movement.
+- Data uses fixed reference dates and seeds. Synthetic identities must not be used to contact people or screen real accounts.
+- Performance results measure local generation and evaluation only, not banking service latency or capacity.
 
 ## Requirement Results
 
 ### REQ-CHAT-001: Guided KYC onboarding conversation
 
-Coverage: Covered
+Scope: Catalog review only
 
-- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed
+- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed (Catalog review)
 
 ### REQ-CHAT-002: Case status and escalation support
 
-Coverage: Covered
+Scope: Catalog review only
 
-- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed
+- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed (Catalog review)
 
 ### REQ-NLP-001: Intent recognition for banking compliance journeys
 
-Coverage: Covered
+Scope: Catalog review only
 
-- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed
+- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed (Catalog review)
 
 ### REQ-NLP-002: Entity extraction for KYC and AML fields
 
-Coverage: Covered
+Scope: Catalog review only
 
-- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed
+- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed (Catalog review)
 
 ### REQ-INT-001: Core banking and CRM integration
 
-Coverage: Covered
+Scope: Catalog review only
 
-- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed
+- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed (Catalog review)
 
 ### REQ-INT-002: Identity verification and sanctions screening integration
 
-Coverage: Covered
+Scope: Partial: simulated signals only
 
-- TC-KYC-002: KYC risk engine flags high-risk and sanctions customers - Passed
-- TC-AML-002: AML rules raise alerts for suspicious activity - Passed
-- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed
+- TC-KYC-002: KYC risk engine flags high-risk and sanctions customers - Passed (Local implementation check)
+- TC-AML-002: AML rules raise alerts for suspicious activity - Passed (Local implementation check)
+- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed (Catalog review)
 
 ### REQ-KYC-001: Complete synthetic KYC customer profiles
 
-Coverage: Covered
+Scope: Local implementation checks
 
-- TC-KYC-001: KYC generator creates complete synthetic customer profiles - Passed
-- TC-KYC-002: KYC risk engine flags high-risk and sanctions customers - Passed
-- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed
+- TC-KYC-001: KYC generator creates complete synthetic customer profiles - Passed (Local implementation check)
+- TC-KYC-002: KYC risk engine flags high-risk and sanctions customers - Passed (Local implementation check)
+- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed (Catalog review)
 
 ### REQ-AML-001: Synthetic AML transaction scenarios
 
-Coverage: Covered
+Scope: Local implementation checks
 
-- TC-AML-001: AML generator covers required suspicious typologies - Passed
-- TC-AML-002: AML rules raise alerts for suspicious activity - Passed
-- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed
+- TC-AML-001: AML generator covers required suspicious typologies - Passed (Local implementation check)
+- TC-AML-002: AML rules raise alerts for suspicious activity - Passed (Local implementation check)
+- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed (Catalog review)
 
 ### REQ-SCALE-001: Scalable test data generation
 
-Coverage: Covered
+Scope: Local implementation checks
 
-- TC-KYC-001: KYC generator creates complete synthetic customer profiles - Passed
-- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed
-- TC-PERF-001: Synthetic data generation meets local performance threshold - Passed
+- TC-KYC-001: KYC generator creates complete synthetic customer profiles - Passed (Local implementation check)
+- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed (Catalog review)
+- TC-PERF-001: Synthetic data generation meets local performance threshold - Passed (Local implementation check)
 
 ### REQ-PERF-001: Performance expectations for compliance workflows
 
-Coverage: Covered
+Scope: Local implementation checks
 
-- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed
-- TC-PERF-001: Synthetic data generation meets local performance threshold - Passed
+- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed (Catalog review)
+- TC-PERF-001: Synthetic data generation meets local performance threshold - Passed (Local implementation check)
 
 ### REQ-REP-001: RTM and test report generation
 
-Coverage: Covered
+Scope: Local implementation checks
 
-- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed
-- TC-REP-001: RTM maps test cases to requirements and execution evidence - Passed
+- TC-REQ-001: Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting - Passed (Catalog review)
+- TC-REP-001: RTM maps test cases to requirements and execution evidence - Passed (Local implementation check)

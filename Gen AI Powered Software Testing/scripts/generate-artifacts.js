@@ -30,7 +30,7 @@ function requirementsMarkdown() {
   const lines = [
     "# Requirements Catalog",
     "",
-    "The following requirements were created from the assignment prompt for an AI-assisted KYC and anti-money laundering banking platform.",
+    "The following target requirements were created from the assignment prompt for an AI-assisted KYC and anti-money laundering banking platform. The execution report distinguishes implemented local checks from unimplemented targets.",
     ""
   ];
 
@@ -158,35 +158,36 @@ function genAiReportMarkdown(testReport) {
   lines.push("## Challenges and Resolution");
   lines.push("");
   lines.push(
-    "The main challenge was balancing a broad platform vision with a training-project scope. The solution was to represent external systems with synthetic fields and local rule evaluators while preserving realistic requirement coverage. A second challenge was repeatability: seeded faker generation was selected so test evidence remains stable across runs. A third challenge was team-capacity conflict; the sprint plan was adjusted by protecting must-have compliance scope and delaying lower-risk enhancements."
+    "The main challenge was balancing a broad platform vision with a training-project scope. The solution was to represent external systems with synthetic fields and local rule evaluators while explicitly separating implemented checks from planned service behavior. A second challenge was repeatability: seeded faker generation was selected so test evidence remains stable across runs. A third challenge was team-capacity conflict; the sprint plan was adjusted by protecting must-have compliance scope and delaying lower-risk enhancements."
   );
 
   lines.push("");
   lines.push("## Critical Analysis of Outcomes");
   lines.push("");
   lines.push(
-    `The generated RTM covers ${testReport.summary.coveredRequirements}/${testReport.summary.totalRequirements} requirements, with ${testReport.summary.totalTestCases} mapped test cases. This is effective for demonstrating traceability and automated evidence. The main limitation is that production integrations, model confidence metrics, and external sanctions services are simulated, so enterprise adoption would require contract tests, security testing, privacy review, and live-service performance baselines.`
+    `The RTM maps ${testReport.summary.mappedRequirements}/${testReport.summary.totalRequirements} requirements, with ${testReport.summary.totalTestCases} mapped test cases. Mapping records planning traceability; it does not establish functional acceptance coverage. Consult the execution report for observed results and unimplemented requirements. The main limitation is that production integrations, model confidence metrics, and external sanctions services are not implemented; only synthetic screening indicators are evaluated, so enterprise adoption would require contract tests, security testing, privacy review, and live-service performance baselines.`
   );
 
   lines.push("");
   lines.push("## Conclusion");
   lines.push("");
   lines.push(
-    "Generative AI improved speed and completeness by turning ambiguous goals into structured artifacts. The strongest outcome is traceability: every major assignment area is represented by requirements, test data, test cases, automated execution, and reporting evidence."
+    "Generative AI improved speed and completeness by turning ambiguous goals into structured artifacts. The framework demonstrates local synthetic-data checks and traceability. Chatbot, NLP, and live integrations remain planned and must not be reported as implemented or verified."
   );
   lines.push("");
 
   return lines.join("\n");
 }
 
-function main() {
+function generateArtifacts(jestResults) {
   const start = Date.now();
   const customers = generateKycCustomers(30);
   const amlScenarios = generateAmlScenarios(customers);
-  const executionResults = buildExecutionResults(testCases);
+  const executionResults = buildExecutionResults(testCases, jestResults);
   const rtm = buildRtm(requirements, testCases, executionResults);
-  const testReport = buildTestReport(requirements, testCases, rtm, executionResults);
+  const testReport = buildTestReport(requirements, testCases, rtm, executionResults, jestResults);
   const elapsedMs = Date.now() - start;
+  for (const dir of ["data/generated", "reports", "docs"]) fs.mkdirSync(path.join(root, dir), { recursive: true });
 
   writeJson("data/generated/kyc-customers.json", customers);
   writeJson("data/generated/aml-scenarios.json", amlScenarios);
@@ -194,11 +195,12 @@ function main() {
   writeJson("reports/rtm.json", rtm);
   writeJson("reports/execution-summary.json", {
     generatedAt: new Date().toISOString(),
-    elapsedMs,
+    artifactGenerationElapsedMs: elapsedMs,
     generatedCustomerCount: customers.length,
     generatedTransactionCount: amlScenarios.length,
     mappedTestCaseCount: testCases.length,
-    coveragePercent: testReport.summary.coveragePercent
+    summary: testReport.summary,
+    executionResults: testReport.executionResults
   });
 
   writeText("reports/rtm.md", rtmToMarkdown(rtm));
@@ -208,7 +210,8 @@ function main() {
   writeText("docs/genai-process-report.md", genAiReportMarkdown(testReport));
 
   console.log(`Generated ${customers.length} KYC customers, ${amlScenarios.length} AML transactions, and ${testCases.length} test cases.`);
-  console.log(`RTM coverage: ${testReport.summary.coveragePercent}%. Artifact generation took ${elapsedMs}ms.`);
+  console.log(`Catalog mapping: ${testReport.summary.mappingPercent}% (not functional coverage). Artifact generation took ${elapsedMs}ms.`);
 }
 
-main();
+if (require.main === module) generateArtifacts();
+module.exports = { generateArtifacts };

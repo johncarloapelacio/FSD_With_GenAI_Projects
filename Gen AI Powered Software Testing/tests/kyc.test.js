@@ -19,6 +19,7 @@ describe("KYC synthetic data and risk rules", () => {
 
   test("TC-KYC-002 includes low, medium, and high-risk KYC examples", () => {
     const customers = generateKycCustomers(30);
+    customers.forEach((customer) => expect(calculateKycRisk(customer)).toBe(customer.expectedRiskLevel));
     const expectedRiskLevels = new Set(customers.map((customer) => customer.expectedRiskLevel));
 
     expect(expectedRiskLevels).toEqual(new Set(["low", "medium", "high"]));
@@ -27,7 +28,7 @@ describe("KYC synthetic data and risk rules", () => {
     expect(customers.some((customer) => calculateKycRisk(customer) === "low")).toBe(true);
   });
 
-  test("sanctions-positive customers require manual review", () => {
+  test("TC-KYC-002 sanctions-positive customers require manual review", () => {
     const customers = generateKycCustomers(30);
     const sanctionsMatches = customers.filter((customer) => customer.screening.sanctionsMatch);
 

@@ -11,6 +11,7 @@ const testCases = [
     ],
     expectedResult: "All generated customers contain required synthetic KYC fields and unique identifiers.",
     automated: true,
+    jestFiles: ["tests/kyc.test.js", "tests/boundaries.test.js"],
     jestFile: "tests/kyc.test.js"
   },
   {
@@ -25,6 +26,7 @@ const testCases = [
     ],
     expectedResult: "High-risk and sanctions-positive customers are identified for compliance review.",
     automated: true,
+    jestFiles: ["tests/kyc.test.js", "tests/boundaries.test.js"],
     jestFile: "tests/kyc.test.js"
   },
   {
@@ -39,6 +41,7 @@ const testCases = [
     ],
     expectedResult: "Generated data includes normal activity, structuring, rapid movement, high-risk geography, and sanctions exposure.",
     automated: true,
+    jestFiles: ["tests/aml.test.js", "tests/boundaries.test.js"],
     jestFile: "tests/aml.test.js"
   },
   {
@@ -53,6 +56,7 @@ const testCases = [
     ],
     expectedResult: "Suspicious transactions raise alerts with traceable reasons.",
     automated: true,
+    jestFiles: ["tests/aml.test.js", "tests/boundaries.test.js"],
     jestFile: "tests/aml.test.js"
   },
   {
@@ -89,9 +93,9 @@ const testCases = [
     steps: [
       "Generate the RTM from requirements and test case definitions.",
       "Validate every test case maps to a requirement.",
-      "Validate every must-have requirement has automated coverage."
+      "Distinguish catalog review from local functional checks and simulated integrations."
     ],
-    expectedResult: "The RTM provides complete traceability from requirements to automated test evidence.",
+    expectedResult: "The RTM provides traceability with explicit evidence scope and observed execution status.",
     automated: true,
     jestFile: "tests/reporting.test.js"
   },
@@ -101,11 +105,11 @@ const testCases = [
     type: "Performance",
     requirementIds: ["REQ-PERF-001", "REQ-SCALE-001"],
     steps: [
-      "Generate a larger KYC dataset.",
+      "Generate 2,000 KYC customers and 5,600 transactions, then evaluate all risk and alert results.",
       "Generate AML transactions from the dataset.",
       "Measure elapsed execution time."
     ],
-    expectedResult: "Data generation completes within the documented local test threshold.",
+    expectedResult: "Data generation completes within a five-second local budget; no external-service performance is measured.",
     automated: true,
     jestFile: "tests/performance.test.js"
   }

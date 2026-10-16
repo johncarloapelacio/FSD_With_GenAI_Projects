@@ -58,16 +58,16 @@ Story points were estimated by complexity, compliance risk, integration uncertai
 
 - Sprint 1: Establish requirements, chatbot KYC flow, NLP scope, and KYC synthetic data foundation. Monitoring approach: Daily review of generated requirements, test data schema completeness, and open validation defects.
 - Sprint 2: Add AML typology data, screening/risk logic, and escalation workflow coverage. Monitoring approach: Track rule coverage by typology, review high-risk false positives, and confirm integration assumptions.
-- Sprint 3: Complete RTM automation, reporting, performance checks, and release evidence. Monitoring approach: Review RTM gaps, stabilize Jest execution, and confirm all must-have requirements have passing coverage.
+- Sprint 3: Complete RTM automation, reporting, performance checks, and release evidence. Monitoring approach: Review RTM gaps, stabilize Jest execution, and record observed local test results and identify planned requirements with no implemented acceptance checks.
 
 ## Challenges and Resolution
 
-The main challenge was balancing a broad platform vision with a training-project scope. The solution was to represent external systems with synthetic fields and local rule evaluators while preserving realistic requirement coverage. A second challenge was repeatability: seeded faker generation was selected so test evidence remains stable across runs. A third challenge was team-capacity conflict; the sprint plan was adjusted by protecting must-have compliance scope and delaying lower-risk enhancements.
+The main challenge was balancing a broad platform vision with a training-project scope. The solution was to represent external systems with synthetic fields and local rule evaluators while explicitly separating implemented checks from planned service behavior. A second challenge was repeatability: seeded faker generation was selected so test evidence remains stable across runs. A third challenge was team-capacity conflict; the sprint plan was adjusted by protecting must-have compliance scope and delaying lower-risk enhancements.
 
 ## Critical Analysis of Outcomes
 
-The generated RTM covers 11/11 requirements, with 7 mapped test cases. This is effective for demonstrating traceability and automated evidence. The main limitation is that production integrations, model confidence metrics, and external sanctions services are simulated, so enterprise adoption would require contract tests, security testing, privacy review, and live-service performance baselines.
+The RTM maps 11/11 requirements, with 7 mapped test cases. Mapping records planning traceability; it does not establish functional acceptance coverage. Consult the execution report for observed results and unimplemented requirements. The main limitation is that production integrations, model confidence metrics, and external sanctions services are not implemented; only synthetic screening indicators are evaluated, so enterprise adoption would require contract tests, security testing, privacy review, and live-service performance baselines.
 
 ## Conclusion
 
-Generative AI improved speed and completeness by turning ambiguous goals into structured artifacts. The strongest outcome is traceability: every major assignment area is represented by requirements, test data, test cases, automated execution, and reporting evidence.
+Generative AI improved speed and completeness by turning ambiguous goals into structured artifacts. The framework demonstrates local synthetic-data checks and traceability. Chatbot, NLP, and live integrations remain planned and must not be reported as implemented or verified.

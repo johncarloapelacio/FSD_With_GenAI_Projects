@@ -1,4 +1,8 @@
-const { faker } = require("@faker-js/faker");
+const { Faker, en } = require("@faker-js/faker");
+
+const faker = new Faker({ locale: [en] });
+const REFERENCE_DATE = "2026-06-13T12:00:00.000Z";
+const SAFE_COUNTRIES = ["US", "CA", "GB", "FR", "DE", "AU", "JP"];
 
 const RISK_LEVELS = ["low", "medium", "high"];
 const DOCUMENT_TYPES = ["passport", "drivers_license", "national_id"];
@@ -6,15 +10,15 @@ const EMPLOYMENT_STATUSES = ["employed", "self_employed", "student", "retired", 
 
 function createKycCustomer(index = 0) {
   const riskLevel = RISK_LEVELS[index % RISK_LEVELS.length];
-  const country = riskLevel === "high" ? faker.helpers.arrayElement(["IR", "KP", "RU"]) : faker.location.countryCode();
-  const isPep = riskLevel === "high" || (riskLevel === "medium" && index % 2 === 0);
+  const country = riskLevel === "high" ? faker.helpers.arrayElement(["IR", "KP", "RU"]) : faker.helpers.arrayElement(SAFE_COUNTRIES);
+  const isPep = riskLevel !== "low";
   const sanctionsMatch = riskLevel === "high" && index % 3 === 2;
 
   return {
     customerId: `CUST-${String(index + 1).padStart(5, "0")}`,
     legalName: faker.person.fullName(),
-    dateOfBirth: faker.date.birthdate({ min: 18, max: 85, mode: "age" }).toISOString().slice(0, 10),
-    email: faker.internet.email().toLowerCase(),
+    dateOfBirth: faker.date.birthdate({ min: 18, max: 85, mode: "age", refDate: REFERENCE_DATE }).toISOString().slice(0, 10),
+    email: `customer${index + 1}@example.test`,
     phone: faker.phone.number({ style: "international" }),
     address: {
       line1: faker.location.streetAddress(),
@@ -27,7 +31,7 @@ function createKycCustomer(index = 0) {
       status: faker.helpers.arrayElement(EMPLOYMENT_STATUSES),
       occupation: faker.person.jobTitle(),
       employer: faker.company.name(),
-      annualIncomeUsd: faker.number.int({ min: 18000, max: 450000 }),
+      annualIncomeUsd: faker.number.int({ min: 18000, max: riskLevel === "low" ? 240000 : 450000 }),
       sourceOfFunds: faker.helpers.arrayElement(["salary", "business_income", "investment_income", "inheritance"])
     },
     document: {
@@ -35,19 +39,20 @@ function createKycCustomer(index = 0) {
       documentId: `DOC-${faker.string.alphanumeric({ length: 10, casing: "upper" })}`,
       issuingCountry: country,
       verified: riskLevel !== "high" || index % 2 === 1,
-      expiresOn: faker.date.future({ years: 8 }).toISOString().slice(0, 10)
+      expiresOn: faker.date.future({ years: 8, refDate: REFERENCE_DATE }).toISOString().slice(0, 10)
     },
     screening: {
       isPep,
       sanctionsMatch,
-      adverseMedia: riskLevel === "high" || (riskLevel === "medium" && index % 3 === 1)
+      adverseMedia: riskLevel !== "low"
     },
     expectedRiskLevel: riskLevel,
-    createdAt: faker.date.recent({ days: 30 }).toISOString()
+    createdAt: faker.date.recent({ days: 30, refDate: REFERENCE_DATE }).toISOString()
   };
 }
 
 function generateKycCustomers(count = 30, seed = 20260613) {
+  if (!Number.isSafeInteger(count) || count < 0 || count > 100000) throw new RangeError("count must be an integer from 0 to 100000");
   faker.seed(seed);
   return Array.from({ length: count }, (_, index) => createKycCustomer(index));
 }

@@ -4,14 +4,18 @@
     "category": "Chatbot Functionality",
     "title": "Guided KYC onboarding conversation",
     "priority": "Must Have",
-    "coverageStatus": "Covered",
+    "coverageStatus": "Catalog review only",
     "testCases": [
       {
         "testCaseId": "TC-REQ-001",
         "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
         "automated": true,
+        "scope": "Catalog review",
         "status": "Passed",
-        "evidence": "tests/requirements.test.js"
+        "evidence": [
+          "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
+        ],
+        "durationMs": 3
       }
     ]
   },
@@ -20,14 +24,18 @@
     "category": "Chatbot Functionality",
     "title": "Case status and escalation support",
     "priority": "Must Have",
-    "coverageStatus": "Covered",
+    "coverageStatus": "Catalog review only",
     "testCases": [
       {
         "testCaseId": "TC-REQ-001",
         "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
         "automated": true,
+        "scope": "Catalog review",
         "status": "Passed",
-        "evidence": "tests/requirements.test.js"
+        "evidence": [
+          "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
+        ],
+        "durationMs": 3
       }
     ]
   },
@@ -36,14 +44,18 @@
     "category": "NLP Capabilities",
     "title": "Intent recognition for banking compliance journeys",
     "priority": "Must Have",
-    "coverageStatus": "Covered",
+    "coverageStatus": "Catalog review only",
     "testCases": [
       {
         "testCaseId": "TC-REQ-001",
         "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
         "automated": true,
+        "scope": "Catalog review",
         "status": "Passed",
-        "evidence": "tests/requirements.test.js"
+        "evidence": [
+          "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
+        ],
+        "durationMs": 3
       }
     ]
   },
@@ -52,14 +64,18 @@
     "category": "NLP Capabilities",
     "title": "Entity extraction for KYC and AML fields",
     "priority": "Should Have",
-    "coverageStatus": "Covered",
+    "coverageStatus": "Catalog review only",
     "testCases": [
       {
         "testCaseId": "TC-REQ-001",
         "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
         "automated": true,
+        "scope": "Catalog review",
         "status": "Passed",
-        "evidence": "tests/requirements.test.js"
+        "evidence": [
+          "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
+        ],
+        "durationMs": 3
       }
     ]
   },
@@ -68,14 +84,18 @@
     "category": "Integration",
     "title": "Core banking and CRM integration",
     "priority": "Must Have",
-    "coverageStatus": "Covered",
+    "coverageStatus": "Catalog review only",
     "testCases": [
       {
         "testCaseId": "TC-REQ-001",
         "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
         "automated": true,
+        "scope": "Catalog review",
         "status": "Passed",
-        "evidence": "tests/requirements.test.js"
+        "evidence": [
+          "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
+        ],
+        "durationMs": 3
       }
     ]
   },
@@ -84,28 +104,56 @@
     "category": "Integration",
     "title": "Identity verification and sanctions screening integration",
     "priority": "Must Have",
-    "coverageStatus": "Covered",
+    "coverageStatus": "Partial: simulated signals only",
     "testCases": [
       {
         "testCaseId": "TC-KYC-002",
         "title": "KYC risk engine flags high-risk and sanctions customers",
         "automated": true,
+        "scope": "Local implementation check",
         "status": "Passed",
-        "evidence": "tests/kyc.test.js"
+        "evidence": [
+          "TC-KYC-002 incomplete and malformed profiles require manual review",
+          "TC-KYC-002 an unverified identity document requires review even at low overall risk",
+          "KYC synthetic data and risk rules TC-KYC-002 includes low, medium, and high-risk KYC examples",
+          "KYC synthetic data and risk rules TC-KYC-002 sanctions-positive customers require manual review"
+        ],
+        "durationMs": 16
       },
       {
         "testCaseId": "TC-AML-002",
         "title": "AML rules raise alerts for suspicious activity",
         "automated": true,
+        "scope": "Local implementation check",
         "status": "Passed",
-        "evidence": "tests/aml.test.js"
+        "evidence": [
+          "TC-AML-002 structuring amount boundary 8999.99",
+          "TC-AML-002 structuring amount boundary 9000",
+          "TC-AML-002 structuring amount boundary 9999.99",
+          "TC-AML-002 structuring amount boundary 10000",
+          "TC-AML-002 wire proxy amount boundary 14999.99",
+          "TC-AML-002 wire proxy amount boundary 15000",
+          "TC-AML-002 malformed amount fails rather than silently clears -1",
+          "TC-AML-002 malformed amount fails rather than silently clears 0",
+          "TC-AML-002 malformed amount fails rather than silently clears NaN",
+          "TC-AML-002 malformed amount fails rather than silently clears Infinity",
+          "TC-AML-002 malformed amount fails rather than silently clears 9000",
+          "TC-AML-002 combined signals retain all reasons and severity",
+          "AML synthetic scenarios and detection rules TC-AML-002 raises alerts for suspicious transactions and not normal activity",
+          "AML synthetic scenarios and detection rules TC-AML-002 sanctions exposure has critical severity"
+        ],
+        "durationMs": 24
       },
       {
         "testCaseId": "TC-REQ-001",
         "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
         "automated": true,
+        "scope": "Catalog review",
         "status": "Passed",
-        "evidence": "tests/requirements.test.js"
+        "evidence": [
+          "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
+        ],
+        "durationMs": 3
       }
     ]
   },
@@ -114,28 +162,50 @@
     "category": "KYC Data",
     "title": "Complete synthetic KYC customer profiles",
     "priority": "Must Have",
-    "coverageStatus": "Covered",
+    "coverageStatus": "Local implementation checks",
     "testCases": [
       {
         "testCaseId": "TC-KYC-001",
         "title": "KYC generator creates complete synthetic customer profiles",
         "automated": true,
+        "scope": "Local implementation check",
         "status": "Passed",
-        "evidence": "tests/kyc.test.js"
+        "evidence": [
+          "TC-KYC-001 generation is repeatable across wall clocks and seeds are isolated from AML generation",
+          "TC-KYC-001 rejects invalid count -1",
+          "TC-KYC-001 rejects invalid count 1.2",
+          "TC-KYC-001 rejects invalid count 30",
+          "TC-KYC-001 rejects invalid count NaN",
+          "TC-KYC-001 rejects invalid count 100001",
+          "TC-KYC-001 supports an empty dataset",
+          "KYC synthetic data and risk rules TC-KYC-001 generates complete profiles with unique customer and document IDs"
+        ],
+        "durationMs": 68
       },
       {
         "testCaseId": "TC-KYC-002",
         "title": "KYC risk engine flags high-risk and sanctions customers",
         "automated": true,
+        "scope": "Local implementation check",
         "status": "Passed",
-        "evidence": "tests/kyc.test.js"
+        "evidence": [
+          "TC-KYC-002 incomplete and malformed profiles require manual review",
+          "TC-KYC-002 an unverified identity document requires review even at low overall risk",
+          "KYC synthetic data and risk rules TC-KYC-002 includes low, medium, and high-risk KYC examples",
+          "KYC synthetic data and risk rules TC-KYC-002 sanctions-positive customers require manual review"
+        ],
+        "durationMs": 16
       },
       {
         "testCaseId": "TC-REQ-001",
         "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
         "automated": true,
+        "scope": "Catalog review",
         "status": "Passed",
-        "evidence": "tests/requirements.test.js"
+        "evidence": [
+          "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
+        ],
+        "durationMs": 3
       }
     ]
   },
@@ -144,28 +214,54 @@
     "category": "AML Monitoring",
     "title": "Synthetic AML transaction scenarios",
     "priority": "Must Have",
-    "coverageStatus": "Covered",
+    "coverageStatus": "Local implementation checks",
     "testCases": [
       {
         "testCaseId": "TC-AML-001",
         "title": "AML generator covers required suspicious typologies",
         "automated": true,
+        "scope": "Local implementation check",
         "status": "Passed",
-        "evidence": "tests/aml.test.js"
+        "evidence": [
+          "TC-AML-001 generation is repeatable and rejects duplicate customers",
+          "AML synthetic scenarios and detection rules TC-AML-001 covers required AML typologies"
+        ],
+        "durationMs": 38
       },
       {
         "testCaseId": "TC-AML-002",
         "title": "AML rules raise alerts for suspicious activity",
         "automated": true,
+        "scope": "Local implementation check",
         "status": "Passed",
-        "evidence": "tests/aml.test.js"
+        "evidence": [
+          "TC-AML-002 structuring amount boundary 8999.99",
+          "TC-AML-002 structuring amount boundary 9000",
+          "TC-AML-002 structuring amount boundary 9999.99",
+          "TC-AML-002 structuring amount boundary 10000",
+          "TC-AML-002 wire proxy amount boundary 14999.99",
+          "TC-AML-002 wire proxy amount boundary 15000",
+          "TC-AML-002 malformed amount fails rather than silently clears -1",
+          "TC-AML-002 malformed amount fails rather than silently clears 0",
+          "TC-AML-002 malformed amount fails rather than silently clears NaN",
+          "TC-AML-002 malformed amount fails rather than silently clears Infinity",
+          "TC-AML-002 malformed amount fails rather than silently clears 9000",
+          "TC-AML-002 combined signals retain all reasons and severity",
+          "AML synthetic scenarios and detection rules TC-AML-002 raises alerts for suspicious transactions and not normal activity",
+          "AML synthetic scenarios and detection rules TC-AML-002 sanctions exposure has critical severity"
+        ],
+        "durationMs": 24
       },
       {
         "testCaseId": "TC-REQ-001",
         "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
         "automated": true,
+        "scope": "Catalog review",
         "status": "Passed",
-        "evidence": "tests/requirements.test.js"
+        "evidence": [
+          "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
+        ],
+        "durationMs": 3
       }
     ]
   },
@@ -174,28 +270,47 @@
     "category": "Scalability",
     "title": "Scalable test data generation",
     "priority": "Should Have",
-    "coverageStatus": "Covered",
+    "coverageStatus": "Local implementation checks",
     "testCases": [
       {
         "testCaseId": "TC-KYC-001",
         "title": "KYC generator creates complete synthetic customer profiles",
         "automated": true,
+        "scope": "Local implementation check",
         "status": "Passed",
-        "evidence": "tests/kyc.test.js"
+        "evidence": [
+          "TC-KYC-001 generation is repeatable across wall clocks and seeds are isolated from AML generation",
+          "TC-KYC-001 rejects invalid count -1",
+          "TC-KYC-001 rejects invalid count 1.2",
+          "TC-KYC-001 rejects invalid count 30",
+          "TC-KYC-001 rejects invalid count NaN",
+          "TC-KYC-001 rejects invalid count 100001",
+          "TC-KYC-001 supports an empty dataset",
+          "KYC synthetic data and risk rules TC-KYC-001 generates complete profiles with unique customer and document IDs"
+        ],
+        "durationMs": 68
       },
       {
         "testCaseId": "TC-REQ-001",
         "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
         "automated": true,
+        "scope": "Catalog review",
         "status": "Passed",
-        "evidence": "tests/requirements.test.js"
+        "evidence": [
+          "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
+        ],
+        "durationMs": 3
       },
       {
         "testCaseId": "TC-PERF-001",
         "title": "Synthetic data generation meets local performance threshold",
         "automated": true,
+        "scope": "Local implementation check",
         "status": "Passed",
-        "evidence": "tests/performance.test.js"
+        "evidence": [
+          "local synthetic generation and evaluation budget TC-PERF-001 processes 2000 customers and 5600 transactions within five seconds"
+        ],
+        "durationMs": 499
       }
     ]
   },
@@ -204,21 +319,29 @@
     "category": "Performance",
     "title": "Performance expectations for compliance workflows",
     "priority": "Should Have",
-    "coverageStatus": "Covered",
+    "coverageStatus": "Local implementation checks",
     "testCases": [
       {
         "testCaseId": "TC-REQ-001",
         "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
         "automated": true,
+        "scope": "Catalog review",
         "status": "Passed",
-        "evidence": "tests/requirements.test.js"
+        "evidence": [
+          "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
+        ],
+        "durationMs": 3
       },
       {
         "testCaseId": "TC-PERF-001",
         "title": "Synthetic data generation meets local performance threshold",
         "automated": true,
+        "scope": "Local implementation check",
         "status": "Passed",
-        "evidence": "tests/performance.test.js"
+        "evidence": [
+          "local synthetic generation and evaluation budget TC-PERF-001 processes 2000 customers and 5600 transactions within five seconds"
+        ],
+        "durationMs": 499
       }
     ]
   },
@@ -227,21 +350,38 @@
     "category": "Reporting",
     "title": "RTM and test report generation",
     "priority": "Must Have",
-    "coverageStatus": "Covered",
+    "coverageStatus": "Local implementation checks",
     "testCases": [
       {
         "testCaseId": "TC-REQ-001",
         "title": "Requirements cover chatbot, NLP, integration, scale, performance, KYC, AML, and reporting",
         "automated": true,
+        "scope": "Catalog review",
         "status": "Passed",
-        "evidence": "tests/requirements.test.js"
+        "evidence": [
+          "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
+        ],
+        "durationMs": 3
       },
       {
         "testCaseId": "TC-REP-001",
         "title": "RTM maps test cases to requirements and execution evidence",
         "automated": true,
+        "scope": "Local implementation check",
         "status": "Passed",
-        "evidence": "tests/reporting.test.js"
+        "evidence": [
+          "RTM evidence integrity TC-REP-001 distinguishes local implementation from catalog-only and partial simulation",
+          "RTM evidence integrity TC-REP-001 no execution never means passed",
+          "RTM evidence integrity TC-REP-001 aggregates observed assertion statuses 0",
+          "RTM evidence integrity TC-REP-001 aggregates observed assertion statuses 1",
+          "RTM evidence integrity TC-REP-001 aggregates observed assertion statuses 2",
+          "RTM evidence integrity TC-REP-001 aggregates observed assertion statuses 3",
+          "RTM evidence integrity TC-REP-001 aggregates observed assertion statuses 4",
+          "RTM evidence integrity TC-REP-001 failed suite initialization cannot produce a pass",
+          "RTM evidence integrity TC-REP-001 ignores unrelated IDs and assertions in wrong files",
+          "TC-REP-001 human-readable artifacts disclose unexecuted results and mapping limits"
+        ],
+        "durationMs": 8
       }
     ]
   }

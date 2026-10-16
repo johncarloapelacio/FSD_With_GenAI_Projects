@@ -22,7 +22,7 @@ describe("AML synthetic scenarios and detection rules", () => {
     }
   });
 
-  test("sanctions exposure has critical severity", () => {
+  test("TC-AML-002 sanctions exposure has critical severity", () => {
     const customers = generateKycCustomers(10);
     const transactions = generateAmlScenarios(customers);
     const sanctionsTransaction = transactions.find((transaction) => transaction.typology === "sanctions_exposure");

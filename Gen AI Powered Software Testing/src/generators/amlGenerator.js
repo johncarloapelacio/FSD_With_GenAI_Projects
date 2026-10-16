@@ -1,4 +1,7 @@
-const { faker } = require("@faker-js/faker");
+const { Faker, en } = require("@faker-js/faker");
+
+const faker = new Faker({ locale: [en] });
+const REFERENCE_DATE = "2026-06-13T12:00:00.000Z";
 
 const TYPOLOGIES = [
   "normal_activity",
@@ -9,10 +12,11 @@ const TYPOLOGIES = [
 ];
 
 function createTransaction(customerId, sequence, typology) {
+  if (typeof customerId !== "string" || !customerId.trim() || !Number.isSafeInteger(sequence) || sequence < 1 || !TYPOLOGIES.includes(typology)) throw new TypeError("Invalid transaction scenario parameters");
   const base = {
     transactionId: `TXN-${customerId}-${String(sequence).padStart(3, "0")}`,
     customerId,
-    timestamp: faker.date.recent({ days: 14 }).toISOString(),
+    timestamp: faker.date.recent({ days: 14, refDate: REFERENCE_DATE }).toISOString(),
     currency: "USD",
     channel: faker.helpers.arrayElement(["ach", "card"]),
     counterparty: `Trusted ${faker.company.name()}`,
@@ -64,6 +68,7 @@ function createTransaction(customerId, sequence, typology) {
 }
 
 function generateAmlScenarios(customers, seed = 20260614) {
+  if (!Array.isArray(customers) || customers.some((c) => !c || typeof c.customerId !== "string" || !c.customerId.trim()) || new Set(customers.map((c) => c.customerId)).size !== customers.length) throw new TypeError("customers must have unique nonempty customer IDs");
   faker.seed(seed);
   return customers.flatMap((customer, index) => {
     const typology = TYPOLOGIES[index % TYPOLOGIES.length];

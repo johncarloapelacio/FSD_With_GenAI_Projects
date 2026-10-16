@@ -1,8 +1,135 @@
 {
-  "generatedAt": "2026-06-14T06:58:13.395Z",
-  "elapsedMs": 14,
+  "generatedAt": "2026-10-16T07:00:09.293Z",
+  "artifactGenerationElapsedMs": 16,
   "generatedCustomerCount": 30,
   "generatedTransactionCount": 84,
   "mappedTestCaseCount": 7,
-  "coveragePercent": 100
+  "summary": {
+    "totalRequirements": 11,
+    "mappedRequirements": 11,
+    "mappingPercent": 100,
+    "requirementsWithLocalChecks": 5,
+    "partiallySimulatedRequirements": 1,
+    "catalogReviewOnlyRequirements": 5,
+    "totalTestCases": 7,
+    "automatedTests": 7,
+    "passedTests": 7,
+    "failedTests": 0,
+    "skippedTests": 0,
+    "notRunTests": 0,
+    "jestRun": {
+      "success": true,
+      "passedAssertions": 43,
+      "failedAssertions": 0,
+      "skippedAssertions": 0,
+      "totalAssertions": 43,
+      "failedSuites": 0,
+      "elapsedMs": 2255
+    }
+  },
+  "executionResults": {
+    "TC-KYC-001": {
+      "status": "Passed",
+      "evidence": [
+        "TC-KYC-001 generation is repeatable across wall clocks and seeds are isolated from AML generation",
+        "TC-KYC-001 rejects invalid count -1",
+        "TC-KYC-001 rejects invalid count 1.2",
+        "TC-KYC-001 rejects invalid count 30",
+        "TC-KYC-001 rejects invalid count NaN",
+        "TC-KYC-001 rejects invalid count 100001",
+        "TC-KYC-001 supports an empty dataset",
+        "KYC synthetic data and risk rules TC-KYC-001 generates complete profiles with unique customer and document IDs"
+      ],
+      "jestFile": "tests/kyc.test.js",
+      "assertionCount": 8,
+      "durationMs": 68,
+      "executedBy": "Observed Jest execution"
+    },
+    "TC-KYC-002": {
+      "status": "Passed",
+      "evidence": [
+        "TC-KYC-002 incomplete and malformed profiles require manual review",
+        "TC-KYC-002 an unverified identity document requires review even at low overall risk",
+        "KYC synthetic data and risk rules TC-KYC-002 includes low, medium, and high-risk KYC examples",
+        "KYC synthetic data and risk rules TC-KYC-002 sanctions-positive customers require manual review"
+      ],
+      "jestFile": "tests/kyc.test.js",
+      "assertionCount": 4,
+      "durationMs": 16,
+      "executedBy": "Observed Jest execution"
+    },
+    "TC-AML-001": {
+      "status": "Passed",
+      "evidence": [
+        "TC-AML-001 generation is repeatable and rejects duplicate customers",
+        "AML synthetic scenarios and detection rules TC-AML-001 covers required AML typologies"
+      ],
+      "jestFile": "tests/aml.test.js",
+      "assertionCount": 2,
+      "durationMs": 38,
+      "executedBy": "Observed Jest execution"
+    },
+    "TC-AML-002": {
+      "status": "Passed",
+      "evidence": [
+        "TC-AML-002 structuring amount boundary 8999.99",
+        "TC-AML-002 structuring amount boundary 9000",
+        "TC-AML-002 structuring amount boundary 9999.99",
+        "TC-AML-002 structuring amount boundary 10000",
+        "TC-AML-002 wire proxy amount boundary 14999.99",
+        "TC-AML-002 wire proxy amount boundary 15000",
+        "TC-AML-002 malformed amount fails rather than silently clears -1",
+        "TC-AML-002 malformed amount fails rather than silently clears 0",
+        "TC-AML-002 malformed amount fails rather than silently clears NaN",
+        "TC-AML-002 malformed amount fails rather than silently clears Infinity",
+        "TC-AML-002 malformed amount fails rather than silently clears 9000",
+        "TC-AML-002 combined signals retain all reasons and severity",
+        "AML synthetic scenarios and detection rules TC-AML-002 raises alerts for suspicious transactions and not normal activity",
+        "AML synthetic scenarios and detection rules TC-AML-002 sanctions exposure has critical severity"
+      ],
+      "jestFile": "tests/aml.test.js",
+      "assertionCount": 14,
+      "durationMs": 24,
+      "executedBy": "Observed Jest execution"
+    },
+    "TC-REQ-001": {
+      "status": "Passed",
+      "evidence": [
+        "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
+      ],
+      "jestFile": "tests/requirements.test.js",
+      "assertionCount": 1,
+      "durationMs": 3,
+      "executedBy": "Observed Jest execution"
+    },
+    "TC-REP-001": {
+      "status": "Passed",
+      "evidence": [
+        "RTM evidence integrity TC-REP-001 distinguishes local implementation from catalog-only and partial simulation",
+        "RTM evidence integrity TC-REP-001 no execution never means passed",
+        "RTM evidence integrity TC-REP-001 aggregates observed assertion statuses 0",
+        "RTM evidence integrity TC-REP-001 aggregates observed assertion statuses 1",
+        "RTM evidence integrity TC-REP-001 aggregates observed assertion statuses 2",
+        "RTM evidence integrity TC-REP-001 aggregates observed assertion statuses 3",
+        "RTM evidence integrity TC-REP-001 aggregates observed assertion statuses 4",
+        "RTM evidence integrity TC-REP-001 failed suite initialization cannot produce a pass",
+        "RTM evidence integrity TC-REP-001 ignores unrelated IDs and assertions in wrong files",
+        "TC-REP-001 human-readable artifacts disclose unexecuted results and mapping limits"
+      ],
+      "jestFile": "tests/reporting.test.js",
+      "assertionCount": 10,
+      "durationMs": 8,
+      "executedBy": "Observed Jest execution"
+    },
+    "TC-PERF-001": {
+      "status": "Passed",
+      "evidence": [
+        "local synthetic generation and evaluation budget TC-PERF-001 processes 2000 customers and 5600 transactions within five seconds"
+      ],
+      "jestFile": "tests/performance.test.js",
+      "assertionCount": 1,
+      "durationMs": 499,
+      "executedBy": "Observed Jest execution"
+    }
+  }
 }

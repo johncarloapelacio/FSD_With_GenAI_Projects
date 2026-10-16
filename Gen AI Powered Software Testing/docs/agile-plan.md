@@ -69,7 +69,7 @@ Stories: US-007, US-008
 
 Planned points: 8
 
-Progress monitoring: Review RTM gaps, stabilize Jest execution, and confirm all must-have requirements have passing coverage.
+Progress monitoring: Review RTM gaps, stabilize Jest execution, and record observed local test results and identify planned requirements with no implemented acceptance checks.
 
 ## Conflict Resolution and Sprint Adjustment
 

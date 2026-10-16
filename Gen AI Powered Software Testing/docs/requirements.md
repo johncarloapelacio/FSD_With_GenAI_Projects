@@ -1,6 +1,6 @@
 # Requirements Catalog
 
-The following requirements were created from the assignment prompt for an AI-assisted KYC and anti-money laundering banking platform.
+The following target requirements were created from the assignment prompt for an AI-assisted KYC and anti-money laundering banking platform. The execution report distinguishes implemented local checks from unimplemented targets.
 
 ## REQ-CHAT-001: Guided KYC onboarding conversation
 

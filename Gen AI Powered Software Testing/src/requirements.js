@@ -289,7 +289,7 @@ const sprintPlan = [
     storyIds: ["US-007", "US-008"],
     plannedPoints: 8,
     monitoring:
-      "Review RTM gaps, stabilize Jest execution, and confirm all must-have requirements have passing coverage."
+      "Review RTM gaps, stabilize Jest execution, and record observed local test results and identify planned requirements with no implemented acceptance checks."
   }
 ];
 
