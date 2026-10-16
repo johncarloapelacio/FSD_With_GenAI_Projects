@@ -1,0 +1,177 @@
+﻿name: Quality checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  application-checks:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: employee-management
+            directory: Employee_Management_System
+            lint: false
+            build: false
+          - name: synthetic-testing
+            directory: Gen AI Powered Software Testing
+            lint: false
+            build: false
+          - name: hr-api
+            directory: hr-portal-project/server
+            lint: false
+            build: false
+          - name: hr-frontend
+            directory: hr-portal-project/hr-employee-portal
+            lint: true
+            build: true
+          - name: taxi-api
+            directory: taxi-booking-app/server
+            lint: false
+            build: false
+          - name: taxi-frontend
+            directory: taxi-booking-app/book-a-taxi
+            lint: true
+            build: true
+          - name: food-ordering
+            directory: online-food-ordering-app
+            lint: false
+            build: true
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ matrix.directory }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: ${{ matrix.directory }}/package-lock.json
+      - name: Install locked dependencies
+        run: npm ci --no-fund
+        env:
+          CYPRESS_INSTALL_BINARY: '0'
+      - name: Run application tests
+        run: npm test
+      - name: Check dependency advisories
+        run: npm audit --audit-level=high
+      - name: Lint frontend
+        if: ${{ matrix.lint }}
+        run: npm run lint
+      - name: Build assets
+        if: ${{ matrix.build }}
+        run: npm run build
+      - name: Retain observed synthetic-test reports
+        if: ${{ always() && matrix.name == 'synthetic-testing' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: synthetic-test-reports
+          path: Gen AI Powered Software Testing/reports/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  browser-checks:
+    name: Chromium and Cypress workflows
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
+      - name: Install browser-test applications and QA dependencies
+        run: node qa/scripts/install-browser-dependencies.cjs
+      - name: Check QA dependency advisories
+        working-directory: qa
+        run: npm audit --audit-level=high
+      - name: Install Linux browser prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libgtk-3-0t64 libgbm-dev libnotify-dev libnss3 libxss1 libasound2t64 libxtst6 xauth xvfb
+      - name: Install Playwright Chromium
+        working-directory: qa
+        run: npx --no-install playwright install --with-deps chromium
+      - name: Install and verify the Cypress binary
+        working-directory: Employee_Management_System
+        run: |
+          npx --no-install cypress install
+          npx --no-install cypress verify
+          google-chrome --version
+      - name: Build food application CSS
+        id: browser-setup
+        working-directory: online-food-ordering-app
+        run: npm run build
+      - name: Exercise native browser workflows
+        working-directory: qa
+        run: npm test
+      - name: Exercise isolated EMS Cypress workflows
+        if: ${{ !cancelled() && steps.browser-setup.outcome == 'success' }}
+        working-directory: Employee_Management_System
+        run: npm run test:e2e -- --browser chrome
+      - name: Retain browser failure evidence
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: browser-failure-evidence
+          path: |
+            qa/test-results/
+            qa/playwright-report/
+            Employee_Management_System/cypress/screenshots/
+            Employee_Management_System/cypress/videos/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  database-checks:
+    name: MySQL 8.4 integration
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: ci-disposable-password
+          MYSQL_ROOT_HOST: '%'
+        ports:
+          - 33060:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h127.0.0.1 -uroot -pci-disposable-password --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=12
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.14'
+      - name: Install database CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes mysql-client
+      - name: Verify schema, seed data, views and constraints in a disposable database
+        run: python Database_MySQL/test_database.py
+        env:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PORT: '33060'
+          MYSQL_USER: root
+          MYSQL_PASSWORD: ci-disposable-password
