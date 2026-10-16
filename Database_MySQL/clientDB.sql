@@ -1,366 +1,128 @@
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Reset the database so this script can be run from the beginning
--- without conflicts from existing tables, duplicate primary keys,
--- or old relationship records.
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- Client meeting scheduling demonstration (MySQL 8.0.16+ / MariaDB 10.6+).
+-- Select a NEW EMPTY database before loading this file. It never drops a database.
+-- All contacts are synthetic; authentication credentials do not belong in this model.
+SET NAMES utf8mb4;
+SET SESSION group_concat_max_len = 65535;
 
-drop database if exists clientDB;
-create database clientDB;
+CREATE TABLE cldetails (
+    clid INT PRIMARY KEY,
+    clname VARCHAR(100) NOT NULL,
+    email VARCHAR(254) NOT NULL UNIQUE,
+    CONSTRAINT ck_client_id CHECK (clid > 0),
+    CONSTRAINT ck_client_name CHECK (CHAR_LENGTH(TRIM(clname)) > 0),
+    CONSTRAINT ck_client_email CHECK (CHAR_LENGTH(email) = CHAR_LENGTH(TRIM(email)) AND email LIKE '%_@_%._%')
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-use clientdb;
+CREATE TABLE empdetails (
+    empid INT PRIMARY KEY,
+    empname VARCHAR(100) NOT NULL,
+    empemail VARCHAR(254) NOT NULL UNIQUE,
+    department VARCHAR(80) NOT NULL,
+    title VARCHAR(80) NOT NULL,
+    CONSTRAINT ck_employee_id CHECK (empid > 0),
+    CONSTRAINT ck_employee_name CHECK (CHAR_LENGTH(TRIM(empname)) > 0),
+    CONSTRAINT ck_employee_email CHECK (CHAR_LENGTH(empemail) = CHAR_LENGTH(TRIM(empemail)) AND empemail LIKE '%_@_%._%'),
+    CONSTRAINT ck_employee_department CHECK (CHAR_LENGTH(TRIM(department)) > 0),
+    CONSTRAINT ck_employee_title CHECK (CHAR_LENGTH(TRIM(title)) > 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE meetings (
+    meetingid INT PRIMARY KEY,
+    meetingtopic VARCHAR(110) NOT NULL,
+    meetingdate DATE NOT NULL,
+    clid INT NOT NULL,
+    CONSTRAINT ck_meeting_id CHECK (meetingid > 0),
+    CONSTRAINT ck_meeting_topic CHECK (CHAR_LENGTH(TRIM(meetingtopic)) > 0),
+    CONSTRAINT ck_meeting_date CHECK (meetingdate >= '1000-01-01'),
+    CONSTRAINT fk_meeting_client FOREIGN KEY (clid) REFERENCES cldetails(clid) ON DELETE RESTRICT,
+    INDEX ix_client_schedule (clid, meetingdate)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Create the client table.
--- Each client has one unique client id, one name, one email,
--- and one password.
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+CREATE TABLE meetinghosts (
+    meetingid INT NOT NULL,
+    empid INT NOT NULL,
+    PRIMARY KEY (meetingid, empid),
+    CONSTRAINT fk_host_meeting FOREIGN KEY (meetingid) REFERENCES meetings(meetingid) ON DELETE CASCADE,
+    CONSTRAINT fk_host_employee FOREIGN KEY (empid) REFERENCES empdetails(empid) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-create table cldetails(
-    clid int primary key,
-    clname varchar(40) not null,
-    email varchar(40) unique not null,
-    `password` varchar(40) not null
-);
+START TRANSACTION;
+INSERT INTO cldetails (clid, clname, email) VALUES
+(1, 'Zora Whitaker', 'zora.whitaker@example.com'),
+(2, 'Cassian Brooks', 'cassian.brooks@example.com'),
+(3, 'Marisol Vance', 'marisol.vance@example.com'),
+(4, 'Dashiell Hayes', 'dashiell.hayes@example.com'),
+(5, 'Linnea Mercer', 'linnea.mercer@example.com'),
+(6, 'Tobias Calloway', 'tobias.calloway@example.com'),
+(7, 'Amara Winslow', 'amara.winslow@example.com'),
+(8, 'Soren Beckett', 'soren.beckett@example.com');
+-- Demonstrate removal before scheduling references exist.
+DELETE FROM cldetails WHERE clid = 7;
 
+INSERT INTO empdetails (empid, empname, empemail, department, title) VALUES
+(1, 'John Carlo', 'john.carlo@example.com', 'Executive', 'Operations Manager'),
+(2, 'Ronna Joice', 'ronna.joice@example.com', 'Executive', 'Lead Designer'),
+(3, 'Kaner Von', 'kaner.von@example.com', 'Executive', 'CEO');
 
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Insert the starting client records.
--- Amara is included first so the delete statement below can
--- demonstrate removing a client before meetings are created.
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- Fixed dates make seed data reproducible; use real dates for a live schedule.
+INSERT INTO meetings (meetingid, meetingtopic, meetingdate, clid) VALUES
+(1, 'Preliminary Design Overview', '2026-11-01', 1),
+(2, 'Sprint Review', '2026-11-04', 2),
+(3, 'Final Design Overview', '2026-11-15', 2),
+(4, 'Preliminary Design Overview', '2026-11-02', 3),
+(5, 'Sprint Review', '2026-11-06', 4),
+(6, 'Final Design Overview', '2026-11-18', 4),
+(7, 'Preliminary Design Overview', '2026-11-03', 5),
+(8, 'Sprint Review', '2026-11-08', 6),
+(9, 'Final Design Overview', '2026-11-22', 6),
+(10, 'Sprint Review', '2026-11-09', 8),
+(11, 'Final Design Overview', '2026-11-24', 8);
 
-insert into cldetails(clid, clname, email, `password`)
-values
-(1, 'Zora Whitaker', 'zora.whitaker@example.com', 'Zora@4821'),
-(2, 'Cassian Brooks', 'cassian.brooks@example.com', 'Cassian@7392'),
-(3, 'Marisol Vance', 'marisol.vance@example.com', 'Marisol@6158'),
-(4, 'Dashiell Hayes', 'dashiell.hayes@example.com', 'Dashiell@2947'),
-(5, 'Linnea Mercer', 'linnea.mercer@example.com', 'Linnea@8563'),
-(6, 'Tobias Calloway', 'tobias.calloway@example.com', 'Tobias@3719'),
-(7, 'Amara Winslow', 'amara.winslow@example.com', 'Amara@6402'),
-(8, 'Soren Beckett', 'soren.beckett@example.com', 'Soren@9185');
+-- Assign stable employee IDs, not nonunique display names.
+INSERT INTO meetinghosts (meetingid, empid)
+SELECT m.meetingid, e.empid
+FROM meetings m JOIN empdetails e ON
+    (m.meetingtopic = 'Preliminary Design Overview' AND e.empid = 2) OR
+    (m.meetingtopic = 'Sprint Review' AND e.empid IN (1, 2)) OR
+    (m.meetingtopic = 'Final Design Overview' AND e.empid IN (2, 3));
+COMMIT;
 
+-- One client attendee plus the host count. No redundant stored attendee total.
+-- LEFT JOIN retains meetings that have not yet been assigned hosts.
+CREATE VIEW meeting_summary AS
+SELECT m.meetingid, m.clid, m.meetingtopic, m.meetingdate,
+       COUNT(mh.empid) AS hostcount,
+       COUNT(mh.empid) + 1 AS numberofattendees,
+       COALESCE(GROUP_CONCAT(CONCAT(e.empname, ' (', e.title, ')')
+                 ORDER BY e.empid SEPARATOR ', '), 'Unassigned') AS meetinghosts
+FROM meetings m
+LEFT JOIN meetinghosts mh ON mh.meetingid = m.meetingid
+LEFT JOIN empdetails e ON e.empid = mh.empid
+GROUP BY m.meetingid, m.clid, m.meetingtopic, m.meetingdate;
 
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Remove Amara because she chose another firm.
--- This is done before creating meetings so no meeting records
--- will reference her client id.
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+CREATE VIEW client_meeting_emails AS
+SELECT c.clid, c.clname, c.email,
+       CASE WHEN COUNT(ms.meetingid) = 0 THEN CONCAT('Hello ', c.clname, ',\n\nNo meetings are currently scheduled.')
+       ELSE CONCAT('Hello ', c.clname, ',\n\nHere are your scheduled meetings:\n',
+           GROUP_CONCAT(CONCAT('- ', ms.meetingtopic, ' on ', DATE_FORMAT(ms.meetingdate, '%M %d, %Y'),
+             ' | Meeting Hosts: ', ms.meetinghosts)
+             ORDER BY ms.meetingdate, ms.meetingid SEPARATOR '\n'),
+           '\n\nThank you,\nExecutive Team') END AS emailpreview
+FROM cldetails c LEFT JOIN meeting_summary ms ON ms.clid = c.clid
+GROUP BY c.clid, c.clname, c.email;
 
-delete from cldetails
-where clid = 7;
+CREATE VIEW employee_schedules AS
+SELECT e.empid, e.empname, e.title,
+       COALESCE(GROUP_CONCAT(CONCAT(m.meetingtopic, ' with ', c.clname, ' <', c.email, '>',
+         ' on ', DATE_FORMAT(m.meetingdate, '%M %d, %Y'))
+         ORDER BY m.meetingdate, m.meetingid SEPARATOR '\n'), 'No meetings assigned') AS meetings
+FROM empdetails e LEFT JOIN meetinghosts mh ON mh.empid = e.empid
+LEFT JOIN meetings m ON m.meetingid = mh.meetingid
+LEFT JOIN cldetails c ON c.clid = m.clid
+GROUP BY e.empid, e.empname, e.title;
 
-
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Create the employee table.
--- These employees are internal staff members who can host
--- client meetings.
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-create table empdetails(
-    empid int primary key,
-    empname varchar(40) not null,
-    empemail varchar(40) unique not null,
-    emppassword varchar(40) not null,
-    department varchar(20) not null,
-    title varchar(20) not null
-);
-
-
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Insert the employee records.
--- These employees will later be connected to meetings through
--- the meetinghosts junction table.
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-insert into empdetails(empid, empname, empemail, emppassword, department, title)
-values
-(1, 'John Carlo', 'john.carlo@example.com', 'Zora@4821', 'Executive', 'Operations Manager'),
-(2, 'Ronna Joice', 'ronna.joice@example.com', 'Cassian@7392', 'Executive', 'Lead Designer'),
-(3, 'Kaner Von', 'kaner.von@example.com', 'Marisol@6158', 'Executive', 'CEO');
-
-
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Create the meetings table.
--- This creates a many-to-one relationship between meetings
--- and clients because many meetings can belong to one client.
---
--- The clid column is a foreign key, so every meeting must be
--- connected to an existing client in cldetails.
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-create table meetings(
-    meetingid int primary key,
-    meetingtopic varchar(110),
-    numberofattendees int not null,
-    meetingdate date not null,
-    clid int not null,
-    foreign key(clid) references cldetails(clid)
-);
-
-
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Insert the meeting records.
--- Each meeting belongs to one client through clid.
---
--- Preliminary meetings have one host and one client attendee.
--- Sprint reviews and final design overviews have two hosts
--- and one client attendee.
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-insert into meetings(meetingid, meetingtopic, numberofattendees, meetingdate, clid)
-values
-(1, 'Preliminary Design Overview', 2, date_add(curdate(), interval 7 day), 1),
-
-(2, 'Sprint Review', 3, date_add(curdate(), interval 10 day), 2),
-(3, 'Final Design Overview', 3, date_add(curdate(), interval 21 day), 2),
-
-(4, 'Preliminary Design Overview', 2, date_add(curdate(), interval 8 day), 3),
-
-(5, 'Sprint Review', 3, date_add(curdate(), interval 12 day), 4),
-(6, 'Final Design Overview', 3, date_add(curdate(), interval 24 day), 4),
-
-(7, 'Preliminary Design Overview', 2, date_add(curdate(), interval 9 day), 5),
-
-(8, 'Sprint Review', 3, date_add(curdate(), interval 14 day), 6),
-(9, 'Final Design Overview', 3, date_add(curdate(), interval 28 day), 6),
-
-(10, 'Sprint Review', 3, date_add(curdate(), interval 15 day), 8),
-(11, 'Final Design Overview', 3, date_add(curdate(), interval 30 day), 8);
-
-
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Create the meetinghosts junction table.
--- This creates a many-to-many relationship between meetings
--- and employees because one meeting can have multiple hosts,
--- and one employee can host multiple meetings.
---
--- The combined primary key prevents the same employee from
--- being assigned to the same meeting more than once.
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-create table meetinghosts(
-    meetingid int not null,
-    empid int not null,
-    primary key(meetingid, empid),
-    foreign key(meetingid) references meetings(meetingid),
-    foreign key(empid) references empdetails(empid)
-);
-
-
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Assign employees as meeting hosts based on the meeting topic.
---
--- Preliminary design overview meetings are hosted by Ronna.
--- Sprint review meetings are hosted by Ronna and John.
--- Final design overview meetings are hosted by Ronna and Kaner.
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-insert into meetinghosts(meetingid, empid)
-select
-    m.meetingid,
-    e.empid
-from meetings m
-inner join empdetails e
-    on (
-        m.meetingtopic = 'Preliminary Design Overview'
-        and e.empname = 'Ronna Joice'
-    )
-    or (
-        m.meetingtopic = 'Sprint Review'
-        and e.empname in('Ronna Joice', 'John Carlo')
-    )
-    or (
-        m.meetingtopic = 'Final Design Overview'
-        and e.empname in('Ronna Joice', 'Kaner Von')
-    );
-
-
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- View the raw meeting-host relationship records.
--- Each row means one employee is assigned as a host for one
--- specific meeting.
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-select *
-from meetinghosts;
-
-
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- View the full client meeting report.
--- Each meeting appears as one row, and group_concat combines
--- multiple meeting hosts into one readable cell.
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-select
-    c.clid as `Client ID`,
-    c.clname as `Client Name`,
-    m.meetingid as `Meeting ID`,
-    m.meetingtopic as `Topic`,
-    group_concat(
-        concat(e.empname, ' (', e.title, ')')
-        separator ', '
-    ) as `Meeting Hosts`,
-    m.meetingdate as `Date`
-from cldetails c
-inner join meetings m
-    on c.clid = m.clid
-inner join meetinghosts mh
-    on m.meetingid = mh.meetingid
-inner join empdetails e
-    on mh.empid = e.empid
-group by
-    c.clid,
-    c.clname,
-    m.meetingid,
-    m.meetingtopic,
-    m.meetingdate
-order by
-    c.clid,
-    m.meetingdate;
-
-
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Create an email-ready meeting summary for Tobias.
--- This returns one row with the client's email address and a
--- readable message showing all scheduled meetings, dates,
--- and meeting hosts.
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-select
-    c.clid as `Client ID`,
-    c.clname as `Client Name`,
-    c.email as `Client Email`,
-    concat(
-        'Hello ', c.clname, ',\n\n',
-        'Here are your scheduled meetings:\n',
-        group_concat(
-            concat(
-                '- ', meeting_summary.meetingtopic,
-                ' on ', date_format(meeting_summary.meetingdate, '%M %d, %Y'),
-                ' | Meeting Hosts: ', meeting_summary.meetinghosts
-            )
-            order by meeting_summary.meetingdate
-            separator '\n'
-        ),
-        '\n\nThank you,\nExecutive Team'
-    ) as `Email Preview`
-from cldetails c
-inner join(
-    select
-        m.clid,
-        m.meetingid,
-        m.meetingtopic,
-        m.meetingdate,
-        group_concat(
-            concat(e.empname, ' (', e.title, ')')
-            separator ', '
-        ) as meetinghosts
-    from meetings m
-    inner join meetinghosts mh
-        on m.meetingid = mh.meetingid
-    inner join empdetails e
-        on mh.empid = e.empid
-    group by
-        m.clid,
-        m.meetingid,
-        m.meetingtopic,
-        m.meetingdate
-) as meeting_summary
-    on c.clid = meeting_summary.clid
-where c.clname = 'Tobias Calloway'
-group by
-    c.clid,
-    c.clname,
-    c.email;
-
-
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- Create an email-ready meeting summary for Marisol.
--- This returns one row with the client's email address and a
--- readable message showing all scheduled meetings, dates,
--- and meeting hosts.
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-select
-    c.clid as `Client ID`,
-    c.clname as `Client Name`,
-    c.email as `Client Email`,
-    concat(
-        'Hello ', c.clname, ',\n\n',
-        'Here are your scheduled meetings:\n',
-        group_concat(
-            concat(
-                '- ', meeting_summary.meetingtopic,
-                ' on ', date_format(meeting_summary.meetingdate, '%M %d, %Y'),
-                ' | Meeting Hosts: ', meeting_summary.meetinghosts
-            )
-            order by meeting_summary.meetingdate
-            separator '\n'
-        ),
-        '\n\nThank you,\nExecutive Team'
-    ) as `Email Preview`
-from cldetails c
-inner join(
-    select
-        m.clid,
-        m.meetingid,
-        m.meetingtopic,
-        m.meetingdate,
-        group_concat(
-            concat(e.empname, ' (', e.title, ')')
-            separator ', '
-        ) as meetinghosts
-    from meetings m
-    inner join meetinghosts mh
-        on m.meetingid = mh.meetingid
-    inner join empdetails e
-        on mh.empid = e.empid
-    group by
-        m.clid,
-        m.meetingid,
-        m.meetingtopic,
-        m.meetingdate
-) as meeting_summary
-    on c.clid = meeting_summary.clid
-where c.clname = 'Marisol Vance'
-group by
-    c.clid,
-    c.clname,
-    c.email;
-
-
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--- View each employee's meeting schedule.
--- Each employee appears as one row, and group_concat combines
--- the meetings they host with the related client names,
--- client email addresses, and meeting dates.
--- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-select
-    e.empid as `Employee ID`,
-    concat(e.empname, ' (', e.title, ')') as `Employee`,
-    group_concat(
-        concat(
-            m.meetingtopic,
-            ' with ', c.clname,
-            ' <', c.email, '>',
-            ' on ', date_format(m.meetingdate, '%M %d, %Y')
-        )
-        order by m.meetingdate
-        separator '\n'
-    ) as `Meetings, Clients, and Dates`
-from empdetails e
-inner join meetinghosts mh
-    on e.empid = mh.empid
-inner join meetings m
-    on mh.meetingid = m.meetingid
-inner join cldetails c
-    on m.clid = c.clid
-group by
-    e.empid,
-    e.empname,
-    e.title
-order by
-    e.empid;
+SELECT c.clid AS `Client ID`, c.clname AS `Client Name`, ms.*
+FROM cldetails c JOIN meeting_summary ms ON ms.clid = c.clid
+ORDER BY c.clid, ms.meetingdate, ms.meetingid;
+SELECT * FROM client_meeting_emails WHERE clid IN (6, 3) ORDER BY clid;
+SELECT * FROM employee_schedules ORDER BY empid;
