@@ -9,18 +9,15 @@ import {
 import "./ViewAllLeaveInfo.css";
 
 const ViewAllLeaveInfo = () => {
-  // Loads pending requests and mutation status from Redux leave domain.
   const dispatch = useDispatch();
   const leaveRequests = useSelector(selectPendingLeaveRequests);
   const { status, error } = useSelector(selectLeaveState);
   const [message, setMessage] = useState("");
 
-  // Fetches leave requests once for the HR review table.
   useEffect(() => {
     dispatch(fetchLeaveRequests());
   }, [dispatch]);
 
-  // Updates a leave request status and refreshes UI through Redux state updates.
   const handleChangeStatus = async (request, status) => {
     setMessage("");
     try {

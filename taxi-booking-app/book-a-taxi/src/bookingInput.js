@@ -1,4 +1,3 @@
-  // Parse flexible date formats and convert to YYYY-MM-DD
 export const parseDate = (dateString, today = new Date()) => {
     if (!dateString.trim()) return '';
 
@@ -6,10 +5,8 @@ export const parseDate = (dateString, today = new Date()) => {
     const currentMonth = today.getMonth();
     const currentDate = today.getDate();
 
-    // Remove extra spaces and convert to lowercase for easier parsing
     const cleanInput = dateString.trim().toLowerCase();
 
-    // Try different date formats
     const datePatterns = [
       // MM/DD/YYYY or MM/DD/YY
       /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/,
@@ -31,22 +28,17 @@ export const parseDate = (dateString, today = new Date()) => {
         let year, month, day;
 
         if (pattern === datePatterns[0] || pattern === datePatterns[1]) {
-          // MM/DD/YYYY or MM-DD-YYYY format
           [, month, day, year] = match;
         } else if (pattern === datePatterns[2] || pattern === datePatterns[3]) {
-          // YYYY/MM/DD or YYYY-MM-DD format
           [, year, month, day] = match;
         } else if (pattern === datePatterns[4] || pattern === datePatterns[5]) {
-          // DD/MM/YYYY or DD-MM-YYYY format (assuming European format)
           [, day, month, year] = match;
         }
 
-        // Convert 2-digit year to 4-digit
         year = year.length === 2 ? (parseInt(year) > 50 ? 1900 + parseInt(year) : 2000 + parseInt(year)) : parseInt(year);
         month = parseInt(month) - 1; // JS months are 0-based
         day = parseInt(day);
 
-        // Validate the date
         const date = new Date(year, month, day);
         if (date.getFullYear() === year && date.getMonth() === month && date.getDate() === day) {
           return `${year.toString().padStart(4, '0')}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
@@ -54,7 +46,6 @@ export const parseDate = (dateString, today = new Date()) => {
       }
     }
 
-    // Try relative dates
     if (cleanInput === 'today' || cleanInput === 'now') {
       return `${currentYear.toString().padStart(4, '0')}-${(currentMonth + 1).toString().padStart(2, '0')}-${currentDate.toString().padStart(2, '0')}`;
     }
@@ -65,7 +56,6 @@ export const parseDate = (dateString, today = new Date()) => {
       return `${tomorrow.getFullYear().toString().padStart(4, '0')}-${(tomorrow.getMonth() + 1).toString().padStart(2, '0')}-${tomorrow.getDate().toString().padStart(2, '0')}`;
     }
 
-    // Try day names
     const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
     const dayIndex = dayNames.indexOf(cleanInput);
     if (dayIndex !== -1) {
@@ -80,13 +70,11 @@ export const parseDate = (dateString, today = new Date()) => {
     return ''; // Invalid date
   };
 
-  // Parse flexible time formats and convert to HH:MM
 export const parseTime = (timeString) => {
     if (!timeString.trim()) return '';
 
     const cleanInput = timeString.trim().toLowerCase().replace(/\s+/g, '');
 
-    // Try different time formats
     const timePatterns = [
       // HH:MM (already standard)
       /^(\d{1,2}):(\d{2})$/,
@@ -106,20 +94,15 @@ export const parseTime = (timeString) => {
         let hours, minutes, period = '';
 
         if (pattern === timePatterns[0]) {
-          // HH:MM
           [, hours, minutes] = match;
         } else if (pattern === timePatterns[1]) {
-          // HH:MM AM/PM
           [, hours, minutes, period] = match;
         } else if (pattern === timePatterns[2]) {
-          // HHMM
           [, hours, minutes] = match;
         } else if (pattern === timePatterns[3]) {
-          // HH AM/PM
           [, hours, period] = match;
           minutes = '00';
         } else if (pattern === timePatterns[4]) {
-          // HH.MM
           [, hours, minutes] = match;
         }
 
@@ -127,21 +110,18 @@ export const parseTime = (timeString) => {
         minutes = parseInt(minutes || 0);
 
         if (period && (hours < 1 || hours > 12)) continue;
-        // Handle AM/PM
         if (period === 'pm' && hours !== 12) {
           hours += 12;
         } else if (period === 'am' && hours === 12) {
           hours = 0;
         }
 
-        // Validate time
         if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
           return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
         }
       }
     }
 
-    // Try common time words
     const timeWords = {
       'noon': '12:00',
       'midnight': '00:00',

@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { apiClient, API_ENDPOINTS, getErrorMessage } from "../../config/api.js";
 
-// Leave domain state stores all leave requests and request lifecycle status.
 const initialState = {
   leaveRequests: [],
   status: "idle",
@@ -9,7 +8,6 @@ const initialState = {
   requests: {},
 };
 
-// Retrieves all leave requests for both HR and employee perspectives.
 export const fetchLeaveRequests = createAsyncThunk(
   "leave/fetchLeaveRequests",
   async (_, { rejectWithValue }) => {
@@ -22,7 +20,6 @@ export const fetchLeaveRequests = createAsyncThunk(
   }
 );
 
-// Creates a new leave request with default pending status.
 export const applyLeaveRequest = createAsyncThunk(
   "leave/applyLeaveRequest",
   async ({ email, reason, numberOfDays }, { rejectWithValue }) => {
@@ -40,7 +37,6 @@ export const applyLeaveRequest = createAsyncThunk(
   }
 );
 
-// Updates the status of an existing leave request (approve/deny workflow).
 export const updateLeaveStatus = createAsyncThunk(
   "leave/updateLeaveStatus",
   async ({ request, status }, { rejectWithValue }) => {
@@ -54,7 +50,6 @@ export const updateLeaveStatus = createAsyncThunk(
   }
 );
 
-// Leave slice reducers handle status transitions and request state mutations.
 const leaveSlice = createSlice({
   name: "leave",
   initialState,
@@ -64,7 +59,6 @@ const leaveSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // Handles all thunk lifecycle events for leave operations.
     builder
       .addCase("auth/sessionExpired", () => initialState)
       .addCase("auth/logoutUser/fulfilled", () => initialState)
@@ -117,7 +111,6 @@ const leaveSlice = createSlice({
 
 export const { clearLeaveError } = leaveSlice.actions;
 
-// Leave selectors expose filtered and raw leave data to consuming components.
 export const selectLeaveState = (state) => state.leave;
 export const selectAllLeaveRequests = (state) => state.leave.leaveRequests;
 export const selectPendingLeaveRequests = (state) =>

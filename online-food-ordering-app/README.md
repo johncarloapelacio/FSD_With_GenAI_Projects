@@ -1,6 +1,6 @@
 # Online Food Ordering App
 
-A full-stack menu and ordering demo built with Node.js, Express, HTML, vanilla JavaScript, and locally compiled Tailwind CSS. Accounts and orders are validated and stored on the server. The illustrated interface retains the original food-themed design.
+A menu and ordering demo built with Node.js, Express, HTML, vanilla JavaScript, and locally compiled Tailwind CSS. Accounts and orders are validated and stored on the server.
 
 ## Run
 

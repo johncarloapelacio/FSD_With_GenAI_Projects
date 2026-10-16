@@ -10,17 +10,14 @@ import {
 import "./Login.css";
 
 const Login = () => {
-  // Local form state and transient validation message for login UX.
   const [form, setForm] = useState({ email: "", password: "", userType: "" });
   const [message, setMessage] = useState("");
 
-  // Redux and navigation hooks for auth flow orchestration.
   const dispatch = useDispatch();
   const { error, status, userType } = useSelector(selectAuth);
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const navigate = useNavigate();
 
-  // Redirect users to their role dashboard after successful authentication.
   useEffect(() => {
     if (!isAuthenticated) {
       return;
@@ -33,7 +30,6 @@ const Login = () => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  // Validates form inputs and dispatches login thunk.
   const handleSignIn = async (event) => {
     event.preventDefault();
     setMessage("");

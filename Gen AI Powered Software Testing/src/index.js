@@ -1,4 +1,4 @@
-const { requirements, epics, userStories, sprintPlan, promptLog } = require("./requirements");
+const { requirements, epics, userStories, sprintPlan } = require("./requirements");
 const { testCases } = require("./testCases");
 const { generateKycCustomers } = require("./generators/kycGenerator");
 const { generateAmlScenarios, TYPOLOGIES } = require("./generators/amlGenerator");
@@ -17,7 +17,6 @@ module.exports = {
   epics,
   userStories,
   sprintPlan,
-  promptLog,
   testCases,
   generateKycCustomers,
   generateAmlScenarios,

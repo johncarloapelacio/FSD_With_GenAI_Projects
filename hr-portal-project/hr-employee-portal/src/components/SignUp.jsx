@@ -19,21 +19,17 @@ const initialFormState = {
 };
 
 const SignUp = () => {
-  // Hook setup for dispatching signup flow actions.
   const dispatch = useDispatch();
 
-  // Form state tracks both verification and completion steps.
   const [form, setForm] = useState(initialFormState);
   const [isVerificationStep, setIsVerificationStep] = useState(true);
   const [message, setMessage] = useState("");
 
-  // Generic input handler for both signup steps.
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  // Step 1: verifies that the entered email belongs to an eligible employee.
   const handleVerifyEmail = async (event) => {
     event.preventDefault();
     setMessage("");
@@ -57,7 +53,6 @@ const SignUp = () => {
     }
   };
 
-  // Step 2: submits signup details and finalizes employee account creation.
   const handleSignUp = async (event) => {
     event.preventDefault();
     setMessage("");

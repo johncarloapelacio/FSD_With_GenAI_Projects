@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { apiUrl, apiFetch } from '../api';
 import './Pages.css';
 
-// Dedicated bookings page for viewing and canceling user rides.
 function MyBookings() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -13,7 +12,6 @@ function MyBookings() {
   const [cancelingBookingId, setCancelingBookingId] = useState(null);
 
   useEffect(() => {
-    // Enforce authentication and load bookings on first render.
     const storedUser = sessionStorage.getItem('user');
     if (!storedUser) {
       navigate('/login', { state: { from: location } });
@@ -24,12 +22,10 @@ function MyBookings() {
   }, [navigate, location]);
 
   const fetchBookings = async () => {
-    // Retrieve bookings and keep only active records for current user.
     try {
       const response = await apiFetch(apiUrl('/bookings'));
       if (response.ok) {
         const data = await response.json();
-        // Filter bookings for current user
         const user = JSON.parse(sessionStorage.getItem('user'));
         const userBookings = data.filter(
           (booking) => booking.userId === user.id && (booking.status || '').toLowerCase() !== 'cancelled'
@@ -47,7 +43,6 @@ function MyBookings() {
   };
 
   const formatDate = (dateString) => {
-    // Format timestamps for booking cards.
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
@@ -59,7 +54,6 @@ function MyBookings() {
   };
 
   const getStatusColor = (status) => {
-    // Map booking status to badge color.
     switch (status.toLowerCase()) {
       case 'confirmed':
         return '#28a745';
@@ -75,7 +69,6 @@ function MyBookings() {
   };
 
   const handleCancelBooking = async (bookingId) => {
-    // Delete a pending booking after explicit user confirmation.
     const confirmed = window.confirm('Are you sure you want to cancel this booking?');
     if (!confirmed) {
       return;

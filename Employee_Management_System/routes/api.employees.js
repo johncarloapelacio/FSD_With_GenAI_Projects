@@ -1,7 +1,4 @@
-// The create/read/update/delete API for the employee directory.
-// An admin adds an employee with their name, email, date of birth, department
-// and designation. The employee fills in their own phone number and location
-// when they sign up, and only an admin can change designation or department.
+// Administrators manage HR fields; employees supply contact details at signup.
 const express = require('express');
 const router = express.Router();
 const {
@@ -52,8 +49,7 @@ function norm(value) {
   return String(value || '').trim().toLowerCase().replace(/\s+/g, ' ');
 }
 
-// Name + date of birth is the practical identity check for pending employees,
-// since their email can be mistyped or changed before signup.
+// Detect duplicate records even when the email differs. This does not authorize signup.
 function samePersonUsedByOther(employee, employees, skipIndex) {
   const wantedName = norm(employee.name);
   const wantedDob = String(employee.dob || '').trim();

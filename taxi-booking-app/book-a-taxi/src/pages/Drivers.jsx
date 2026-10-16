@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { apiUrl, apiFetch } from '../api';
 import './Pages.css';
 
-// Driver selection page that finalizes a user's choice before confirmation.
 function Drivers() {
   const navigate = useNavigate();
   const [bookingData] = useState(() => {
@@ -23,7 +22,6 @@ function Drivers() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Load drivers from backend when the page mounts.
   useEffect(() => {
     const fetchDrivers = async () => {
       try {
@@ -46,18 +44,15 @@ function Drivers() {
   }, [bookingData?.serviceType]);
 
   const handleSelectDriver = (driver) => {
-    // Store currently selected driver ID.
     setSelectedDriver(driver.id);
   };
 
   const handleConfirmBooking = () => {
-    // Persist selected driver with booking draft and navigate to confirmation page.
     if (!selectedDriver) {
       alert('Please select a driver');
       return;
     }
 
-    // Double-check authentication (safety measure)
     const storedUser = sessionStorage.getItem('user');
     if (!storedUser) {
       navigate('/login');
@@ -80,7 +75,6 @@ function Drivers() {
   };
 
   const handleBackHome = () => {
-    // Return to booking form.
     navigate('/home');
   };
 

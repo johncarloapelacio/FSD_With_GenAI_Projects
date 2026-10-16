@@ -25,7 +25,6 @@ function App() {
     return () => window.removeEventListener("auth-expired", expired);
   }, [dispatch]);
   return (
-    // Top-level route map for public and protected application areas.
     <Routes>
         {/* Public routes: authentication and account onboarding. */}
         <Route path="/" element={<Login/>}/> 

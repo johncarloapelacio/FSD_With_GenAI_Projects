@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { apiUrl, apiFetch } from '../api';
 import './Pages.css';
 
-// Login screen with client-side validation and backend authentication request.
 function Login() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -15,17 +14,14 @@ function Login() {
   const [apiError, setApiError] = useState(null);
 
   const validateForm = () => {
-    // Validate required credentials before making API request.
     const newErrors = {};
 
-    // Email validation
     if (!formData.email) {
       newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
     }
 
-    // Password validation
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 10) {
@@ -36,13 +32,11 @@ function Login() {
   };
 
   const handleChange = (e) => {
-    // Update controlled form values and clear field-level errors.
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
     });
-    // Clear error for this field
     if (errors[name]) {
       setErrors({
         ...errors,
@@ -53,7 +47,6 @@ function Login() {
   };
 
   const handleSubmit = async (e) => {
-    // Submit credentials, persist session on success, and redirect.
     e.preventDefault();
     const newErrors = validateForm();
 
@@ -75,7 +68,6 @@ function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        // Store user info in sessionStorage
         sessionStorage.setItem('user', JSON.stringify(data.user));
 
         // After valid sign in, always redirect to Home.

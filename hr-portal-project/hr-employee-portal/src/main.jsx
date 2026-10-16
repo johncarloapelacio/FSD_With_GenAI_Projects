@@ -6,7 +6,6 @@ import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom'
 import { store } from './store'
 
-// Application bootstrap: strict mode, global Redux store, and router providers.
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>

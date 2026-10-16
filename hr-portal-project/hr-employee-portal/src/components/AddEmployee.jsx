@@ -4,18 +4,15 @@ import { addEmployee } from "../store/slices/employeesSlice";
 import "./AddEmployee.css";
 
 const AddEmployee = () => {
-  // Local form and message state for employee creation workflow.
   const dispatch = useDispatch();
   const [form, setForm] = useState({ email: "", department: "" });
   const [message, setMessage] = useState("");
 
-  // Shared input handler for employee add form fields.
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  // Validates input and submits employee creation via Redux thunk.
   const handleAddEmployee = async (event) => {
     event.preventDefault();
     setMessage("");

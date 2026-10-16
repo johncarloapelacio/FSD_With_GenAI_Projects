@@ -8,12 +8,10 @@ import {
 import "./ViewAllEmployees.css";
 
 const ViewAllEmployees = () => {
-  // Pulls employee list and request status from centralized Redux state.
   const dispatch = useDispatch();
   const employees = useSelector(selectAllEmployees);
   const { status, error } = useSelector(selectEmployeesState);
 
-  // Fetch employees once when entering this screen.
   useEffect(() => {
     dispatch(fetchEmployees());
   }, [dispatch]);

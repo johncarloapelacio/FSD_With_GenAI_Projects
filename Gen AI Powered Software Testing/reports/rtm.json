@@ -15,7 +15,7 @@
         "evidence": [
           "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
         ],
-        "durationMs": 3
+        "durationMs": 6
       }
     ]
   },
@@ -35,7 +35,7 @@
         "evidence": [
           "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
         ],
-        "durationMs": 3
+        "durationMs": 6
       }
     ]
   },
@@ -55,7 +55,7 @@
         "evidence": [
           "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
         ],
-        "durationMs": 3
+        "durationMs": 6
       }
     ]
   },
@@ -75,7 +75,7 @@
         "evidence": [
           "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
         ],
-        "durationMs": 3
+        "durationMs": 6
       }
     ]
   },
@@ -95,7 +95,7 @@
         "evidence": [
           "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
         ],
-        "durationMs": 3
+        "durationMs": 6
       }
     ]
   },
@@ -118,7 +118,7 @@
           "KYC synthetic data and risk rules TC-KYC-002 includes low, medium, and high-risk KYC examples",
           "KYC synthetic data and risk rules TC-KYC-002 sanctions-positive customers require manual review"
         ],
-        "durationMs": 16
+        "durationMs": 31
       },
       {
         "testCaseId": "TC-AML-002",
@@ -153,7 +153,7 @@
         "evidence": [
           "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
         ],
-        "durationMs": 3
+        "durationMs": 6
       }
     ]
   },
@@ -180,7 +180,7 @@
           "TC-KYC-001 supports an empty dataset",
           "KYC synthetic data and risk rules TC-KYC-001 generates complete profiles with unique customer and document IDs"
         ],
-        "durationMs": 68
+        "durationMs": 105
       },
       {
         "testCaseId": "TC-KYC-002",
@@ -194,7 +194,7 @@
           "KYC synthetic data and risk rules TC-KYC-002 includes low, medium, and high-risk KYC examples",
           "KYC synthetic data and risk rules TC-KYC-002 sanctions-positive customers require manual review"
         ],
-        "durationMs": 16
+        "durationMs": 31
       },
       {
         "testCaseId": "TC-REQ-001",
@@ -205,7 +205,7 @@
         "evidence": [
           "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
         ],
-        "durationMs": 3
+        "durationMs": 6
       }
     ]
   },
@@ -226,7 +226,7 @@
           "TC-AML-001 generation is repeatable and rejects duplicate customers",
           "AML synthetic scenarios and detection rules TC-AML-001 covers required AML typologies"
         ],
-        "durationMs": 38
+        "durationMs": 49
       },
       {
         "testCaseId": "TC-AML-002",
@@ -261,7 +261,7 @@
         "evidence": [
           "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
         ],
-        "durationMs": 3
+        "durationMs": 6
       }
     ]
   },
@@ -288,7 +288,7 @@
           "TC-KYC-001 supports an empty dataset",
           "KYC synthetic data and risk rules TC-KYC-001 generates complete profiles with unique customer and document IDs"
         ],
-        "durationMs": 68
+        "durationMs": 105
       },
       {
         "testCaseId": "TC-REQ-001",
@@ -299,7 +299,7 @@
         "evidence": [
           "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
         ],
-        "durationMs": 3
+        "durationMs": 6
       },
       {
         "testCaseId": "TC-PERF-001",
@@ -310,7 +310,7 @@
         "evidence": [
           "local synthetic generation and evaluation budget TC-PERF-001 processes 2000 customers and 5600 transactions within five seconds"
         ],
-        "durationMs": 499
+        "durationMs": 803
       }
     ]
   },
@@ -330,7 +330,7 @@
         "evidence": [
           "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
         ],
-        "durationMs": 3
+        "durationMs": 6
       },
       {
         "testCaseId": "TC-PERF-001",
@@ -341,7 +341,7 @@
         "evidence": [
           "local synthetic generation and evaluation budget TC-PERF-001 processes 2000 customers and 5600 transactions within five seconds"
         ],
-        "durationMs": 499
+        "durationMs": 803
       }
     ]
   },
@@ -361,7 +361,7 @@
         "evidence": [
           "requirements catalog and Agile planning TC-REQ-001 covers all assignment-required categories"
         ],
-        "durationMs": 3
+        "durationMs": 6
       },
       {
         "testCaseId": "TC-REP-001",
@@ -381,7 +381,7 @@
           "RTM evidence integrity TC-REP-001 ignores unrelated IDs and assertions in wrong files",
           "TC-REP-001 human-readable artifacts disclose unexecuted results and mapping limits"
         ],
-        "durationMs": 8
+        "durationMs": 16
       }
     ]
   }

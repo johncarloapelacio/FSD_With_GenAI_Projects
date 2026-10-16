@@ -6,9 +6,7 @@ import {
 } from "../store/slices/employeesSlice";
 import "./EmployeeDashboard.css";
 
-// Welcome screen rendered when the Employee dashboard is first accessed with no child route active.
 const EmployeeWelcome = () => {
-  // Retrieve the logged-in employee email and resolve their profile from Redux state.
   const email = useSelector(selectLoggedInEmail);
   const employee = useSelector((state) => selectEmployeeByEmail(state, email));
   const firstName = employee?.fname || "";

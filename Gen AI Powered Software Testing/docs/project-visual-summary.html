@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gen AI Powered Software Testing CEP Visual Summary</title>
+  <title>KYC and AML Test Automation - Project Overview</title>
   <style>
     :root {
       --ink: #18212f;
@@ -271,7 +271,7 @@
   <div class="page">
     <header>
       <section class="hero">
-        <h1>Gen AI Powered Software Testing CEP</h1>
+        <h1>KYC and AML Test Automation</h1>
         <p class="subtitle">
           A local JavaScript and Jest portfolio framework with synthetic KYC/AML data, illustrative rules, observed test reporting, and planning documents. Chatbot, NLP, and live banking integrations are not implemented.
         </p>
@@ -281,7 +281,7 @@
           <span class="tag">Synthetic Data</span>
           <span class="tag">Jest</span>
           <span class="tag">RTM</span>
-          <span class="tag">GenAI Process</span>
+          <span class="tag">Repeatable Tests</span>
         </div>
       </section>
 
@@ -299,7 +299,7 @@
         <div class="flow">
           <div class="flow-step">
             <h3>1. Problem Statement</h3>
-            <p>Build a GenAI-assisted testing approach for KYC and AML banking workflows.</p>
+            <p>Test KYC profiles and AML scenarios with repeatable synthetic data.</p>
           </div>
           <div class="flow-step">
             <h3>2. Requirements</h3>
@@ -315,7 +315,7 @@
           </div>
           <div class="flow-step">
             <h3>5. Evidence</h3>
-            <p>RTM, test report, Agile plan, and GenAI write-up connect the work back to the rubric.</p>
+            <p>The traceability matrix links requirements to cases and observed test results.</p>
           </div>
         </div>
       </section>
@@ -325,7 +325,7 @@
         <div class="architecture">
           <div class="layer">
             <strong>src/requirements.js</strong>
-            Requirements, epics, stories, sprint plan, and prompt log.
+            Requirements, epics, stories, and sprint plan.
           </div>
           <div class="layer">
             <strong>src/generators</strong>
@@ -345,7 +345,7 @@
           </div>
           <div class="layer">
             <strong>docs + reports</strong>
-            Human-readable submission artifacts and traceability evidence.
+            Implementation notes, requirements, and execution reports.
           </div>
         </div>
       </section>
@@ -367,7 +367,7 @@
       <section class="panel">
         <h2>What the Solution Proves</h2>
         <ul>
-          <li>Requirements were created from the assignment and made testable.</li>
+          <li>Requirements have explicit acceptance criteria and links to test cases.</li>
           <li>Epics and user stories were estimated, prioritized, and placed into sprints.</li>
           <li>KYC and AML test data is synthetic, realistic, and deterministic.</li>
           <li>AML typologies include structuring, rapid movement, high-risk geography, and sanctions exposure.</li>
@@ -376,13 +376,13 @@
       </section>
 
       <section class="panel">
-        <h2>GenAI Contribution</h2>
+        <h2>Implementation Decisions</h2>
         <ul>
-          <li>Helped translate a broad prompt into structured requirements.</li>
-          <li>Suggested acceptance criteria and compliance test areas.</li>
-          <li>Supported KYC and AML data model design.</li>
-          <li>Helped create traceable test cases and RTM reporting.</li>
-          <li>Improved planning speed while still requiring human validation.</li>
+          <li>Separate seeds prevent one generator from changing another's output.</li>
+          <li>Fixed reference dates keep generated fixtures repeatable.</li>
+          <li>Rule checks compare expected and calculated risk labels.</li>
+          <li>Reports retain failed, skipped, and unexecuted test results.</li>
+          <li>Catalog-only requirements remain distinct from implemented checks.</li>
         </ul>
       </section>
 

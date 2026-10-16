@@ -1,7 +1,5 @@
-// Drives the signup page. Employees go through two steps: a gatekeeper form
-// (name, email, date of birth) and then, only if they match a record an admin
-// added, a second form for password, phone and location. Admins fill one form
-// while signed in as an existing administrator. Signup does not log users in.
+// Employee enrollment requires a valid invitation and matching employee details.
+// Administrator enrollment requires an existing administrator session.
 (function () {
   var E = window.EMS;
   function id(x) { return document.getElementById(x); }
@@ -60,7 +58,7 @@
       show(successPanel);
     }
 
-    // Employee step 1: confirm they were added by an admin.
+    // Verify the invitation before displaying the account form.
     verifyForm.addEventListener('submit', async function (e) {
       e.preventDefault();
       setError('');

@@ -1,7 +1,4 @@
-<!-- The "My Account" section, shared by both dashboards. What you can edit
-     depends on your role: admins can change designation and department, while
-     employees can only change contact and location. Nobody can change their
-     name, email, joining date or date of birth here. -->
+<!-- Shared profile form; administrator-only fields also require API authorization. -->
 <div class="card">
   <div class="card-head">
     <h2>My Profile</h2>
@@ -52,7 +49,7 @@
 <div class="card">
   <div class="card-head">
     <h2>Change Password</h2>
-    <p class="card-sub">Use at least 6 characters.</p>
+    <p class="card-sub">Use 8 to 256 characters.</p>
   </div>
   <form id="password-form" class="form" novalidate>
     <div class="form-grid">

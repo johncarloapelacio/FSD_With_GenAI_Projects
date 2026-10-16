@@ -1,6 +1,6 @@
-﻿# GenAI Assisted Software Testing
+# KYC and AML Test Automation
 
-A JavaScript/Jest portfolio framework for synthetic KYC and AML test data, illustrative local risk rules, requirement planning, traceability, and observed test reporting. `problem_statement.txt` contains the assignment. No banking service, chatbot, NLP model, identity provider, or live screening integration is implemented. Those areas remain planned requirements in the catalog.
+A JavaScript/Jest framework for synthetic KYC and AML test data, local risk-rule checks, requirements traceability, and execution reports. Banking services, chatbots, NLP models, identity providers, and live screening integrations remain planned requirements rather than implemented services.
 
 ## Run
 
@@ -20,10 +20,10 @@ npm run test:coverage
 - `reports/execution-summary.json`: run totals and artifact-generation timing.
 - `reports/rtm.json` and `.md`: catalog mappings, local checks, partial simulated signals, and catalog-only review. A catalog review does not verify a platform's acceptance criteria.
 - `data/generated/`: synthetic customers, transactions, and catalog cases.
-- `docs/`: requirements, Agile planning, GenAI process notes, and a visual overview.
+- `docs/`: requirements, Agile planning, [implementation notes](docs/implementation-notes.md), and a visual overview.
 
 The performance case generates and evaluates 2,000 customers / 5,600 transactions against a five-second **local** budget. It verifies IDs and expected risk/alert outputs alongside timing; it says nothing about network latency or banking production capacity. Generators have independent Faker instances, fixed reference dates, configurable counts and seeds, and reserved `example.test` email addresses. KYC expected risk labels are checked against actual calculated labels. Boundary tests include malformed inputs and amount thresholds; reporting tests cover missing, failing, skipped, and unrelated evidence.
 
-Risk thresholds, country lists, string-based watchlist markers, and large-wire proxies are simplified teaching rules. They are not legal/compliance guidance, actual sanctions screening, proof of rapid fund movement, or a production AML model. Generated data must never be used to contact people or screen real accounts.
+Risk thresholds, country lists, watchlist text markers, and large-wire proxies are simplified test rules. They do not perform sanctions screening or establish compliance. Generated profiles and transactions are for local testing.
 
-A dependency override updates the YAML reader used by Istanbul's configuration loader from vulnerable v3 to v4; its `load()` API is compatible for the JSON/YAML configuration used here. The full coverage command exercises this path. Do not blindly apply audit force downgrades that replace Jest with older major versions.
+A dependency override uses v4 of Istanbul's YAML configuration reader. The coverage command exercises that configuration path.

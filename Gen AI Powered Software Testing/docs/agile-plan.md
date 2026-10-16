@@ -2,7 +2,7 @@
 
 ## Epics
 
-### EPIC-001: AI-guided KYC onboarding
+### EPIC-001: Conversational KYC onboarding
 
 Deliver chatbot-supported customer onboarding with NLP-driven data capture and document guidance.
 
@@ -73,6 +73,6 @@ Progress monitoring: Review RTM gaps, stabilize Jest execution, and record obser
 
 ## Conflict Resolution and Sprint Adjustment
 
-A realistic project disruption was modeled where one automation tester and one compliance subject matter expert became unavailable during Sprint 2. Generative AI was used to re-rank the backlog by regulatory risk and delivery dependency. The team preserved must-have AML and RTM work, moved lower-risk chatbot status refinements behind core compliance tests, and paired the remaining QA engineer with the business analyst for scenario review.
+Capacity scenario: one tester and one compliance reviewer become unavailable during Sprint 2. Keep AML rule checks and requirements traceability in scope, defer lower-priority chatbot status work, and pair the remaining tester with the analyst for scenario review. This is a planning exercise, not a record of a staffed delivery team.
 
 The adjusted plan kept Sprint 2 focused on AML typology coverage and sanctions/PEP risk scoring, while Sprint 3 absorbed reporting polish and performance checks. Progress monitoring shifted from broad task completion to evidence-based gates: typology present, rule tested, requirement mapped, and report generated.

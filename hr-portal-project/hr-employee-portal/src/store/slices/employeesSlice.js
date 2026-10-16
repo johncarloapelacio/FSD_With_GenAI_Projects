@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { apiClient, API_ENDPOINTS, getErrorMessage } from "../../config/api.js";
 
-// Employees domain state used by HR and Employee views.
 const initialState = {
   employees: [],
   status: "idle",
@@ -9,7 +8,6 @@ const initialState = {
   requests: {},
 };
 
-// Loads employee records for tables, profile pages, and greeting data.
 export const fetchEmployees = createAsyncThunk(
   "employees/fetchEmployees",
   async (_, { rejectWithValue }) => {
@@ -22,7 +20,6 @@ export const fetchEmployees = createAsyncThunk(
   }
 );
 
-// Creates a new employee record after duplicate email validation.
 export const addEmployee = createAsyncThunk(
   "employees/addEmployee",
   async ({ email, department }, { rejectWithValue }) => {
@@ -39,7 +36,6 @@ export const addEmployee = createAsyncThunk(
   }
 );
 
-// Validates whether an employee can continue through the signup flow.
 export const verifyEmployeeEmail = createAsyncThunk(
   "employees/verifyEmployeeEmail",
   async ({ email, inviteCode }, { rejectWithValue }) => {
@@ -52,7 +48,6 @@ export const completeEmployeeSignup = createAsyncThunk("employees/completeEmploy
   catch (error) { return rejectWithValue(getErrorMessage(error, "Sign up failed")); }
 });
 
-// Employees slice reducers coordinate async status and entity updates.
 const employeesSlice = createSlice({
   name: "employees",
   initialState,
@@ -62,7 +57,6 @@ const employeesSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // Handles all thunk lifecycle events for employee operations.
     builder
       .addCase("auth/sessionExpired", () => initialState)
       .addCase("auth/logoutUser/fulfilled", () => initialState)
@@ -126,7 +120,6 @@ const employeesSlice = createSlice({
 
 export const { clearEmployeesError } = employeesSlice.actions;
 
-// Employees selectors provide reusable lookups for list and profile screens.
 export const selectEmployeesState = (state) => state.employees;
 export const selectAllEmployees = (state) => state.employees.employees;
 export const selectEmployeeByEmail = (state, email) =>

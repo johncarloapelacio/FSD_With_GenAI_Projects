@@ -3,9 +3,7 @@ import { Link } from "react-router-dom";
 import { selectLoggedInEmail } from "../store/slices/authSlice";
 import "./HRDashboard.css";
 
-// Welcome screen rendered when the HR dashboard is first accessed with no child route active.
 const HRWelcome = () => {
-  // Retrieve the logged-in HR email from Redux auth state.
   const email = useSelector(selectLoggedInEmail);
 
   return (

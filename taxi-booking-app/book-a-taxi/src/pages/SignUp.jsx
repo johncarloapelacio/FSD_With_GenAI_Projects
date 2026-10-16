@@ -3,7 +3,6 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { apiUrl, apiFetch } from '../api';
 import './Pages.css';
 
-// Registration screen with validation and post-signup route restoration.
 function SignUp() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,24 +19,20 @@ function SignUp() {
   const [apiError, setApiError] = useState(null);
 
   const validateForm = () => {
-    // Validate signup fields before creating account.
     const newErrors = {};
 
-    // First name validation
     if (!formData.firstName) {
       newErrors.firstName = 'First name is required';
     } else if (formData.firstName.length < 2) {
       newErrors.firstName = 'First name must be at least 2 characters';
     }
 
-    // Last name validation
     if (!formData.lastName) {
       newErrors.lastName = 'Last name is required';
     } else if (formData.lastName.length < 2) {
       newErrors.lastName = 'Last name must be at least 2 characters';
     }
 
-    // Age validation
     if (!formData.age) {
       newErrors.age = 'Age is required';
     } else {
@@ -47,21 +42,18 @@ function SignUp() {
       }
     }
 
-    // Email validation
     if (!formData.email) {
       newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
     }
 
-    // Password validation
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 10) {
       newErrors.password = 'Password must be at least 10 characters';
     }
 
-    // Confirm password validation
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = 'Please confirm your password';
     } else if (formData.password !== formData.confirmPassword) {
@@ -72,13 +64,11 @@ function SignUp() {
   };
 
   const handleChange = (e) => {
-    // Keep form controlled while clearing stale errors/messages.
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
     });
-    // Clear error for this field
     if (errors[name]) {
       setErrors({
         ...errors,
@@ -89,7 +79,6 @@ function SignUp() {
   };
 
   const handleSubmit = async (e) => {
-    // Create account in backend, then store session and redirect.
     e.preventDefault();
     const newErrors = validateForm();
 
@@ -117,7 +106,6 @@ function SignUp() {
       const data = await response.json();
 
       if (response.ok) {
-        // Store user info in sessionStorage
         sessionStorage.setItem('user', JSON.stringify(data.user));
 
         // Redirect to the intended page and support both location-object and string `from` state.

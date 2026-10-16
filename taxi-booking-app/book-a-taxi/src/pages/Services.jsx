@@ -3,7 +3,6 @@ import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Pages.css';
 
-// Service catalog page that pre-selects a service and routes user into booking flow.
 function Services() {
   const navigate = useNavigate();
   const redirectTimerRef = useRef(null);
@@ -31,7 +30,6 @@ function Services() {
   }, []);
 
   const handleServiceBooking = (service) => {
-    // Debounce card interactions and redirect based on auth state.
     if (isRedirecting) {
       return;
     }

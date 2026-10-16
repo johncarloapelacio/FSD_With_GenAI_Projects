@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import './Pages.css';
 
-// Contact form with client-side validation and demo submission feedback.
 function Contact() {
   const [formData, setFormData] = useState({
     name: '',
@@ -15,13 +14,11 @@ function Contact() {
   const [errors, setErrors] = useState({});
 
   const validateEmail = (email) => {
-    // Basic RFC-style email shape validation.
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   };
 
   const formatPhoneNumber = (input) => {
-    // Normalize user input to (###) ###-#### for consistent storage/display.
     const digitsOnly = input.replace(/\D/g, '');
 
     // Accept common US-style entries like "+1 555..." by trimming a leading country code.
@@ -40,14 +37,12 @@ function Contact() {
   };
 
   const validatePhone = (phone) => {
-    // Require complete formatted US-style 10-digit number.
     const formattedPhone = formatPhoneNumber(phone);
     const re = /^\(\d{3}\) \d{3}-\d{4}$/;
     return re.test(formattedPhone);
   };
 
   const handleChange = (e) => {
-    // Keep form fields controlled and apply phone formatting on input.
     const { name, value } = e.target;
 
     const nextValue = name === 'phone' ? formatPhoneNumber(value) : value;
@@ -56,7 +51,6 @@ function Contact() {
       ...prev,
       [name]: nextValue,
     }));
-    // Clear error for this field when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -66,11 +60,9 @@ function Contact() {
   };
 
   const handleSubmit = (e) => {
-    // Validate all fields, then show a simulated success response.
     e.preventDefault();
     const newErrors = {};
 
-    // Validate all fields
     if (!formData.name.trim()) {
       newErrors.name = 'Name is required';
     }
@@ -102,7 +94,6 @@ function Contact() {
       return;
     }
 
-    // If validation passes, simulate submission
     setSubmitted(true);
     setFormData({
       name: '',
@@ -112,7 +103,6 @@ function Contact() {
       message: '',
     });
 
-    // Reset success message after 5 seconds
     setTimeout(() => {
       setSubmitted(false);
     }, 5000);
@@ -122,18 +112,19 @@ function Contact() {
     <div className="container contact-main">
       <h1 className="heading">Contact Us</h1>
       <p className="subheading">
-        Have a question? We'd love to hear from you. Get in touch with our team.
+        Try the sample form below. It validates your entries locally and does not send messages.
       </p>
 
       <div className="contact-content">
         <div className="contact-info">
-          <h2>Get In Touch</h2>
+          <h2>Sample Contact Details</h2>
+          <p>These details are placeholders for the contact-page layout.</p>
           <div className="contact-details">
             <div className="contact-item">
               <div className="contact-icon">📍</div>
               <div>
                 <h4>Address</h4>
-                <p>123 Transportation Ave<br />New York, NY 10001</p>
+                <p>123 Example Avenue<br />Example City, NY 10001</p>
               </div>
             </div>
 
@@ -141,7 +132,7 @@ function Contact() {
               <div className="contact-icon">📞</div>
               <div>
                 <h4>Phone</h4>
-                <p>+1 (555) 123-4567<br />Available 24/7</p>
+                <p>+1 (212) 555-0100<br />Sample number only</p>
               </div>
             </div>
 
@@ -149,7 +140,7 @@ function Contact() {
               <div className="contact-icon">✉️</div>
               <div>
                 <h4>Email</h4>
-                <p>support@bookataxe.com<br />info@bookataxe.com</p>
+                <p>support@bookataxi.example.test<br />info@bookataxi.example.test</p>
               </div>
             </div>
 
@@ -157,7 +148,7 @@ function Contact() {
               <div className="contact-icon">⏰</div>
               <div>
                 <h4>Business Hours</h4>
-                <p>Monday - Sunday<br />24 Hours a Day</p>
+                <p>No live support service<br />Portfolio demonstration</p>
               </div>
             </div>
           </div>

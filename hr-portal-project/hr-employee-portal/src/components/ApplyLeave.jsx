@@ -5,19 +5,16 @@ import { applyLeaveRequest } from "../store/slices/leaveSlice";
 import "./ApplyLeave.css";
 
 const ApplyLeave = () => {
-  // Local leave form state with Redux-authenticated user context.
   const dispatch = useDispatch();
   const [form, setForm] = useState({ reason: "", numberOfDays: "" });
   const [message, setMessage] = useState("");
   const email = useSelector(selectLoggedInEmail);
 
-  // Generic input handler for leave form fields.
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  // Validates form and submits leave request through Redux thunk.
   const handleApplyLeave = async (event) => {
     event.preventDefault();
     setMessage("");

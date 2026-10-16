@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { apiUrl, apiFetch, signOut } from '../api';
 import './Pages.css';
 
-// Unified account page for profile, password, account deletion, and embedded bookings view.
 function Account() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,7 +29,6 @@ function Account() {
   const [cancelingBookingId, setCancelingBookingId] = useState(null);
 
   useEffect(() => {
-    // Load authenticated user from sessionStorage or redirect to login.
     const storedUser = sessionStorage.getItem('user');
     if (storedUser) {
       try {
@@ -56,7 +54,6 @@ function Account() {
   }, [navigate, location]);
 
   useEffect(() => {
-    // Fetch latest profile so account fields (including age) reflect backend state.
     const fetchUserProfile = async () => {
       if (!user?.id) return;
 
@@ -90,7 +87,6 @@ function Account() {
   }, [user?.id]);
 
   const validateProfileForm = () => {
-    // Validate profile fields before sending update request.
     const newErrors = {};
 
     if (!formData.firstName) {
@@ -118,7 +114,6 @@ function Account() {
   };
 
   const formatDate = (dateString) => {
-    // Format booking date/time for list display.
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
@@ -130,7 +125,6 @@ function Account() {
   };
 
   const getStatusColor = (status) => {
-    // Render status badges with consistent color mapping.
     switch ((status || '').toLowerCase()) {
       case 'confirmed':
         return '#28a745';
@@ -146,7 +140,6 @@ function Account() {
   };
 
   const fetchBookings = async (targetUser = user) => {
-    // Load active bookings for the current account holder.
     if (!targetUser) return;
 
     setBookingsLoading(true);
@@ -171,18 +164,15 @@ function Account() {
   };
 
   const handleViewBookings = async () => {
-    // Switch to embedded bookings tab and fetch latest data.
     setViewMode('bookings');
     await fetchBookings();
   };
 
   const handleBackToAccount = () => {
-    // Return from bookings tab to account settings view.
     setViewMode('account');
   };
 
   const handleCancelBooking = async (bookingId) => {
-    // Cancel a pending booking via backend delete endpoint.
     const confirmed = window.confirm('Are you sure you want to cancel this booking?');
     if (!confirmed) {
       return;
@@ -212,7 +202,6 @@ function Account() {
   };
 
   const validatePasswordForm = () => {
-    // Validate password change inputs and match confirmation.
     const newErrors = {};
 
     if (!formData.currentPassword) {
@@ -235,7 +224,6 @@ function Account() {
   };
 
   const handleChange = (e) => {
-    // Keep account form controlled and clear stale field errors/messages.
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -252,7 +240,6 @@ function Account() {
   };
 
   const handleProfileUpdate = async (e) => {
-    // Persist profile updates and synchronize local user session data.
     e.preventDefault();
     const newErrors = validateProfileForm();
 
@@ -278,7 +265,6 @@ function Account() {
       const data = await response.json();
 
       if (response.ok) {
-        // Update sessionStorage and state
         sessionStorage.setItem('user', JSON.stringify(data.user));
         setUser(data.user);
         setFormData((prev) => ({
@@ -298,7 +284,6 @@ function Account() {
   };
 
   const handlePasswordChange = async (e) => {
-    // Submit password change and reset password fields on success.
     e.preventDefault();
     const newErrors = validatePasswordForm();
 
@@ -344,7 +329,6 @@ function Account() {
   };
 
   const handleDeleteAccount = async () => {
-    // Permanently remove user account after password confirmation.
     if (!formData.deleteCurrentPassword) {
       setErrors((prev) => ({
         ...prev,

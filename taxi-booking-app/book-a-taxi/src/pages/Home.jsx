@@ -3,7 +3,6 @@ import { useMemo, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Pages.css';
 
-// Primary booking form page with flexible date/time parsing and draft restore.
 function Home() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,7 +37,6 @@ function Home() {
     specialRequests: restored?.specialRequests || '',
   }));
 
-  // Display values for flexible input fields
   const [displayValues, setDisplayValues] = useState(() => ({
     pickupDate: initialDraft.displayValues?.pickupDate || restored?.pickupDate || '',
     pickupTime: initialDraft.displayValues?.pickupTime || restored?.pickupTime || '',
@@ -57,17 +55,14 @@ function Home() {
   const isLoggedIn = !!sessionStorage.getItem('user');
 
   const handleChange = (e) => {
-    // Update form state and normalize free-form date/time input.
     const { name, value } = e.target;
 
     if (name === 'pickupDate') {
-      // Update display value immediately
       setDisplayValues(prev => ({
         ...prev,
         pickupDate: value,
       }));
 
-      // Parse and store the actual date value
       const parsedDate = parseDate(value);
       setBookingData((prev) => ({
         ...prev,
@@ -76,13 +71,11 @@ function Home() {
 
 
     } else if (name === 'pickupTime') {
-      // Update display value immediately
       setDisplayValues(prev => ({
         ...prev,
         pickupTime: value,
       }));
 
-      // Parse and store the actual time value
       const parsedTime = parseTime(value);
       setBookingData((prev) => ({
         ...prev,
@@ -97,7 +90,6 @@ function Home() {
       }));
     }
 
-    // Clear error for this field when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -107,7 +99,6 @@ function Home() {
   };
 
   const validateForm = () => {
-    // Validate booking fields before moving to driver selection.
     const newErrors = {};
 
     if (!bookingData.pickupLocation.trim()) {
@@ -161,11 +152,9 @@ function Home() {
   };
 
   const handleSubmit = (e) => {
-    // Redirect unauthenticated users to login and preserve draft; otherwise continue flow.
     e.preventDefault();
     if (pendingConfirmation) { navigate("/confirmation", { state: { bookingData: pendingConfirmation } }); return; }
 
-    // If user is not logged in, redirect immediately before validating booking fields.
     const storedUser = sessionStorage.getItem('user');
     if (!storedUser) {
       sessionStorage.setItem('pendingBookingDraft', JSON.stringify({
@@ -183,8 +172,6 @@ function Home() {
       return;
     }
 
-    // User is logged in, proceed with booking
-    // Store booking data in session/local storage for next page
     sessionStorage.removeItem('pendingBookingDraft');
     sessionStorage.setItem('bookingData', JSON.stringify(bookingData));
     navigate('/drivers');

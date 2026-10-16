@@ -9,19 +9,16 @@ import { logoutUser } from "../store/slices/authSlice";
 import "./EmployeeDashboard.css";
 
 const EmployeeDashboard = () => {
-  // Core hooks and selectors for employee dashboard data and navigation.
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { status } = useSelector(selectEmployeesState);
 
-  // Loads employee records once so greeting/profile data can be resolved locally.
   useEffect(() => {
     if (status === "idle") {
       dispatch(fetchEmployees());
     }
   }, [dispatch, status]);
 
-  // Clears session auth state and routes user to login.
   const handleLogout = async () => {
     try { await dispatch(logoutUser()).unwrap(); navigate("/"); }
     catch { window.alert("Could not sign out. Please try again."); }

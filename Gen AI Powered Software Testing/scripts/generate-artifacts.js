@@ -5,7 +5,6 @@ const {
   epics,
   userStories,
   sprintPlan,
-  promptLog,
   testCases,
   generateKycCustomers,
   generateAmlScenarios,
@@ -30,7 +29,7 @@ function requirementsMarkdown() {
   const lines = [
     "# Requirements Catalog",
     "",
-    "The following target requirements were created from the assignment prompt for an AI-assisted KYC and anti-money laundering banking platform. The execution report distinguishes implemented local checks from unimplemented targets.",
+    "Target requirements for KYC onboarding, transaction monitoring, integrations, and reporting. The execution report separates implemented local checks from planned capabilities.",
     ""
   ];
 
@@ -94,7 +93,7 @@ function agilePlanMarkdown() {
   lines.push("## Conflict Resolution and Sprint Adjustment");
   lines.push("");
   lines.push(
-    "A realistic project disruption was modeled where one automation tester and one compliance subject matter expert became unavailable during Sprint 2. Generative AI was used to re-rank the backlog by regulatory risk and delivery dependency. The team preserved must-have AML and RTM work, moved lower-risk chatbot status refinements behind core compliance tests, and paired the remaining QA engineer with the business analyst for scenario review."
+    "Capacity scenario: one tester and one compliance reviewer become unavailable during Sprint 2. Keep AML rule checks and requirements traceability in scope, defer lower-priority chatbot status work, and pair the remaining tester with the analyst for scenario review. This is a planning exercise, not a record of a staffed delivery team."
   );
   lines.push("");
   lines.push(
@@ -105,78 +104,32 @@ function agilePlanMarkdown() {
   return lines.join("\n");
 }
 
-function genAiReportMarkdown(testReport) {
-  const lines = [
-    "# Generative AI Assisted Testing Report",
+function implementationNotesMarkdown(testReport) {
+  const summary = testReport.summary;
+  return [
+    "# Implementation Notes",
     "",
-    "## Executive Summary",
+    "## Data and rule checks",
     "",
-    "This project demonstrates how generative AI can accelerate test management for a banking KYC and AML platform. The work converts a broad problem statement into structured requirements, epics, user stories, prioritized sprint work, synthetic data, automated Jest tests, an RTM, and execution reporting.",
+    "Independent seeded Faker instances create repeatable KYC customer profiles and AML transactions. Fixed reference dates keep fixtures stable across runs. Local checks validate profile completeness, illustrative risk scores, transaction alerts, unique identifiers, and generation performance.",
     "",
-    "## How Generative AI Enhanced the Development Process",
+    "Risk thresholds, country lists, and watchlist text markers are simplified examples. They do not perform live identity verification or sanctions screening.",
     "",
-    "Generative AI was used as a planning and quality accelerator. It helped decompose the assignment into requirement categories, propose acceptance criteria, identify AML typologies, define synthetic data fields, create test scenarios, and maintain traceability from requirements to evidence. Human judgment remained important for narrowing scope, keeping data synthetic, selecting deterministic generation, and making the deliverables runnable in JavaScript.",
+    "## Requirements and execution evidence",
     "",
-    "## Prompt Log",
+    `The catalog maps ${summary.mappedRequirements}/${summary.totalRequirements} requirements to ${summary.totalTestCases} cases. Requirement mapping records traceability; it does not establish that every acceptance criterion is implemented.`,
+    "",
+    "npm test runs Jest and builds reports from the observed assertion and suite results. Failed, skipped, and unexecuted cases retain their status. npm run generate rebuilds documents and data without claiming test execution. See reports/test-report.md for run evidence and reports/rtm.md for requirement scope.",
+    "",
+    "## Planning documents",
+    "",
+    "The requirements catalog and Agile plan include proposed chatbot, NLP, escalation, and banking integration work. These capabilities are not implemented by this local framework. Story points, sprints, and capacity adjustments are planning examples.",
+    "",
+    "## Runtime boundaries",
+    "",
+    "The framework runs locally in JavaScript with Jest and uses synthetic data. It does not connect to banking systems, identity providers, NLP models, or external screening services. Performance tests measure local generation and rule evaluation, not network or production service latency.",
     ""
-  ];
-
-  promptLog.forEach((entry) => {
-    lines.push(`### ${entry.id}: ${entry.purpose}`);
-    lines.push("");
-    lines.push(`Prompt: ${entry.prompt}`);
-    lines.push("");
-    lines.push(`Output used: ${entry.outputSummary}`);
-    lines.push("");
-  });
-
-  lines.push("## Epics and User Stories");
-  lines.push("");
-  epics.forEach((epic) => {
-    lines.push(`- ${epic.id}: ${epic.title} - ${epic.description}`);
-  });
-  lines.push("");
-  userStories.forEach((story) => {
-    lines.push(`- ${story.id}: ${story.title}; ${story.storyPoints} points; ${story.priority} priority; Sprint ${story.sprint}.`);
-  });
-
-  lines.push("");
-  lines.push("## Story Point Estimation and Prioritization");
-  lines.push("");
-  lines.push(
-    "Story points were estimated by complexity, compliance risk, integration uncertainty, and testing effort. High-priority stories are tied to must-have KYC, AML, screening, and reporting requirements. Medium-priority work supports resilience and performance once the core compliance evidence is stable."
-  );
-
-  lines.push("");
-  lines.push("## Sprint Execution and Monitoring");
-  lines.push("");
-  sprintPlan.forEach((sprint) => {
-    lines.push(`- Sprint ${sprint.sprint}: ${sprint.goal} Monitoring approach: ${sprint.monitoring}`);
-  });
-
-  lines.push("");
-  lines.push("## Challenges and Resolution");
-  lines.push("");
-  lines.push(
-    "The main challenge was balancing a broad platform vision with a training-project scope. The solution was to represent external systems with synthetic fields and local rule evaluators while explicitly separating implemented checks from planned service behavior. A second challenge was repeatability: seeded faker generation was selected so test evidence remains stable across runs. A third challenge was team-capacity conflict; the sprint plan was adjusted by protecting must-have compliance scope and delaying lower-risk enhancements."
-  );
-
-  lines.push("");
-  lines.push("## Critical Analysis of Outcomes");
-  lines.push("");
-  lines.push(
-    `The RTM maps ${testReport.summary.mappedRequirements}/${testReport.summary.totalRequirements} requirements, with ${testReport.summary.totalTestCases} mapped test cases. Mapping records planning traceability; it does not establish functional acceptance coverage. Consult the execution report for observed results and unimplemented requirements. The main limitation is that production integrations, model confidence metrics, and external sanctions services are not implemented; only synthetic screening indicators are evaluated, so enterprise adoption would require contract tests, security testing, privacy review, and live-service performance baselines.`
-  );
-
-  lines.push("");
-  lines.push("## Conclusion");
-  lines.push("");
-  lines.push(
-    "Generative AI improved speed and completeness by turning ambiguous goals into structured artifacts. The framework demonstrates local synthetic-data checks and traceability. Chatbot, NLP, and live integrations remain planned and must not be reported as implemented or verified."
-  );
-  lines.push("");
-
-  return lines.join("\n");
+  ].join("\n");
 }
 
 function generateArtifacts(jestResults) {
@@ -207,7 +160,7 @@ function generateArtifacts(jestResults) {
   writeText("reports/test-report.md", testReportToMarkdown(testReport));
   writeText("docs/requirements.md", requirementsMarkdown());
   writeText("docs/agile-plan.md", agilePlanMarkdown());
-  writeText("docs/genai-process-report.md", genAiReportMarkdown(testReport));
+  writeText("docs/implementation-notes.md", implementationNotesMarkdown(testReport));
 
   console.log(`Generated ${customers.length} KYC customers, ${amlScenarios.length} AML transactions, and ${testCases.length} test cases.`);
   console.log(`Catalog mapping: ${testReport.summary.mappingPercent}% (not functional coverage). Artifact generation took ${elapsedMs}ms.`);

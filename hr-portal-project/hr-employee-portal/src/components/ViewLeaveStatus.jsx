@@ -9,18 +9,15 @@ import {
 import "./ViewLeaveStatus.css";
 
 const ViewLeaveStatus = () => {
-  // Derives logged-in employee leave history from Redux state.
   const dispatch = useDispatch();
   const email = useSelector(selectLoggedInEmail);
   const { status, error } = useSelector(selectLeaveState);
   const leaveRequests = useSelector((state) => selectLeaveByEmail(state, email));
 
-  // Fetches leave data once so status table has current records.
   useEffect(() => {
     dispatch(fetchLeaveRequests());
   }, [dispatch]);
 
-  // Maps domain status values to corresponding CSS classes.
   const getStatusClass = (status) => {
     const statusClasses = {
       "Approved": "status approved",

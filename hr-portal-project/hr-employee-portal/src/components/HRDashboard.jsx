@@ -4,11 +4,9 @@ import { logoutUser } from "../store/slices/authSlice";
 import "./HRDashboard.css";
 
 const HRDashboard = () => {
-  // Dashboard-level hooks for logout dispatch and route transitions.
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Clears auth state and returns user to public login page.
   const handleLogout = async () => {
     try { await dispatch(logoutUser()).unwrap(); navigate("/"); }
     catch { window.alert("Could not sign out. Please try again."); }

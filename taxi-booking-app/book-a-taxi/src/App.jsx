@@ -13,7 +13,6 @@ import Navigation from './components/Navigation';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
-// Root app shell with route table for public and protected pages.
 function App() {
   return (
     <Router>

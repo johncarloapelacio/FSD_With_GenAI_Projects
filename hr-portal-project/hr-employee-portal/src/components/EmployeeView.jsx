@@ -9,13 +9,11 @@ import { selectLoggedInEmail } from "../store/slices/authSlice";
 import "./EmployeeView.css";
 
 const EmployeeView = () => {
-  // Resolves the logged-in employee profile from Redux state by email key.
   const dispatch = useDispatch();
   const email = useSelector(selectLoggedInEmail);
   const { error } = useSelector(selectEmployeesState);
   const employeeProfile = useSelector((state) => selectEmployeeByEmail(state, email)) || {};
 
-  // Ensures employee data is loaded before rendering profile fields.
   useEffect(() => {
     dispatch(fetchEmployees());
   }, [dispatch]);
