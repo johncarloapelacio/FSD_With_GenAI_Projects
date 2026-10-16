@@ -22,9 +22,9 @@ const EmployeeDashboard = () => {
   }, [dispatch, status]);
 
   // Clears session auth state and routes user to login.
-  const handleLogout = () => {
-    dispatch(logoutUser());
-    navigate("/");
+  const handleLogout = async () => {
+    try { await dispatch(logoutUser()).unwrap(); navigate("/"); }
+    catch { window.alert("Could not sign out. Please try again."); }
   };
 
   return (

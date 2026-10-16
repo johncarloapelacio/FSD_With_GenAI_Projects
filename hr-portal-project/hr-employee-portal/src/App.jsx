@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { fetchSession, sessionExpired } from "./store/slices/authSlice";
 import { Route, Routes } from "react-router-dom"
 import Login from "./components/Login"
 import SignUp from "./components/SignUp"
@@ -14,6 +17,13 @@ import HRWelcome from "./components/HRWelcome"
 import EmployeeWelcome from "./components/EmployeeWelcome"
 
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const expired = () => dispatch(sessionExpired());
+    window.addEventListener("auth-expired", expired);
+    dispatch(fetchSession());
+    return () => window.removeEventListener("auth-expired", expired);
+  }, [dispatch]);
   return (
     // Top-level route map for public and protected application areas.
     <Routes>

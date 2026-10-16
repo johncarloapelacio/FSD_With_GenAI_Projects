@@ -1,6 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
+  selectAuth,
   selectIsAuthenticated,
   selectIsEmployee,
   selectIsHR,
@@ -8,9 +9,12 @@ import {
 
 const ProtectedRoute = ({ requiredUserType }) => {
   // Read auth and role flags from Redux to evaluate route access.
+  const { checked } = useSelector(selectAuth);
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isHR = useSelector(selectIsHR);
   const isEmployee = useSelector(selectIsEmployee);
+
+  if (!checked) return <p role="status">Checking session...</p>;
 
   // Block unauthenticated access to any protected route.
   if (!isAuthenticated) {

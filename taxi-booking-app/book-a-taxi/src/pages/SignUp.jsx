@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { apiUrl } from '../api';
+import { apiUrl, apiFetch } from '../api';
 import './Pages.css';
 
 // Registration screen with validation and post-signup route restoration.
@@ -41,9 +41,9 @@ function SignUp() {
     if (!formData.age) {
       newErrors.age = 'Age is required';
     } else {
-      const parsedAge = parseInt(formData.age, 10);
-      if (Number.isNaN(parsedAge) || parsedAge < 1 || parsedAge > 120) {
-        newErrors.age = 'Please enter a valid age between 1 and 120';
+      const parsedAge = Number(formData.age);
+      if (!Number.isInteger(parsedAge) || parsedAge < 16 || parsedAge > 120) {
+        newErrors.age = 'Please enter a valid age between 16 and 120';
       }
     }
 
@@ -57,8 +57,8 @@ function SignUp() {
     // Password validation
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 5) {
-      newErrors.password = 'Password must be at least 5 characters';
+    } else if (formData.password.length < 10) {
+      newErrors.password = 'Password must be at least 10 characters';
     }
 
     // Confirm password validation
@@ -100,7 +100,7 @@ function SignUp() {
 
     setLoading(true);
     try {
-      const response = await fetch(apiUrl('/auth/signup'), {
+      const response = await apiFetch(apiUrl('/auth/signup'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ function SignUp() {
         body: JSON.stringify({
           firstName: formData.firstName,
           lastName: formData.lastName,
-          age: parseInt(formData.age, 10),
+          age: Number(formData.age),
           email: formData.email,
           password: formData.password,
         }),
@@ -117,8 +117,8 @@ function SignUp() {
       const data = await response.json();
 
       if (response.ok) {
-        // Store user info in localStorage
-        localStorage.setItem('user', JSON.stringify(data.user));
+        // Store user info in sessionStorage
+        sessionStorage.setItem('user', JSON.stringify(data.user));
 
         // Redirect to the intended page and support both location-object and string `from` state.
         const fromState = location.state?.from;
@@ -190,7 +190,7 @@ function SignUp() {
                 type="number"
                 id="age"
                 name="age"
-                min="1"
+                min="16"
                 max="120"
                 value={formData.age}
                 onChange={handleChange}
@@ -223,7 +223,7 @@ function SignUp() {
                 value={formData.password}
                 onChange={handleChange}
                 className={errors.password ? 'form-control error' : 'form-control'}
-                placeholder="Enter your password (min 5 characters)"
+                placeholder="Enter your password (min 10 characters)"
               />
               {errors.password && <span className="error-message">{errors.password}</span>}
             </div>

@@ -12,15 +12,13 @@ const ViewAllLeaveInfo = () => {
   // Loads pending requests and mutation status from Redux leave domain.
   const dispatch = useDispatch();
   const leaveRequests = useSelector(selectPendingLeaveRequests);
-  const { status } = useSelector(selectLeaveState);
+  const { status, error } = useSelector(selectLeaveState);
   const [message, setMessage] = useState("");
 
   // Fetches leave requests once for the HR review table.
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchLeaveRequests());
-    }
-  }, [dispatch, status]);
+    dispatch(fetchLeaveRequests());
+  }, [dispatch]);
 
   // Updates a leave request status and refreshes UI through Redux state updates.
   const handleChangeStatus = async (request, status) => {
@@ -37,6 +35,7 @@ const ViewAllLeaveInfo = () => {
     <div className="leave-table-container">
       <div className="leave-table-card">
         <h2>Pending Leave Requests</h2>
+        {error && <p role="alert">{error}</p>}
 
         <table className="leave-table">
           <thead>

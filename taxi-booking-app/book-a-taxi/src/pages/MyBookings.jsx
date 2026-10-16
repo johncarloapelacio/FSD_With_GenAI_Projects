@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { apiUrl } from '../api';
+import { apiUrl, apiFetch } from '../api';
 import './Pages.css';
 
 // Dedicated bookings page for viewing and canceling user rides.
@@ -14,7 +14,7 @@ function MyBookings() {
 
   useEffect(() => {
     // Enforce authentication and load bookings on first render.
-    const storedUser = localStorage.getItem('user');
+    const storedUser = sessionStorage.getItem('user');
     if (!storedUser) {
       navigate('/login', { state: { from: location } });
       return;
@@ -26,11 +26,11 @@ function MyBookings() {
   const fetchBookings = async () => {
     // Retrieve bookings and keep only active records for current user.
     try {
-      const response = await fetch(apiUrl('/bookings'));
+      const response = await apiFetch(apiUrl('/bookings'));
       if (response.ok) {
         const data = await response.json();
         // Filter bookings for current user
-        const user = JSON.parse(localStorage.getItem('user'));
+        const user = JSON.parse(sessionStorage.getItem('user'));
         const userBookings = data.filter(
           (booking) => booking.userId === user.id && (booking.status || '').toLowerCase() !== 'cancelled'
         );
@@ -85,7 +85,7 @@ function MyBookings() {
     setError(null);
 
     try {
-      const response = await fetch(apiUrl(`/bookings/${bookingId}`), {
+      const response = await apiFetch(apiUrl(`/bookings/${bookingId}`), {
         method: 'DELETE',
       });
 
@@ -207,7 +207,7 @@ function MyBookings() {
                 )}
 
                 <div className="booking-actions">
-                  {booking.status.toLowerCase() === 'pending' && (
+                  {['pending', 'confirmed'].includes(booking.status.toLowerCase()) && new Date(booking.dateTime) > new Date() && (
                     <button
                       className="btn btn-danger btn-small"
                       onClick={() => handleCancelBooking(booking.id)}
@@ -217,14 +217,10 @@ function MyBookings() {
                     </button>
                   )}
                   {booking.status.toLowerCase() === 'confirmed' && (
-                    <button className="btn btn-secondary btn-small">
-                      Contact Driver
-                    </button>
+                    <span>Driver: {booking.driverName || 'Assigned driver'} ({booking.vehicleNumber})</span>
                   )}
                   {booking.status.toLowerCase() === 'completed' && (
-                    <button className="btn btn-primary btn-small">
-                      Rate & Review
-                    </button>
+                    <span>Ride completed</span>
                   )}
                 </div>
               </div>

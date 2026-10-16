@@ -12,15 +12,13 @@ const ViewLeaveStatus = () => {
   // Derives logged-in employee leave history from Redux state.
   const dispatch = useDispatch();
   const email = useSelector(selectLoggedInEmail);
-  const { status } = useSelector(selectLeaveState);
+  const { status, error } = useSelector(selectLeaveState);
   const leaveRequests = useSelector((state) => selectLeaveByEmail(state, email));
 
   // Fetches leave data once so status table has current records.
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchLeaveRequests());
-    }
-  }, [dispatch, status]);
+    dispatch(fetchLeaveRequests());
+  }, [dispatch]);
 
   // Maps domain status values to corresponding CSS classes.
   const getStatusClass = (status) => {
@@ -36,6 +34,7 @@ const ViewLeaveStatus = () => {
     <div className="leave-status-container">
       <div className="leave-status-card">
         <h2>Your Leave Status</h2>
+        {error && <p role="alert">{error}</p>}
 
         <table className="leave-status-table">
           <thead>

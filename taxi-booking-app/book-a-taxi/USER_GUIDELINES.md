@@ -1,84 +1,15 @@
-# User Guidelines
+# Using Book a Taxi
 
-This document explains how to use the Book a Taxi app as an end user.
+This portfolio demo uses fictional drivers and fixed sample fares. It does not dispatch vehicles, collect payments or send contact messages. Use test data.
 
-## Scope and Disclaimer
+Create an account on Sign Up with first/last name, age (16-120), email and a password of at least 10 characters. Sign in on later visits. There are no shared demo credentials.
 
-- This app is a demo environment for learning and testing.
-- It does not process real payments or real-world taxi operations.
-- Use test/demo data only.
+On Home, enter different pickup/dropoff addresses, a future pickup date/time within one year, a service and the exact passenger count. Supported date input includes MM/DD/YYYY, YYYY-MM-DD, tomorrow and weekday names; times include 24-hour input and AM/PM. Each service has a capacity limit.
 
-## Accessing the App
+Select Book Your Ride, choose a matching sample driver and review the fixed quote. Edit Booking preserves your entered details. Confirm Booking saves the ride; select View My Bookings to manage it. You can cancel an upcoming confirmed ride before its pickup time. The user interface lists active rides; cancelled records remain stored as history.
 
-1. Open the frontend URL in your browser (usually `http://localhost:5173`).
-2. You will be redirected to the Login page first.
-3. Sign in with an existing account, or create one from Sign Up.
+The Services page loads the current service catalog and can preselect a tier on Home. Account lets you update your name/age, view bookings, change your password with the current password, or delete the account with password confirmation. Password changes invalidate previous sessions; deleting an account also removes its bookings.
 
-## Main Navigation
+Use Logout to invalidate the session. Sessions expire in eight hours and API restarts require signing in again. The Contact page previews validation locally and does not deliver messages.
 
-After login, the navigation bar gives access to:
-- Home
-- Services
-- About
-- Contact
-- Drivers
-- Account
-- My Bookings
-- Logout
-
-## Booking a Ride
-
-1. Go to Home.
-2. Enter booking details:
-   - Pickup location
-   - Dropoff location
-   - Date
-   - Time
-   - Service type
-   - Passenger count
-3. Select `Book Your Ride`.
-4. On the Drivers page, choose a driver.
-5. Continue to Confirmation.
-6. Confirm the ride.
-
-Expected result:
-- A success message appears.
-- Booking data is saved by the backend.
-
-## Using the Services Page
-
-The Services page lets you quickly choose a service tier:
-- Economy
-- Comfort
-- Premium
-- XL
-
-Behavior:
-- If logged in: selecting a service redirects to Home with that service preselected.
-- If logged out: selecting a service redirects to Login.
-
-## Managing Your Account
-
-From Account page, you can:
-- Update first name, last name, and age
-- Change password (requires current password)
-- Delete account (requires current password)
-- Open My Bookings and return to Account
-
-## Viewing Booking History
-
-1. Go to My Bookings from the navbar or Account page.
-2. Review your previous bookings.
-3. Use the back/return action to go back to Account when needed.
-
-## Logout
-
-- Click Logout from the navigation bar.
-- You will be redirected to Login and protected pages will no longer be accessible.
-
-## Common User Tips
-
-- Fill all required fields before submitting forms.
-- Use valid date/time values for booking.
-- If your session appears expired, log in again.
-- If a page does not load as expected, refresh the browser and ensure frontend/backend servers are both running.
+Booking confirmation uses a UUID request ID and an immutable submitted payload saved with the draft. Retrying after a lost response or reload reuses that request: the API returns the existing booking (HTTP 200), creates a new one only once (HTTP 201), and rejects changed booking details under the same key (HTTP 409). Keys and payload fingerprints are stored with the booking, scoped to its owner, so replay protection survives an API restart. An uncertain confirmation can be resumed from Home; editing is disabled until its result is retrieved. Replaying a cancelled booking retrieves that cancelled record instead of creating another ride. Explicit logout clears local drafts; review My Bookings before starting a new ride after an interrupted confirmation.

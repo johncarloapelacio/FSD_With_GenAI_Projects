@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { apiClient, API_ENDPOINTS, getErrorMessage } from "../../config/api";
+import { apiClient, API_ENDPOINTS, getErrorMessage } from "../../config/api.js";
 
 // Employees domain state used by HR and Employee views.
 const initialState = {
   employees: [],
   status: "idle",
   error: "",
+  requests: {},
 };
 
 // Loads employee records for tables, profile pages, and greeting data.
@@ -24,19 +25,8 @@ export const fetchEmployees = createAsyncThunk(
 // Creates a new employee record after duplicate email validation.
 export const addEmployee = createAsyncThunk(
   "employees/addEmployee",
-  async ({ email, department }, { getState, rejectWithValue }) => {
+  async ({ email, department }, { rejectWithValue }) => {
     try {
-      const currentEmployees = getState().employees.employees;
-      const hasLocalData = currentEmployees.length > 0;
-      const employees = hasLocalData
-        ? currentEmployees
-        : (await apiClient.get(API_ENDPOINTS.EMPLOYEES)).data;
-
-      const exists = employees.some((emp) => emp.emailId === email);
-      if (exists) {
-        return rejectWithValue("Employee already exists");
-      }
-
       const { data } = await apiClient.post(API_ENDPOINTS.EMPLOYEES, {
         emailId: email,
         department,
@@ -52,61 +42,15 @@ export const addEmployee = createAsyncThunk(
 // Validates whether an employee can continue through the signup flow.
 export const verifyEmployeeEmail = createAsyncThunk(
   "employees/verifyEmployeeEmail",
-  async (email, { rejectWithValue }) => {
-    try {
-      const { data } = await apiClient.get(API_ENDPOINTS.EMPLOYEES);
-      const employee = data.find((emp) => emp.emailId === email);
-
-      if (!employee) {
-        return rejectWithValue("You are not part of the organization");
-      }
-
-      if (employee.signedUp) {
-        return rejectWithValue("You are already signed up");
-      }
-
-      return {
-        employeeId: employee.id,
-        department: employee.department,
-        email: employee.emailId,
-        employees: data,
-      };
-    } catch (error) {
-      return rejectWithValue(getErrorMessage(error, "Verification failed. Please try again."));
-    }
+  async ({ email, inviteCode }, { rejectWithValue }) => {
+    try { return (await apiClient.post(`${API_ENDPOINTS.AUTH}/verify-invite`, { email, inviteCode })).data; }
+    catch (error) { return rejectWithValue(getErrorMessage(error, "Invalid invitation")); }
   }
 );
-
-// Completes employee signup and synchronizes both employee and credential data.
-export const completeEmployeeSignup = createAsyncThunk(
-  "employees/completeEmployeeSignup",
-  async ({ employeeId, firstName, lastName, email, password, department, age }, { rejectWithValue }) => {
-    try {
-      const employeeData = {
-        fname: firstName,
-        lname: lastName,
-        emailId: email,
-        password,
-        department,
-        age,
-        signedUp: true,
-      };
-
-      const loginData = {
-        emailId: email,
-        password,
-        typeOfUser: "employee",
-      };
-
-      await apiClient.patch(`${API_ENDPOINTS.EMPLOYEES}/${employeeId}`, employeeData);
-      await apiClient.post(API_ENDPOINTS.CREDENTIALS, loginData);
-      const { data } = await apiClient.get(API_ENDPOINTS.EMPLOYEES);
-      return data;
-    } catch (error) {
-      return rejectWithValue(getErrorMessage(error, "Sign up failed. Please try again."));
-    }
-  }
-);
+export const completeEmployeeSignup = createAsyncThunk("employees/completeEmployeeSignup", async (form, { rejectWithValue }) => {
+  try { await apiClient.post(`${API_ENDPOINTS.AUTH}/signup`, form); return []; }
+  catch (error) { return rejectWithValue(getErrorMessage(error, "Sign up failed")); }
+});
 
 // Employees slice reducers coordinate async status and entity updates.
 const employeesSlice = createSlice({
@@ -120,37 +64,61 @@ const employeesSlice = createSlice({
   extraReducers: (builder) => {
     // Handles all thunk lifecycle events for employee operations.
     builder
-      .addCase(fetchEmployees.pending, (state) => {
+      .addCase("auth/sessionExpired", () => initialState)
+      .addCase("auth/logoutUser/fulfilled", () => initialState)
+      .addCase("auth/loginUser/fulfilled", () => initialState)
+      .addCase(fetchEmployees.pending, (state, action) => {
+        state.requests.fetchEmployees = action.meta.requestId;
         state.status = "loading";
         state.error = "";
       })
       .addCase(fetchEmployees.fulfilled, (state, action) => {
+        if (state.requests.fetchEmployees !== action.meta.requestId) return;
+        delete state.requests.fetchEmployees;
         state.status = "succeeded";
         state.employees = action.payload;
       })
       .addCase(fetchEmployees.rejected, (state, action) => {
+        if (state.requests.fetchEmployees !== action.meta.requestId) return;
+        delete state.requests.fetchEmployees;
         state.status = "failed";
         state.error = action.payload || "Failed to load employees.";
       })
+      .addCase(addEmployee.pending, (state, action) => { state.requests.addEmployee = action.meta.requestId; })
       .addCase(addEmployee.fulfilled, (state, action) => {
-        state.employees.push(action.payload);
+        if (state.requests.addEmployee !== action.meta.requestId) return;
+        delete state.requests.addEmployee;
+        const { inviteCode, ...employee } = action.payload;
+        void inviteCode;
+        state.employees.push(employee);
         state.error = "";
       })
       .addCase(addEmployee.rejected, (state, action) => {
+        if (state.requests.addEmployee !== action.meta.requestId) return;
+        delete state.requests.addEmployee;
         state.error = action.payload || "Failed to add employee. Please try again.";
       })
+      .addCase(verifyEmployeeEmail.pending, (state, action) => { state.requests.verifyEmployeeEmail = action.meta.requestId; })
       .addCase(verifyEmployeeEmail.fulfilled, (state, action) => {
-        state.employees = action.payload.employees;
+        if (state.requests.verifyEmployeeEmail !== action.meta.requestId) return;
+        delete state.requests.verifyEmployeeEmail;
         state.error = "";
       })
       .addCase(verifyEmployeeEmail.rejected, (state, action) => {
+        if (state.requests.verifyEmployeeEmail !== action.meta.requestId) return;
+        delete state.requests.verifyEmployeeEmail;
         state.error = action.payload || "Verification failed. Please try again.";
       })
+      .addCase(completeEmployeeSignup.pending, (state, action) => { state.requests.completeEmployeeSignup = action.meta.requestId; })
       .addCase(completeEmployeeSignup.fulfilled, (state, action) => {
+        if (state.requests.completeEmployeeSignup !== action.meta.requestId) return;
+        delete state.requests.completeEmployeeSignup;
         state.employees = action.payload;
         state.error = "";
       })
       .addCase(completeEmployeeSignup.rejected, (state, action) => {
+        if (state.requests.completeEmployeeSignup !== action.meta.requestId) return;
+        delete state.requests.completeEmployeeSignup;
         state.error = action.payload || "Sign up failed. Please try again.";
       });
   },

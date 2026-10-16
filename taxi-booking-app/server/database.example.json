@@ -1,0 +1,144 @@
+{
+  "rideServices": [
+    {
+      "id": 1,
+      "name": "Economy",
+      "description": "Budget-friendly rides for everyday commute",
+      "basePrice": 5,
+      "pricePerMile": 1.5,
+      "pricePerMinute": 0.3,
+      "icon": "🚗",
+      "capacity": 4,
+      "features": [
+        "Affordable pricing",
+        "Professional drivers",
+        "GPS tracking"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Comfort",
+      "description": "Mid-range comfortable rides with extra space",
+      "basePrice": 8,
+      "pricePerMile": 2,
+      "pricePerMinute": 0.4,
+      "icon": "🚙",
+      "capacity": 5,
+      "features": [
+        "Spacious interior",
+        "Climate control",
+        "Premium audio",
+        "Phone charger"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Premium",
+      "description": "Luxury rides for special occasions",
+      "basePrice": 15,
+      "pricePerMile": 3.5,
+      "pricePerMinute": 0.65,
+      "icon": "🚘",
+      "capacity": 4,
+      "features": [
+        "Luxury vehicle",
+        "Premium seating",
+        "Complimentary wifi",
+        "Bottled water",
+        "Professional attire"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "XL",
+      "description": "Large vehicle perfect for groups",
+      "basePrice": 12,
+      "pricePerMile": 2.8,
+      "pricePerMinute": 0.5,
+      "icon": "🚐",
+      "capacity": 6,
+      "features": [
+        "Spacious 6-seater",
+        "Extra luggage space",
+        "Comfortable ride",
+        "GPS tracking"
+      ]
+    }
+  ],
+  "drivers": [
+    {
+      "id": 1,
+      "name": "John Smith",
+      "rating": 4.8,
+      "reviews": 234,
+      "vehicleType": "Sedan",
+      "vehicleNumber": "ABC 123",
+      "serviceType": "Economy",
+      "estimatedTime": "5 mins away",
+      "avatar": "👨‍💼",
+      "phone": "+1-555-0101",
+      "email": "john.smith@bookataxe.com",
+      "yearsExperience": 5,
+      "price": 17.0
+    },
+    {
+      "id": 2,
+      "name": "Sarah Johnson",
+      "rating": 4.9,
+      "reviews": 189,
+      "vehicleType": "SUV",
+      "vehicleNumber": "XYZ 789",
+      "serviceType": "Comfort",
+      "estimatedTime": "8 mins away",
+      "avatar": "👩‍💼",
+      "phone": "+1-555-0102",
+      "email": "sarah.johnson@bookataxe.com",
+      "yearsExperience": 7,
+      "price": 24.0
+    },
+    {
+      "id": 3,
+      "name": "Mike Davis",
+      "rating": 4.7,
+      "reviews": 312,
+      "vehicleType": "Sedan",
+      "vehicleNumber": "DEF 456",
+      "serviceType": "Economy",
+      "estimatedTime": "3 mins away",
+      "avatar": "👨‍💼",
+      "phone": "+1-555-0103",
+      "email": "mike.davis@bookataxe.com",
+      "yearsExperience": 6,
+      "price": 17.0
+    },
+    {
+      "id": 4,
+      "name": "Emma Wilson",
+      "rating": 4.6,
+      "reviews": 156,
+      "vehicleType": "Comfort",
+      "vehicleNumber": "GHI 789",
+      "serviceType": "Premium",
+      "estimatedTime": "12 mins away",
+      "avatar": "👩‍💼",
+      "phone": "+1-555-0104",
+      "email": "emma.wilson@bookataxe.com",
+      "yearsExperience": 4,
+      "price": 42.25
+    },
+    {
+      "id": 5,
+      "name": "Alex Lee",
+      "rating": 4.8,
+      "reviews": 96,
+      "vehicleType": "Van",
+      "vehicleNumber": "JKL 012",
+      "serviceType": "XL",
+      "estimatedTime": "7 mins away",
+      "avatar": "Van",
+      "price": 33.5
+    }
+  ],
+  "bookings": [],
+  "users": []
+}

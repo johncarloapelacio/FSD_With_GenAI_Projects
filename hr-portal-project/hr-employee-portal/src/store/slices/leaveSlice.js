@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { apiClient, API_ENDPOINTS, getErrorMessage } from "../../config/api";
+import { apiClient, API_ENDPOINTS, getErrorMessage } from "../../config/api.js";
 
 // Leave domain state stores all leave requests and request lifecycle status.
 const initialState = {
   leaveRequests: [],
   status: "idle",
   error: "",
+  requests: {},
 };
 
 // Retrieves all leave requests for both HR and employee perspectives.
@@ -44,7 +45,7 @@ export const updateLeaveStatus = createAsyncThunk(
   "leave/updateLeaveStatus",
   async ({ request, status }, { rejectWithValue }) => {
     try {
-      const updatedLeave = { ...request, status };
+      const updatedLeave = { status };
       const { data } = await apiClient.patch(`${API_ENDPOINTS.LEAVE}/${request.id}`, updatedLeave);
       return data;
     } catch (error) {
@@ -65,32 +66,50 @@ const leaveSlice = createSlice({
   extraReducers: (builder) => {
     // Handles all thunk lifecycle events for leave operations.
     builder
-      .addCase(fetchLeaveRequests.pending, (state) => {
+      .addCase("auth/sessionExpired", () => initialState)
+      .addCase("auth/logoutUser/fulfilled", () => initialState)
+      .addCase("auth/loginUser/fulfilled", () => initialState)
+      .addCase(fetchLeaveRequests.pending, (state, action) => {
+        state.requests.fetchLeaveRequests = action.meta.requestId;
         state.status = "loading";
         state.error = "";
       })
       .addCase(fetchLeaveRequests.fulfilled, (state, action) => {
+        if (state.requests.fetchLeaveRequests !== action.meta.requestId) return;
+        delete state.requests.fetchLeaveRequests;
         state.status = "succeeded";
         state.leaveRequests = action.payload;
       })
       .addCase(fetchLeaveRequests.rejected, (state, action) => {
+        if (state.requests.fetchLeaveRequests !== action.meta.requestId) return;
+        delete state.requests.fetchLeaveRequests;
         state.status = "failed";
         state.error = action.payload || "Failed to load leave requests.";
       })
+      .addCase(applyLeaveRequest.pending, (state, action) => { state.requests.applyLeaveRequest = action.meta.requestId; })
       .addCase(applyLeaveRequest.fulfilled, (state, action) => {
+        if (state.requests.applyLeaveRequest !== action.meta.requestId) return;
+        delete state.requests.applyLeaveRequest;
         state.leaveRequests.push(action.payload);
         state.error = "";
       })
       .addCase(applyLeaveRequest.rejected, (state, action) => {
+        if (state.requests.applyLeaveRequest !== action.meta.requestId) return;
+        delete state.requests.applyLeaveRequest;
         state.error = action.payload || "Failed to apply leave. Please try again.";
       })
+      .addCase(updateLeaveStatus.pending, (state, action) => { state.requests.updateLeaveStatus = action.meta.requestId; })
       .addCase(updateLeaveStatus.fulfilled, (state, action) => {
+        if (state.requests.updateLeaveStatus !== action.meta.requestId) return;
+        delete state.requests.updateLeaveStatus;
         state.leaveRequests = state.leaveRequests.map((request) =>
           request.id === action.payload.id ? action.payload : request
         );
         state.error = "";
       })
       .addCase(updateLeaveStatus.rejected, (state, action) => {
+        if (state.requests.updateLeaveStatus !== action.meta.requestId) return;
+        delete state.requests.updateLeaveStatus;
         state.error = action.payload || "Failed to update status. Please try again.";
       });
   },

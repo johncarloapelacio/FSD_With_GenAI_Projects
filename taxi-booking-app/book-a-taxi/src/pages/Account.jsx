@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { apiUrl } from '../api';
+import { apiUrl, apiFetch, signOut } from '../api';
 import './Pages.css';
 
 // Unified account page for profile, password, account deletion, and embedded bookings view.
@@ -30,8 +30,8 @@ function Account() {
   const [cancelingBookingId, setCancelingBookingId] = useState(null);
 
   useEffect(() => {
-    // Load authenticated user from localStorage or redirect to login.
-    const storedUser = localStorage.getItem('user');
+    // Load authenticated user from sessionStorage or redirect to login.
+    const storedUser = sessionStorage.getItem('user');
     if (storedUser) {
       try {
         const userData = JSON.parse(storedUser);
@@ -61,7 +61,7 @@ function Account() {
       if (!user?.id) return;
 
       try {
-        const response = await fetch(apiUrl(`/auth/profile/${user.id}`));
+        const response = await apiFetch(apiUrl(`/auth/profile/${user.id}`));
         if (!response.ok) return;
 
         const profile = await response.json();
@@ -74,7 +74,7 @@ function Account() {
         };
 
         setUser(updatedUser);
-        localStorage.setItem('user', JSON.stringify(updatedUser));
+        sessionStorage.setItem('user', JSON.stringify(updatedUser));
         setFormData((prev) => ({
           ...prev,
           firstName: profile.firstName || '',
@@ -108,9 +108,9 @@ function Account() {
     if (!formData.age) {
       newErrors.age = 'Age is required';
     } else {
-      const parsedAge = parseInt(formData.age, 10);
-      if (Number.isNaN(parsedAge) || parsedAge < 1 || parsedAge > 120) {
-        newErrors.age = 'Please enter a valid age between 1 and 120';
+      const parsedAge = Number(formData.age);
+      if (!Number.isInteger(parsedAge) || parsedAge < 16 || parsedAge > 120) {
+        newErrors.age = 'Please enter a valid age between 16 and 120';
       }
     }
 
@@ -152,7 +152,7 @@ function Account() {
     setBookingsLoading(true);
     setBookingsError(null);
     try {
-      const response = await fetch(apiUrl('/bookings'));
+      const response = await apiFetch(apiUrl('/bookings'));
       if (response.ok) {
         const data = await response.json();
         const userBookings = data.filter(
@@ -192,7 +192,7 @@ function Account() {
     setBookingsError(null);
 
     try {
-      const response = await fetch(apiUrl(`/bookings/${bookingId}`), {
+      const response = await apiFetch(apiUrl(`/bookings/${bookingId}`), {
         method: 'DELETE',
       });
 
@@ -221,8 +221,8 @@ function Account() {
 
     if (!formData.newPassword) {
       newErrors.newPassword = 'New password is required';
-    } else if (formData.newPassword.length < 5) {
-      newErrors.newPassword = 'New password must be at least 5 characters';
+    } else if (formData.newPassword.length < 10) {
+      newErrors.newPassword = 'New password must be at least 10 characters';
     }
 
     if (!formData.confirmNewPassword) {
@@ -263,7 +263,7 @@ function Account() {
 
     setLoading(true);
     try {
-      const response = await fetch(apiUrl(`/auth/profile/${user.id}`), {
+      const response = await apiFetch(apiUrl(`/auth/profile/${user.id}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -271,15 +271,15 @@ function Account() {
         body: JSON.stringify({
           firstName: formData.firstName,
           lastName: formData.lastName,
-          age: parseInt(formData.age, 10),
+          age: Number(formData.age),
         }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Update localStorage and state
-        localStorage.setItem('user', JSON.stringify(data.user));
+        // Update sessionStorage and state
+        sessionStorage.setItem('user', JSON.stringify(data.user));
         setUser(data.user);
         setFormData((prev) => ({
           ...prev,
@@ -309,7 +309,7 @@ function Account() {
 
     setLoading(true);
     try {
-      const response = await fetch(apiUrl(`/auth/change-password/${user.id}`), {
+      const response = await apiFetch(apiUrl(`/auth/change-password/${user.id}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -355,7 +355,7 @@ function Account() {
 
     setLoading(true);
     try {
-      const response = await fetch(apiUrl(`/auth/account/${user.id}`), {
+      const response = await apiFetch(apiUrl(`/auth/account/${user.id}`), {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -366,7 +366,7 @@ function Account() {
       });
 
       if (response.ok) {
-        localStorage.removeItem('user');
+        sessionStorage.removeItem('user');
         navigate('/login');
       } else {
         const data = await response.json();
@@ -380,10 +380,9 @@ function Account() {
     }
   };
 
-  const handleLogout = () => {
-    // End current session and return to login page.
-    localStorage.removeItem('user');
-    navigate('/login');
+  const handleLogout = async () => {
+    try { await signOut(); navigate('/login'); }
+    catch { setApiError('Could not sign out. Please try again.'); }
   };
 
   if (loading) {
@@ -479,7 +478,7 @@ function Account() {
                   )}
 
                   <div className="booking-actions">
-                    {booking.status.toLowerCase() === 'pending' && (
+                    {['pending', 'confirmed'].includes(booking.status.toLowerCase()) && new Date(booking.dateTime) > new Date() && (
                       <button
                         type="button"
                         className="btn btn-danger btn-small"
@@ -490,14 +489,10 @@ function Account() {
                       </button>
                     )}
                     {booking.status.toLowerCase() === 'confirmed' && (
-                      <button type="button" className="btn btn-secondary btn-small">
-                        Contact Driver
-                      </button>
+                      <span>Driver: {booking.driverName || 'Assigned driver'}</span>
                     )}
                     {booking.status.toLowerCase() === 'completed' && (
-                      <button type="button" className="btn btn-primary btn-small">
-                        Rate & Review
-                      </button>
+                      <span>Ride completed</span>
                     )}
                   </div>
                 </div>
@@ -567,7 +562,7 @@ function Account() {
                 <label htmlFor="age">Age</label>
                 <input
                   type="number"
-                  min="1"
+                  min="16"
                   max="120"
                   id="age"
                   name="age"
@@ -633,7 +628,7 @@ function Account() {
                     value={formData.newPassword}
                     onChange={handleChange}
                     className={errors.newPassword ? 'form-control error' : 'form-control'}
-                    placeholder="Enter new password (min 5 characters)"
+                    placeholder="Enter new password (min 10 characters)"
                   />
                   {errors.newPassword && <span className="error-message">{errors.newPassword}</span>}
                 </div>

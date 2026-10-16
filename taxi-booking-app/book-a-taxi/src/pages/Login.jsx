@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { apiUrl } from '../api';
+import { apiUrl, apiFetch } from '../api';
 import './Pages.css';
 
 // Login screen with client-side validation and backend authentication request.
@@ -28,8 +28,8 @@ function Login() {
     // Password validation
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 5) {
-      newErrors.password = 'Password must be at least 5 characters';
+    } else if (formData.password.length < 10) {
+      newErrors.password = 'Password must be at least 10 characters';
     }
 
     return newErrors;
@@ -64,7 +64,7 @@ function Login() {
 
     setLoading(true);
     try {
-      const response = await fetch(apiUrl('/auth/login'), {
+      const response = await apiFetch(apiUrl('/auth/login'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -75,8 +75,8 @@ function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        // Store user info in localStorage
-        localStorage.setItem('user', JSON.stringify(data.user));
+        // Store user info in sessionStorage
+        sessionStorage.setItem('user', JSON.stringify(data.user));
 
         // After valid sign in, always redirect to Home.
         navigate('/home', { replace: true });
@@ -149,11 +149,7 @@ function Login() {
             <p>Don't have an account? <Link to="/signup">Sign up here</Link></p>
           </div>
 
-          <div className="auth-demo">
-            <p><strong>Demo credentials:</strong></p>
-            <p>Email: johncarlo.apelacio@gmail.com</p>
-            <p>Password: 12345</p>
-          </div>
+
         </div>
       </div>
     </div>

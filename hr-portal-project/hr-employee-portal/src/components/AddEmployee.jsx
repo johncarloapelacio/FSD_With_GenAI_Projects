@@ -26,8 +26,8 @@ const AddEmployee = () => {
     }
 
     try {
-      await dispatch(addEmployee(form)).unwrap();
-      setMessage("Employee added successfully");
+      const employee = await dispatch(addEmployee(form)).unwrap();
+      setMessage(`Employee added. Share this one-time invitation privately: ${employee.inviteCode}`);
       setForm({ email: "", department: "" });
     } catch (errorMessage) {
       setMessage(errorMessage || "Failed to add employee. Please try again.");

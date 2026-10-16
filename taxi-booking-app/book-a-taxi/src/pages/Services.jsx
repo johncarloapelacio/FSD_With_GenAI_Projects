@@ -1,3 +1,4 @@
+import { apiFetch, apiUrl } from '../api';
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Pages.css';
@@ -9,73 +10,16 @@ function Services() {
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
 
-  // Static service options displayed as selectable cards.
-  const services = [
-    {
-      id: 1,
-      name: 'Economy',
-      icon: '🚗',
-      description: 'Budget-friendly rides for everyday commute',
-      basePrice: 5.00,
-      pricePerMile: 1.50,
-      features: [
-        'Affordable pricing',
-        'Professional drivers',
-        'GPS tracking',
-        'Air conditioning'
-      ],
-      capacity: 4
-    },
-    {
-      id: 2,
-      name: 'Comfort',
-      icon: '🚙',
-      description: 'Mid-range comfortable rides with extra space',
-      basePrice: 8.00,
-      pricePerMile: 2.00,
-      features: [
-        'Spacious interior',
-        'Climate control',
-        'Premium audio',
-        'Phone charger',
-        'USB ports'
-      ],
-      capacity: 5
-    },
-    {
-      id: 3,
-      name: 'Premium',
-      icon: '🚘',
-      description: 'Luxury rides for special occasions',
-      basePrice: 15.00,
-      pricePerMile: 3.50,
-      features: [
-        'Luxury vehicle',
-        'Premium seating',
-        'Complimentary wifi',
-        'Bottled water',
-        'Professional attire',
-        'Entertainment system'
-      ],
-      capacity: 4
-    },
-    {
-      id: 4,
-      name: 'XL',
-      icon: '🚐',
-      description: 'Large vehicle perfect for groups',
-      basePrice: 12.00,
-      pricePerMile: 2.80,
-      features: [
-        'Spacious 6-seater',
-        'Extra luggage space',
-        'Comfortable ride',
-        'GPS tracking',
-        'Climate control'
-      ],
-      capacity: 6
-    }
-  ];
+  const [services, setServices] = useState([]);
+  const [error, setError] = useState('');
+  useEffect(() => {
+    const controller = new AbortController();
+    apiFetch(apiUrl('/services'), { signal: controller.signal }).then(async response => {
+      if (!response.ok) throw new Error('Could not load services');
+      setServices(await response.json());
+    }).catch(error => { if (error.name !== 'AbortError') setError('Could not load services. Please refresh to try again.'); });
+    return () => controller.abort();
+  }, []);
 
   useEffect(() => {
     // Clear pending redirect timer when component unmounts.
@@ -95,7 +39,7 @@ function Services() {
     setSelectedServiceId(service.id);
     setIsRedirecting(true);
 
-    const storedUser = localStorage.getItem('user');
+    const storedUser = sessionStorage.getItem('user');
     redirectTimerRef.current = setTimeout(() => {
       if (!storedUser) {
         navigate('/login');
@@ -113,6 +57,8 @@ function Services() {
         Choose the perfect ride service for your needs
       </p>
 
+      {error && <p role="alert">{error}</p>}
+      {!services.length && !error && <p role="status">Loading services...</p>}
       <div className="services-grid">
         {services.map((service) => (
           <div
@@ -198,22 +144,8 @@ function Services() {
       </div>
 
       <div className="pricing-info">
-        <h2>How Our Pricing Works</h2>
-        <div className="pricing-explanation">
-          <p>
-            Our transparent pricing model ensures you know exactly what to expect. 
-            The final fare is calculated based on:
-          </p>
-          <ul>
-            <li><strong>Base Fare:</strong> Applies to every ride you take</li>
-            <li><strong>Distance Charge:</strong> Calculated per mile of travel</li>
-            <li><strong>Time Charge:</strong> Applies during traffic delays</li>
-            <li><strong>Surge Pricing:</strong> May apply during peak hours</li>
-          </ul>
-          <p className="pricing-note">
-            💡 Tip: Book during off-peak hours for better rates!
-          </p>
-        </div>
+        <h2>Demo Pricing</h2>
+        <p>Driver cards show fixed sample quotes. The example quotes use each service's base fare plus five miles and fifteen minutes at its published rates. They are independent of the addresses you enter; this demo does not calculate live routes, surge pricing or payments.</p>
       </div>
     </div>
   );

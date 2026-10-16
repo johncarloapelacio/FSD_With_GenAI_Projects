@@ -1,3 +1,4 @@
+import { apiFetch, apiUrl, signOut } from '../api';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './Navigation.css';
@@ -10,15 +11,15 @@ function Navigation() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    // Keep local component auth state synchronized with localStorage.
+    // Keep local component auth state synchronized with sessionStorage.
     const syncUserFromStorage = () => {
-      const storedUser = localStorage.getItem('user');
+      const storedUser = sessionStorage.getItem('user');
       if (storedUser) {
         try {
           setUser(JSON.parse(storedUser));
         } catch (error) {
           console.error('Error parsing user data:', error);
-          localStorage.removeItem('user');
+          sessionStorage.removeItem('user');
           setUser(null);
         }
       } else {
@@ -26,18 +27,23 @@ function Navigation() {
       }
     };
 
+    const controller = new AbortController();
     syncUserFromStorage();
+    apiFetch(apiUrl('/auth/session'), { signal: controller.signal }).then(async response => {
+      if (response.ok) { const data = await response.json(); sessionStorage.setItem('user', JSON.stringify(data.user)); syncUserFromStorage(); }
+    }).catch(() => {});
 
     // Listen for storage changes (logout from other tabs)
     const handleStorageChange = () => syncUserFromStorage();
 
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, [location.pathname]);
+    const accountChanged = () => { syncUserFromStorage(); navigate('/login', { replace: true }); };
+    window.addEventListener('account-changed', accountChanged);
+    window.addEventListener('auth-change', handleStorageChange);
+    return () => { controller.abort(); window.removeEventListener('auth-change', handleStorageChange); window.removeEventListener('account-changed', accountChanged); };
+  }, [location.pathname, navigate]);
 
-  const handleLogout = () => {
-    // Clear local session and redirect to login.
-    localStorage.removeItem('user');
+  const handleLogout = async () => {
+    try { await signOut(); } catch { window.alert('Could not sign out. Please try again.'); return; }
     setUser(null);
     setMenuOpen(false);
     navigate('/login');
@@ -104,11 +110,11 @@ function Navigation() {
           )}
         </div>
 
-        <div className="hamburger" onClick={toggleMenu}>
+        <button type="button" className="hamburger" aria-label="Toggle navigation" aria-expanded={menuOpen} onClick={toggleMenu}>
           <span className={`bar ${menuOpen ? 'bar-open' : ''}`}></span>
           <span className={`bar ${menuOpen ? 'bar-open' : ''}`}></span>
           <span className={`bar ${menuOpen ? 'bar-open' : ''}`}></span>
-        </div>
+        </button>
       </div>
     </nav>
   );

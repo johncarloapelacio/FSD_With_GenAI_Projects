@@ -1,3 +1,4 @@
+import { configureAccountContext } from "../config/api";
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
 import employeesReducer from "./slices/employeesSlice";
@@ -11,3 +12,5 @@ export const store = configureStore({
     leave: leaveReducer,
   },
 });
+
+configureAccountContext(() => store.getState().auth.id);

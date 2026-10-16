@@ -18,6 +18,7 @@ function App() {
   return (
     <Router>
       <Navigation />
+      <p className="demo-notice" role="note">Portfolio demo: sample fares and drivers. No live dispatch, payments, or message delivery.</p>
       <main className="app-main">
         {/* Application route configuration */}
         <Routes>
@@ -25,8 +26,8 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/drivers" element={<Drivers />} />
-          <Route path="/confirmation" element={<Confirmation />} />
+          <Route path="/drivers" element={<ProtectedRoute><Drivers /></ProtectedRoute>} />
+          <Route path="/confirmation" element={<ProtectedRoute><Confirmation /></ProtectedRoute>} />
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<Contact />} />

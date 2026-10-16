@@ -9,9 +9,9 @@ const HRDashboard = () => {
   const navigate = useNavigate();
 
   // Clears auth state and returns user to public login page.
-  const handleLogout = () => {
-    dispatch(logoutUser());
-    navigate("/");
+  const handleLogout = async () => {
+    try { await dispatch(logoutUser()).unwrap(); navigate("/"); }
+    catch { window.alert("Could not sign out. Please try again."); }
   };
 
   return (

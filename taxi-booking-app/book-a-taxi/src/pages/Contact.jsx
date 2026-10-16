@@ -162,23 +162,15 @@ function Contact() {
             </div>
           </div>
 
-          <div className="social-links">
-            <h3>Follow Us</h3>
-            <div className="social-icons">
-              <a href="#" className="social-link">📘</a>
-              <a href="#" className="social-link">🐦</a>
-              <a href="#" className="social-link">📷</a>
-              <a href="#" className="social-link">💼</a>
-            </div>
-          </div>
+
         </div>
 
         <div className="contact-form-wrapper">
-          <h2>Send Us a Message</h2>
+          <h2>Preview a Message</h2>
 
           {submitted && (
             <div className="success-message">
-              ✅ Thank you for your message! We'll get back to you soon.
+              ✅ Your message passed validation. This portfolio demo does not send messages.
             </div>
           )}
 
@@ -254,7 +246,7 @@ function Contact() {
             </div>
 
             <button type="submit" className="btn btn-primary">
-              Send Message
+              Validate Message
             </button>
           </form>
         </div>
@@ -269,15 +261,15 @@ function Contact() {
           </div>
           <div className="faq-item">
             <h4>What payment methods do you accept?</h4>
-            <p>We accept credit cards, debit cards, digital wallets, and cash payments. All payments are secure.</p>
+            <p>This demo does not collect payments. Fares are sample quotes.</p>
           </div>
           <div className="faq-item">
             <h4>Can I cancel my booking?</h4>
-            <p>Yes, you can cancel up to 2 minutes before your driver arrives without any charges.</p>
+            <p>You can cancel any upcoming confirmed demo ride before its pickup time.</p>
           </div>
           <div className="faq-item">
             <h4>Are your drivers verified?</h4>
-            <p>Yes, all our drivers go through thorough background checks and vehicle inspections.</p>
+            <p>Driver profiles are fictional sample data; this demo does not dispatch rides.</p>
           </div>
         </div>
       </div>

@@ -65,6 +65,9 @@ const ApplyLeave = () => {
             <input
               id="leave-days"
               type="number"
+              min="1"
+              max="365"
+              step="1"
               name="numberOfDays"
               value={form.numberOfDays}
               onChange={handleChange}

@@ -12,20 +12,19 @@ const EmployeeView = () => {
   // Resolves the logged-in employee profile from Redux state by email key.
   const dispatch = useDispatch();
   const email = useSelector(selectLoggedInEmail);
-  const { status } = useSelector(selectEmployeesState);
+  const { error } = useSelector(selectEmployeesState);
   const employeeProfile = useSelector((state) => selectEmployeeByEmail(state, email)) || {};
 
   // Ensures employee data is loaded before rendering profile fields.
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchEmployees());
-    }
-  }, [dispatch, status]);
+    dispatch(fetchEmployees());
+  }, [dispatch]);
 
   return (
     <div className="profile-container">
       <div className="profile-card">
         <h2>Your Profile</h2>
+        {error && <p role="alert">{error}</p>}
 
         <div className="profile-row">
           <span>First Name</span>

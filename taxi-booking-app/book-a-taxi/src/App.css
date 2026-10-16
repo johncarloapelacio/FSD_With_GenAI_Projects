@@ -334,3 +334,5 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+.demo-notice { margin: 0; padding: 0.6rem 1rem; text-align: center; background: #fff4ce; color: #443600; font-size: 0.9rem; }

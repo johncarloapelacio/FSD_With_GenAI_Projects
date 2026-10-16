@@ -15,6 +15,7 @@ const initialFormState = {
   age: "",
   password: "",
   employeeId: "",
+  inviteCode: "",
 };
 
 const SignUp = () => {
@@ -43,7 +44,7 @@ const SignUp = () => {
     }
 
     try {
-      const payload = await dispatch(verifyEmployeeEmail(form.email)).unwrap();
+      const payload = await dispatch(verifyEmployeeEmail({ email: form.email, inviteCode: form.inviteCode })).unwrap();
       setForm((prev) => ({
         ...prev,
         employeeId: payload.employeeId,
@@ -95,7 +96,11 @@ const SignUp = () => {
                 placeholder="Enter your company email"
               />
             </div>
-            <button className="signup-btn">Verify Email</button>
+            <div className="form-group">
+              <label htmlFor="invite-code">Invitation code from HR</label>
+              <input id="invite-code" name="inviteCode" value={form.inviteCode} onChange={handleChange} required autoComplete="off" />
+            </div>
+            <button className="signup-btn">Verify Invitation</button>
           </form>
         ) : (
           <form onSubmit={handleSignUp}>
@@ -136,7 +141,9 @@ const SignUp = () => {
                 name="password"
                 value={form.password}
                 onChange={handleChange}
-                placeholder="Enter password"
+                placeholder="At least 10 characters"
+                minLength={10}
+                maxLength={128}
               />
             </div>
 
@@ -150,6 +157,8 @@ const SignUp = () => {
               <input
                 id="age"
                 type="number"
+                min="16"
+                max="120"
                 name="age"
                 value={form.age}
                 onChange={handleChange}

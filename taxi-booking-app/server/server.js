@@ -1,407 +1,76 @@
-const express = require('express');
-const fs = require('fs');
-const cors = require('cors');
-const path = require('path');
-
-const app = express();
-const PORT = 3001;
-
-// Middleware
-app.use(cors());
-app.use(express.json());
-
-// Path to database file
-const dbPath = path.join(__dirname, 'database.json');
-
-// Helper function to read database
-function readDatabase() {
-  try {
-    const data = fs.readFileSync(dbPath, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Error reading database:', error);
-    return { rideServices: [], drivers: [], bookings: [], users: [] };
-  }
-}
-
-// Helper function to write database
-function writeDatabase(data) {
-  try {
-    fs.writeFileSync(dbPath, JSON.stringify(data, null, 2), 'utf8');
-    return true;
-  } catch (error) {
-    console.error('Error writing database:', error);
-    return false;
-  }
-}
-
-function findUserIndexById(users, userId) {
-  return (users || []).findIndex((u) => String(u.id) === String(userId));
-}
-
-function updateUserProfile(req, res, userId) {
-  const db = readDatabase();
-  const userIndex = findUserIndexById(db.users, userId);
-
-  if (userIndex === -1) {
-    return res.status(404).json({ error: 'User not found' });
-  }
-
-  const { firstName, lastName, age } = req.body;
-
-  db.users[userIndex] = {
-    ...db.users[userIndex],
-    firstName: firstName !== undefined ? firstName : db.users[userIndex].firstName,
-    lastName: lastName !== undefined ? lastName : db.users[userIndex].lastName,
-    age: age !== undefined ? age : db.users[userIndex].age,
-  };
-
-  if (writeDatabase(db)) {
-    return res.json({
-      success: true,
-      user: {
-        id: db.users[userIndex].id,
-        email: db.users[userIndex].email,
-        firstName: db.users[userIndex].firstName,
-        lastName: db.users[userIndex].lastName,
-        age: db.users[userIndex].age,
-      },
-    });
-  }
-
-  return res.status(500).json({ error: 'Failed to update profile' });
-}
-
-function changeUserPassword(req, res, userId) {
-  const db = readDatabase();
-  const { currentPassword, newPassword } = req.body;
-
-  if (!currentPassword || !newPassword) {
-    return res.status(400).json({ error: 'Current and new passwords are required' });
-  }
-
-  const userIndex = findUserIndexById(db.users, userId);
-
-  if (userIndex === -1) {
-    return res.status(404).json({ error: 'User not found' });
-  }
-
-  if (db.users[userIndex].password !== currentPassword) {
-    return res.status(401).json({ error: 'Current password is incorrect' });
-  }
-
-  db.users[userIndex].password = newPassword;
-
-  if (writeDatabase(db)) {
-    return res.json({
-      success: true,
-      message: 'Password changed successfully',
-    });
-  }
-
-  return res.status(500).json({ error: 'Failed to change password' });
-}
-
-function deleteUserAccount(req, res, userId) {
-  const db = readDatabase();
-  const password = req.body.password || req.body.currentPassword;
-
-  if (!password) {
-    return res.status(400).json({ error: 'Password is required for account deletion' });
-  }
-
-  const userIndex = findUserIndexById(db.users, userId);
-
-  if (userIndex === -1) {
-    return res.status(404).json({ error: 'User not found' });
-  }
-
-  if (db.users[userIndex].password !== password) {
-    return res.status(401).json({ error: 'Password is incorrect' });
-  }
-
-  const deletedUser = db.users.splice(userIndex, 1)[0];
-
-  if (writeDatabase(db)) {
-    return res.json({
-      success: true,
-      message: 'Account deleted successfully',
-      user: {
-        id: deletedUser.id,
-        email: deletedUser.email,
-      },
-    });
-  }
-
-  return res.status(500).json({ error: 'Failed to delete account' });
-}
-
-// Get all bookings
-app.get('/api/bookings', (req, res) => {
-  const db = readDatabase();
-  res.json(db.bookings || []);
-});
-
-// Get a specific booking by ID
-app.get('/api/bookings/:id', (req, res) => {
-  const db = readDatabase();
-  const booking = (db.bookings || []).find(b => b.id === req.params.id);
-
-  if (booking) {
-    res.json(booking);
-  } else {
-    res.status(404).json({ error: 'Booking not found' });
-  }
-});
-
-// Create a new booking
-app.post('/api/bookings', (req, res) => {
-  const db = readDatabase();
-
-  const newBooking = {
-    id: `BOOKING_${Date.now()}`,
-    ...req.body,
-    status: 'confirmed',
-    timestamp: new Date().toISOString(),
-  };
-
-  if (!db.bookings) {
-    db.bookings = [];
-  }
-
-  db.bookings.push(newBooking);
-
-  if (writeDatabase(db)) {
-    res.status(201).json({
-      success: true,
-      booking: newBooking,
-      message: 'Booking saved successfully',
-    });
-  } else {
-    res.status(500).json({
-      success: false,
-      error: 'Failed to save booking',
-    });
-  }
-});
-
-// Update booking status
-app.put('/api/bookings/:id', (req, res) => {
-  const db = readDatabase();
-  const bookingIndex = (db.bookings || []).findIndex(b => b.id === req.params.id);
-
-  if (bookingIndex === -1) {
-    return res.status(404).json({ error: 'Booking not found' });
-  }
-
-  db.bookings[bookingIndex] = {
-    ...db.bookings[bookingIndex],
-    ...req.body,
-  };
-
-  if (writeDatabase(db)) {
-    res.json({
-      success: true,
-      booking: db.bookings[bookingIndex],
-    });
-  } else {
-    res.status(500).json({ error: 'Failed to update booking' });
-  }
-});
-
-// Delete a booking
-app.delete('/api/bookings/:id', (req, res) => {
-  const db = readDatabase();
-  const bookingIndex = (db.bookings || []).findIndex(b => b.id === req.params.id);
-
-  if (bookingIndex === -1) {
-    return res.status(404).json({ error: 'Booking not found' });
-  }
-
-  const deletedBooking = db.bookings.splice(bookingIndex, 1);
-
-  if (writeDatabase(db)) {
-    res.json({
-      success: true,
-      message: 'Booking cancelled successfully',
-    });
-  } else {
-    res.status(500).json({ error: 'Failed to cancel booking' });
-  }
-});
-
-// Get all services
-app.get('/api/services', (req, res) => {
-  const db = readDatabase();
-  res.json(db.rideServices || []);
-});
-
-// Get all drivers
-app.get('/api/drivers', (req, res) => {
-  const db = readDatabase();
-  res.json(db.drivers || []);
-});
-
-// Authentication Endpoints
-
-// Sign up - Create new user
-app.post('/api/auth/signup', (req, res) => {
-  const db = readDatabase();
-  const { email, password, firstName, lastName } = req.body;
-
-  // Validate input
-  if (!email || !password || !firstName || !lastName) {
-    return res.status(400).json({ error: 'All fields are required' });
-  }
-
-  // Check if user already exists
-  const existingUser = (db.users || []).find(u => u.email === email);
-  if (existingUser) {
-    return res.status(409).json({ error: 'Email already registered' });
-  }
-
-  // Create new user
-  const newUser = {
-    id: `USER_${Date.now()}`,
-    email,
-    password, // In production, this should be hashed
-    firstName,
-    lastName,
-    age: null,
-    createdAt: new Date().toISOString(),
-  };
-
-  if (!db.users) {
-    db.users = [];
-  }
-
-  db.users.push(newUser);
-
-  if (writeDatabase(db)) {
-    res.status(201).json({
-      success: true,
-      user: {
-        id: newUser.id,
-        email: newUser.email,
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        age: newUser.age,
-      },
-      message: 'Account created successfully',
-    });
-  } else {
-    res.status(500).json({ error: 'Failed to create account' });
-  }
-});
-
-// Login - Authenticate user
-app.post('/api/auth/login', (req, res) => {
-  const db = readDatabase();
-  const { email, password } = req.body;
-
-  // Validate input
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required' });
-  }
-
-  // Find user
-  const user = (db.users || []).find(u => u.email === email && u.password === password);
-
-  if (!user) {
-    return res.status(401).json({ error: 'Invalid email or password' });
-  }
-
-  res.json({
-    success: true,
-    user: {
-      id: user.id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      age: user.age,
-    },
+const { validateDatabase, bookingFingerprint } = require('./schema');
+const path = require('node:path');
+const { createBase, fail, text, email, password, integer, hash, verify, id } = require('./security');
+function createApp(options = {}) {
+  const base = createBase({ dbPath: options.dbPath || process.env.DB_PATH || path.join(__dirname, 'database.json'), examplePath: path.join(__dirname, 'database.example.json'), collections: ['users', 'bookings', 'drivers', 'rideServices'], cookieName: 'taxi_session', validate: validateDatabase });
+  const { app, read, write, auth, issue, revoke, limit } = base;
+  const publicUser = u => ({ id: u.id, email: u.email, firstName: u.firstName, lastName: u.lastName, age: u.age });
+  function own(req) { if (req.params.userId !== req.user.id) fail(403, 'This account is not yours'); }
+  app.post('/api/auth/signup', limit, (req, res) => {
+    const normalized = email(req.body.email), db = read();
+    if (db.users.some(u => u.email === normalized)) fail(409, 'Email already registered');
+    const user = { id: id(), email: normalized, passwordHash: hash(password(req.body.password)), firstName: text(req.body.firstName, 'First name'), lastName: text(req.body.lastName, 'Last name'), age: integer(req.body.age, 'Age', 16, 120), createdAt: new Date().toISOString() };
+    db.users.push(user); write(db); issue(req, res, user.id); res.status(201).json({ success: true, user: publicUser(user) });
   });
-});
-
-// Get user profile
-app.get('/api/auth/profile/:userId', (req, res) => {
-  const db = readDatabase();
-  const user = (db.users || []).find(u => u.id === req.params.userId);
-
-  if (!user) {
-    return res.status(404).json({ error: 'User not found' });
-  }
-
-  res.json({
-    id: user.id,
-    email: user.email,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    age: user.age,
+  app.post('/api/auth/login', limit, (req, res) => {
+    const normalized = email(req.body.email), user = read().users.find(u => u.email === normalized);
+    if (!user || !verify(req.body.password, user.passwordHash)) fail(401, 'Invalid email or password');
+    issue(req, res, user.id); res.json({ success: true, user: publicUser(user) });
   });
-});
-
-// Update user profile
-app.put('/api/auth/profile/:userId', (req, res) => {
-  return updateUserProfile(req, res, req.params.userId);
-});
-
-// Backward-compatible profile update endpoint for clients sending userId in request body.
-app.put('/api/auth/profile', (req, res) => {
-  if (!req.body.userId) {
-    return res.status(400).json({ error: 'userId is required' });
-  }
-  return updateUserProfile(req, res, req.body.userId);
-});
-
-// Change password
-app.put('/api/auth/change-password/:userId', (req, res) => {
-  return changeUserPassword(req, res, req.params.userId);
-});
-
-// Backward-compatible password endpoint used by existing clients.
-app.put('/api/auth/password', (req, res) => {
-  if (!req.body.userId) {
-    return res.status(400).json({ error: 'userId is required' });
-  }
-  return changeUserPassword(req, res, req.body.userId);
-});
-
-// Delete account
-app.delete('/api/auth/account/:userId', (req, res) => {
-  return deleteUserAccount(req, res, req.params.userId);
-});
-
-// Backward-compatible delete endpoint for clients sending userId in request body.
-app.delete('/api/auth/account', (req, res) => {
-  if (!req.body.userId) {
-    return res.status(400).json({ error: 'userId is required' });
-  }
-  return deleteUserAccount(req, res, req.body.userId);
-});
-
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'Server is running', timestamp: new Date().toISOString() });
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`✅ Book a Taxi Server running on http://localhost:${PORT}`);
-  console.log(`📦 Database: ${dbPath}`);
-  console.log(`\nAvailable endpoints:`);
-  console.log(`  GET  /api/health                - Check server status`);
-  console.log(`  GET  /api/bookings              - Get all bookings`);
-  console.log(`  GET  /api/bookings/:id          - Get specific booking`);
-  console.log(`  POST /api/bookings              - Create new booking`);
-  console.log(`  PUT  /api/bookings/:id          - Update booking`);
-  console.log(`  DELETE /api/bookings/:id        - Delete booking`);
-  console.log(`  GET  /api/services              - Get all services`);
-  console.log(`  GET  /api/drivers               - Get all drivers`);
-  console.log(`  POST /api/auth/signup           - Create new account`);
-  console.log(`  POST /api/auth/login            - Login user`);
-  console.log(`  GET  /api/auth/profile/:userId  - Get user profile`);
-  console.log(`  PUT  /api/auth/profile/:userId  - Update user profile`);
-  console.log(`  PUT  /api/auth/change-password/:userId - Change password`);
-  console.log(`  DELETE /api/auth/account/:userId - Delete account`);
-});
+  app.get('/api/auth/session', auth, (req, res) => res.json({ user: publicUser(req.user) }));
+  app.get('/api/auth/profile/:userId', auth, (req, res) => { own(req); res.json(publicUser(req.user)); });
+  app.put('/api/auth/profile/:userId', auth, (req, res) => {
+    own(req); const db = read(), user = db.users.find(u => u.id === req.user.id);
+    Object.assign(user, { firstName: text(req.body.firstName, 'First name'), lastName: text(req.body.lastName, 'Last name'), age: integer(req.body.age, 'Age', 16, 120) });
+    write(db); res.json({ success: true, user: publicUser(user) });
+  });
+  app.put('/api/auth/change-password/:userId', auth, limit, (req, res) => {
+    own(req); const db = read(), user = db.users.find(u => u.id === req.user.id);
+    if (!verify(req.body.currentPassword, user.passwordHash)) fail(401, 'Current password is incorrect');
+    user.passwordHash = hash(password(req.body.newPassword)); write(db); revoke(user.id); issue(req, res, user.id); res.json({ success: true });
+  });
+  app.delete('/api/auth/account/:userId', auth, limit, (req, res) => {
+    own(req); const db = read();
+    if (!verify(req.body.password, req.user.passwordHash)) fail(401, 'Password is incorrect');
+    db.users = db.users.filter(u => u.id !== req.user.id); db.bookings = db.bookings.filter(b => b.userId !== req.user.id);
+    write(db); revoke(req.user.id); res.clearCookie('taxi_session', { path: '/api' }); res.json({ success: true });
+  });
+  app.get('/api/services', (req, res) => res.json(read().rideServices));
+  app.get('/api/drivers', (req, res) => res.json(read().drivers));
+  app.get('/api/bookings', auth, (req, res) => res.json(read().bookings.filter(b => b.userId === req.user.id)));
+  function booking(req, db) { const row = db.bookings.find(b => b.id === req.params.id && b.userId === req.user.id); if (!row) fail(404, 'Booking not found'); return row; }
+  app.get('/api/bookings/:id', auth, (req, res) => res.json(booking(req, read())));
+  app.post('/api/bookings', auth, (req, res) => {
+    const db = read();
+    const requestId = text(req.body.requestId, 'Request ID', 36).toLowerCase();
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(requestId)) fail(400, 'A UUID request ID is required');
+    const pickup = text(req.body.pickupLocation, 'Pickup', 300, 2), dropoff = text(req.body.dropoffLocation, 'Dropoff', 300, 2);
+    if (pickup.toLowerCase() === dropoff.toLowerCase()) fail(400, 'Pickup and dropoff must differ');
+    const rawDate = text(req.body.dateTime, 'Pickup date', 40);
+    if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(rawDate) || !Number.isFinite(Date.parse(rawDate)) || new Date(rawDate).toISOString() !== rawDate) fail(400, 'Use a valid ISO-UTC pickup date');
+    const requested = { pickupLocation: pickup, dropoffLocation: dropoff, dateTime: rawDate, passengers: integer(req.body.passengers, 'Passengers', 1, 6), serviceType: text(req.body.serviceType, 'Service'), driverId: integer(req.body.driverId, 'Driver', 1, 1000000), specialRequests: req.body.specialRequests ? text(req.body.specialRequests, 'Special requests', 2000) : '' };
+    const requestFingerprint = bookingFingerprint(requested);
+    const existing = db.bookings.find(booking => booking.userId === req.user.id && booking.requestId === requestId);
+    if (existing) {
+      if (existing.requestFingerprint !== requestFingerprint) fail(409, 'This request ID already belongs to a different booking; review My Bookings');
+      return res.json({ success: true, booking: existing, replayed: true });
+    }
+    // Replays are resolved before time/catalog checks, so a saved confirmation remains retrievable later.
+    if (Date.parse(rawDate) <= Date.now() || Date.parse(rawDate) > Date.now() + 366 * 86400000) fail(400, 'Use a future pickup date within one year');
+    const service = db.rideServices.find(service => service.name === requested.serviceType);
+    if (!service || requested.passengers > service.capacity) fail(400, 'Unknown service or passenger count exceeds capacity');
+    const driver = db.drivers.find(driver => driver.id === requested.driverId && driver.serviceType === service.name);
+    if (!driver) fail(400, 'Select a driver for this service');
+    const row = { id: id(), userId: req.user.id, requestId, requestFingerprint, ...requested, typeOfService: service.name, driverName: driver.name, vehicleNumber: driver.vehicleNumber, price: driver.price, status: 'confirmed', timestamp: new Date().toISOString() };
+    db.bookings.push(row); write(db); res.status(201).json({ success: true, booking: row, replayed: false });
+  });
+  // Customers can cancel upcoming rides; arbitrary price/owner/status updates are unsupported.
+  app.delete('/api/bookings/:id', auth, (req, res) => {
+    const db = read(), row = booking(req, db);
+    if (row.status !== 'confirmed' || Date.parse(row.dateTime) <= Date.now()) fail(409, 'Only upcoming confirmed rides can be cancelled');
+    row.status = 'cancelled'; write(db); res.json({ success: true, booking: row });
+  });
+  return base.finish();
+}
+if (require.main === module) createApp().listen(Number(process.env.PORT) || 3001, '127.0.0.1', () => console.log('Taxi API listening on loopback'));
+module.exports = { createApp };

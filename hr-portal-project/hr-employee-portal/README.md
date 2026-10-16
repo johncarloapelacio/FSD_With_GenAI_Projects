@@ -1,71 +1,48 @@
 # HR Employee Portal
 
-HR Employee Portal is a React + Vite frontend with a JSON Server backend and JSON file storage.
+A React/Redux HR portal with a local Express API. HR can invite employees and review leave; employees can register with an invitation, view their own profile and submit leave requests.
 
-## Important Disclaimer
-- This project is a demo/dummy site for development and testing only.
-- It does not represent a real HR system or manage real employee data.
-- It does not integrate with any payroll, compliance, or identity provider.
-- Do not use this project in production as-is.
+## Run locally
 
-## Tech Stack
-- Frontend: React, React Router, Redux Toolkit, Vite
-- State Management: Redux Toolkit (RTK)
-- HTTP Client: Axios
-- Backend: JSON Server
-- Storage: JSON file at `server/database.json`
+Use Node.js 22.12+ (Node.js 24 recommended) and npm. Run two terminals from this directory:
 
-## Run Locally
-
-Two terminals are required.
-
-**Terminal 1 — Backend (from `server/` folder):**
-
-```bash
-npx json-server --watch database.json --port 3000
+```powershell
+cd ../server
+npm ci --ignore-scripts
+$env:HR_ADMIN_EMAIL = "hr@example.test"
+$env:HR_ADMIN_PASSWORD = "choose-a-private-password-of-at-least-10-characters"
+npm start
 ```
 
-**Terminal 2 — Frontend (from `hr-employee-portal/` folder):**
-
-```bash
-npm install
+```powershell
+npm ci --ignore-scripts
 npm run dev
 ```
 
-App URLs:
-- Frontend: http://localhost:5173 (or next free Vite port)
-- Backend: http://localhost:3000
+Open the Vite URL (normally http://localhost:5173). Sign in with the HR account configured above and select **HR**. Add an employee and copy the one-time invitation shown in the success message; share it privately with that employee. The employee enters their email and invitation on Sign Up, creates a password, and signs in with **Employee** selected. Invitations are stored hashed and cannot be reused. An existing HR account is never silently reset by changing the environment variables.
 
-## Route Map
-- `/` — Login
-- `/signUp` — Sign Up
-- `/hrHome` — HR Dashboard (protected, HR role only)
-- `/hrHome/addEmployee` — Add Employee
-- `/hrHome/viewEmployees` — View All Employees
-- `/hrHome/viewAllLeaveInfo` — Leave Info
-- `/employeeHome` — Employee Dashboard (protected, Employee role only)
-- `/employeeHome/viewEmployee` — Profile
-- `/employeeHome/applyLeave` — Apply Leave
-- `/employeeHome/viewLeaveStatus` — Leave Status
+On POSIX systems set the same variables using `export HR_ADMIN_EMAIL=...` and `export HR_ADMIN_PASSWORD=...` before `npm start`.
 
-## Core Features
-- Role-based login: HR and Employee users are routed to separate dashboards
-- Route protection via `ProtectedRoute` component enforcing `requiredUserType`
-- HR can add employees, view the full employee list, and approve or deny leave requests
-- Employees can view their own profile, submit leave requests, and check leave status
-- Session persisted in `sessionStorage` so refreshes do not force re-login
+## Checks
 
-## Data Notes
-- `server/database.json` holds three collections: `credentials`, `employeesInfo`, `leaveInfo`
-- `credentials` records contain `emailId`, `password`, and `typeOfUser` (`hr` or `employee`)
-- `employeesInfo` records contain `emailId`, `department`, `fname`, `lname`, `password`, `age`, `signedUp`
-- `leaveInfo` records contain `emailId`, `reason`, `numberOfDays`, `status`
-
-## Validation Commands
-
-From the `hr-employee-portal/` folder:
-
-```bash
+```text
+npm test
 npm run lint
 npm run build
 ```
+
+From `../server`, run `npm test` for HTTP integration tests covering role restrictions, invitation use, employee isolation, leave transitions, sessions, CSRF protection and corrupt storage. Tests use isolated temporary databases and ephemeral ports.
+
+## API and storage
+
+Vite proxies `/api` to loopback port 3000; production preview has the same proxy. `VITE_API_BASE_URL` can override the path. `PORT`, `DB_PATH` and comma-separated `CLIENT_ORIGINS` configure the backend. Defaults allow local Vite ports 5173/5174/4173 only. Every write requires the `X-Requested-With: portfolio-app` header; browser origins must also be allowed. The frontend includes it automatically.
+
+Authentication uses random server-side sessions and HttpOnly, SameSite=Strict cookies. Browser storage is not an authority for identity or role. Passwords and invitations use salted scrypt hashes. Employees receive only their own employee and leave records; credential and invitation hashes are never returned. HR decisions change only the status of a pending request. Logout also clears Redux employee/leave caches.
+
+`server/database.example.json` contains an empty schema, with no accounts or personal data. The untracked runtime `server/database.json` is initialized from it when missing. Writes use a temporary file and rename; malformed data fails rather than being reset. Legacy JSON-server data with plaintext credentials is intentionally rejected; back it up privately and migrate it explicitly or start with a fresh database. Never run json-server against this file.
+
+This is a single-process local portfolio app. Sessions expire after 8 hours and restart invalidates them. A public deployment needs HTTPS (`NODE_ENV=production` enables Secure cookies), one origin configured for the frontend, a transactional database and shared session/rate-limit storage before multiple workers, and operational backups. No email invitation delivery, password recovery, or administrator management UI is implemented.
+
+Persisted data is validated on every read and before every write, including strict field types/allowed fields, canonical timestamps, IDs, uniqueness and foreign-key/identity relationships. Invalid but syntactically valid JSON is also rejected and preserved; it is never normalized or silently rewritten.
+
+Authenticated requests also send `X-Expected-Account` with the account currently displayed in that tab. The server compares it with the cookie-authenticated account (it never selects an identity from the header). A missing/mismatched context returns HTTP 409 `ACCOUNT_CHANGED` before reading private records or changing state, and the UI returns to sign-in. Session discovery can omit this header to establish the initial account. This prevents a stale tab from silently submitting as another account after a shared-cookie login switch.

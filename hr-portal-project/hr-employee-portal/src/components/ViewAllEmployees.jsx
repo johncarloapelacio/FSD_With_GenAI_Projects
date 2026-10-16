@@ -11,19 +11,18 @@ const ViewAllEmployees = () => {
   // Pulls employee list and request status from centralized Redux state.
   const dispatch = useDispatch();
   const employees = useSelector(selectAllEmployees);
-  const { status } = useSelector(selectEmployeesState);
+  const { status, error } = useSelector(selectEmployeesState);
 
   // Fetch employees once when entering this screen.
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchEmployees());
-    }
-  }, [dispatch, status]);
+    dispatch(fetchEmployees());
+  }, [dispatch]);
 
   return (
     <div className="table-container">
       <div className="table-card">
         <h2>All Employees</h2>
+        {error && <p role="alert">{error}</p>}
 
         <table className="employee-table">
           <thead>

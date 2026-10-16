@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiUrl } from '../api';
+import { apiUrl, apiFetch } from '../api';
 import './Pages.css';
 
 // Driver selection page that finalizes a user's choice before confirmation.
@@ -23,31 +23,14 @@ function Drivers() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Randomize and map backend driver records into UI display cards.
-  const getRandomDrivers = (drivers) => {
-    const shuffled = [...drivers].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 4).map((driver, index) => ({
-      id: driver.id,
-      name: driver.name,
-      rating: driver.rating,
-      reviews: Math.floor(Math.random() * 300) + 50,
-      vehicleType: 'Premium Taxi',
-      vehicleNumber: driver.plate,
-      price: `$${(Math.random() * 15 + 20).toFixed(2)}`,
-      estimatedTime: `${Math.floor(Math.random() * 10) + 2} mins away`,
-      avatar: index % 2 === 0 ? '👨‍💼' : '👩‍💼',
-    }));
-  };
-
   // Load drivers from backend when the page mounts.
   useEffect(() => {
     const fetchDrivers = async () => {
       try {
-        const response = await fetch(apiUrl('/drivers'));
+        const response = await apiFetch(apiUrl('/drivers'));
         if (response.ok) {
           const drivers = await response.json();
-          const randomDrivers = getRandomDrivers(drivers);
-          setDisplayedDrivers(randomDrivers);
+          setDisplayedDrivers(drivers.filter(driver => driver.serviceType === bookingData?.serviceType).map(driver => ({ ...driver, price: `$${driver.price.toFixed(2)}` })));
         } else {
           setError('Failed to load drivers');
         }
@@ -60,7 +43,7 @@ function Drivers() {
     };
 
     fetchDrivers();
-  }, []);
+  }, [bookingData?.serviceType]);
 
   const handleSelectDriver = (driver) => {
     // Store currently selected driver ID.
@@ -75,15 +58,20 @@ function Drivers() {
     }
 
     // Double-check authentication (safety measure)
-    const storedUser = localStorage.getItem('user');
+    const storedUser = sessionStorage.getItem('user');
     if (!storedUser) {
       navigate('/login');
       return;
     }
 
     const selectedDriverData = displayedDrivers.find((d) => d.id === selectedDriver);
+    const pending = sessionStorage.getItem("completeBooking");
+    if (pending) {
+      try { const saved = JSON.parse(pending); if (saved.submissionAttempted) { navigate("/confirmation", { state: { bookingData: saved } }); return; } } catch { sessionStorage.removeItem("completeBooking"); }
+    }
     const completeBooking = {
       ...bookingData,
+      requestId: crypto.randomUUID(),
       selectedDriver: selectedDriverData,
     };
 
@@ -142,7 +130,7 @@ function Drivers() {
     <div className="container drivers-container">
       <div className="drivers-header">
         <h1 className="heading">Available Drivers</h1>
-        <p className="subheading">Select a driver for your journey (randomly selected from 52 drivers)</p>
+        <p className="subheading">Select a driver for your chosen service. Fares shown are fixed demo quotes.</p>
       </div>
 
       <div className="booking-summary">
@@ -166,11 +154,14 @@ function Drivers() {
         </div>
       </div>
 
+      {displayedDrivers.length === 0 && <p>No drivers available for this service.</p>}
       <div className="drivers-list">
         {displayedDrivers.map((driver) => (
           <div
             key={driver.id}
             className={`driver-card ${selectedDriver === driver.id ? 'selected' : ''}`}
+            role="button" tabIndex={0} aria-pressed={selectedDriver === driver.id}
+            onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); handleSelectDriver(driver); } }}
             onClick={() => handleSelectDriver(driver)}
           >
             <div className="driver-avatar">{driver.avatar}</div>
