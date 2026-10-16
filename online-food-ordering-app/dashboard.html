@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Dashboard</title>
+    <link rel="stylesheet" href="css/tailwind.css">
     <link rel="stylesheet" href="css/styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body class="h-screen bg-fixed bg-[url('images/mainBG2.png')] bg-cover bg-center bg-no-repeat">
+<body class="h-screen bg-fixed bg-[url('/images/mainBG2.png')] bg-cover bg-center bg-no-repeat">
     <!-- Dashboard navigation and session summary -->
     <nav class="bg-purple-200 shadow-lg flex flex-col md:flex-row items-center justify-between pl-11 pr-7 py-4 mb-5 brand-shell">
         <div class="flex items-center space-x-11">
@@ -27,6 +27,7 @@
         </div>
     </nav>
 
+    <p id="orderStatus" role="status" aria-live="polite" class="menu-message mx-4 mb-4"></p>
     <!-- Dashboard content switches between the live menu and the current cart -->
     <main class="container mx-auto px-4">
         <div class="parent-container">
@@ -43,18 +44,19 @@
         </div>
 
         <!-- Menu section is populated from the meal API at runtime -->
-        <section id="menuDisplay" class="grid grid-cols-1 md:grid-cols-4 gap-16 p-16 bg-[url('images/menuBG.jpg')] bg-cover rounded-4xl shadow mb-8 panel-surface" aria-live="polite">
+        <section id="menuDisplay" class="grid grid-cols-1 md:grid-cols-4 gap-16 p-16 bg-[url('/images/menuBG.jpg')] bg-cover rounded-4xl shadow mb-8 panel-surface" aria-live="polite">
             <!-- Food items will be rendered here -->
         </section>
 
         <!-- Cart section is rendered from the in-memory cart state -->
-        <section id="cartDisplay" class="bg-[url('images/menuBG.jpg')] bg-cover rounded-4xl shadow p-5 panel-surface" aria-live="polite">
+        <section id="cartDisplay" class="bg-[url('/images/menuBG.jpg')] bg-cover rounded-4xl shadow p-5 panel-surface" aria-live="polite">
             <div id="cartItem">
                 <!-- Cart items will be rendered here -->
             </div>
         </section>
     </main>
 
+    <script src="js/api.js" defer></script>
     <script src="js/dashboard.js" defer></script>
 </body>
 </html>

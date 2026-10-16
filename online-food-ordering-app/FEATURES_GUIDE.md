@@ -1,97 +1,19 @@
-# Application Features Guide
+# Features
 
-## Sign In Page (`signin.html`)
+## Accounts
 
-### Features
-- **Sign-In Form** — Authenticates existing users against `localStorage` accounts
-- **Navigation Link** — Link to the registration page for new users
+Registration validates an email address and an 8-128 character password. Password spaces are significant. Duplicate emails are rejected case-insensitively, including concurrent registrations. Sign-in creates a server session lasting up to eight hours. Sign-out revokes that session; a dashboard URL alone does not grant access.
 
-### Form Fields
-1. **Email** *(Required)*
-   - Must match the pattern: letters, numbers, and `% . + _ -` before the `@` symbol
-   - Example: `user@example.com`
+## Menu and cart
 
-2. **Password** *(Required)*
-   - Minimum 5 characters
+The server fetches and validates TheMealDB meals and supplies generated demo prices. The browser renders text safely, displays loading/error states, and supports retry/refresh. A cart supports up to 100 distinct meals and 1-99 of each. Refresh reconciles unavailable items and updates displayed prices when no checkout is unresolved.
 
-### Behaviors
-- Valid credentials set the `activeAccount` key in `localStorage` and redirect to `dashboard.html`
-- Invalid credentials show an alert with a descriptive error message
-- Form resets after a failed attempt
+## Checkout
 
----
+Checkout first opens the cart for review. A subsequent click submits the selected IDs and quantities. The server derives prices and account ownership and saves the order before confirming it. A request ID makes repeat submissions of the same checkout return the original order. Reusing an ID with different items is rejected.
 
-## Register Page (`register.html`)
+An uncertain response locks cart edits and preserves the request snapshot in this tab's session storage. Retry submits the same operation. Reload and sign-in with the same account reconcile any saved order before retrying. Keep the tab's storage intact while a checkout is unresolved. Completed confirmation lists the saved order ID, lines, and total and clears the cart. No funds are collected.
 
-### Features
-- **Registration Form** — Creates a new account and stores it in `localStorage`
-- **Navigation Link** — Link back to the sign-in page
+## Boundaries
 
-### Form Fields
-1. **Email** *(Required)*
-   - Same format rules as sign-in
-   - Must not already exist in stored accounts
-
-2. **Password** *(Required)*
-   - Minimum 5 characters
-
-### Behaviors
-- Duplicate email shows an alert and redirects to sign-in
-- Successful registration stores the account and redirects to sign-in
-- Form resets after submission
-
----
-
-## Dashboard (`dashboard.html`)
-
-Access is protected. Users without an active session are immediately redirected to `signin.html`.
-
-### Menu View
-
-#### Features
-- **Menu Grid** — Displays meal cards loaded from TheMealDB API
-- **Loading State** — Shows a loading message while the API request is in-flight
-- **Error State** — Shows a fallback message if the API request fails
-- **Add to Cart Button** — Adds the selected item to the cart (increments quantity if already present)
-
-#### Meal Card Information
-- Meal thumbnail image (lazy-loaded)
-- Meal name
-- Price (deterministically derived from meal ID)
-
----
-
-### Cart View
-
-#### Features
-- **Cart Item List** — Shows all items currently in the cart
-- **Empty State** — Shows a message when no items have been added
-- **Quantity Controls** — `+` and `−` buttons per item; removing below 1 deletes the item
-- **Running Total** — Recalculated and displayed after every change
-
-#### Cart Item Information
-- Item name
-- Unit price
-- Current quantity
-
----
-
-### Checkout
-
-#### Behaviors
-- If the cart view is not active, the checkout button switches to the cart view first
-- If the cart is empty, an alert prompts the user to add items
-- On successful checkout:
-  - An alert displays a receipt with each item, unit price, quantity, and the total charged
-  - The cart is cleared after the alert is dismissed
-
----
-
-### Navigation Bar
-
-- **Menu Button** — Switches to the menu view
-- **Cart Button** — Switches to the cart view
-- **Items in Cart** — Live count of total items across all cart entries
-- **Active Account** — Displays the signed-in user's email
-- **Checkout Button** — Initiates checkout or navigates to the cart view
-- **Sign Out Button** — Clears the active session and redirects to `signin.html`
+The application does not send orders to a restaurant, dispatch deliveries, process payments, verify email ownership, or provide password recovery. The account-scoped history endpoint supports recovery; a dedicated order-history screen is not included. Unsaved ordinary cart edits are in memory and disappear on reload.

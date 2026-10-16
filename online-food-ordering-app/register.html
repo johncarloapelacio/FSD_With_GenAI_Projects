@@ -4,23 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <link rel="stylesheet" href="css/tailwind.css">
     <link rel="stylesheet" href="css/styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body class="h-screen bg-[url('images/registerBgImage.jpg')] bg-cover bg-center bg-no-repeat flex items-center justify-center min-h-screen">
+<body class="h-screen bg-[url('/images/registerBgImage.jpg')] bg-cover bg-center bg-no-repeat flex items-center justify-center min-h-screen">
 
     <!-- Registration form collects new account credentials and passes control to shared auth logic -->
     <form id="registerForm" novalidate
-        class="bg-[url('images/regImage.png')] bg-cover bg-center py-4 px-11 shadow-xl rounded-2xl w-full max-w-md auth-card">
+        class="bg-[url('/images/regImage.png')] bg-cover bg-center py-4 px-11 shadow-xl rounded-2xl w-full max-w-md auth-card">
 
         <h2 class="text-gray-500 drop-shadow-md text-2xl font-bold italic font-serif ml-2 my-5">Register</h2>
 
         <label class="sr-only" for="newEmailId">Email address</label>
-        <input type="email" placeholder="Enter your email address" id="newEmailId" autocomplete="email"
+        <input type="email" placeholder="Enter your email address" id="newEmailId" autocomplete="email" maxlength="254" required
             class="bg-blue-100 mb-5 px-5 py-2 shadow-xl border-pink-300 border-2 rounded-2xl w-full focus:ring-1 focus:outline-none focus:ring-pink-300"><br>
 
         <label class="sr-only" for="newPasswordId">Password</label>
-        <input type="password" placeholder="Enter your password" id="newPasswordId" autocomplete="new-password"
+        <input type="password" placeholder="Enter your password" id="newPasswordId" autocomplete="new-password" minlength="8" maxlength="128" required
             class="bg-blue-100 mb-5 px-5 py-2 shadow-xl border-pink-300 border-2 rounded-2xl w-full focus:ring-1 focus:outline-none focus:ring-pink-300"><br>
 
         <!-- Form actions keep registration, reset, and page navigation grouped together -->
@@ -35,6 +35,7 @@
         </div>
     </form>
 
+    <script src="js/api.js" defer></script>
     <script src="js/signin.js" defer></script>
 </body>
 </html>

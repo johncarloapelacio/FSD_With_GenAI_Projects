@@ -1,47 +1,34 @@
 # Online Food Ordering App
 
-Online Food Ordering App is a static front-end demo built with HTML, Tailwind CSS (CDN), custom CSS, and vanilla JavaScript.
+A full-stack menu and ordering demo built with Node.js, Express, HTML, vanilla JavaScript, and locally compiled Tailwind CSS. Accounts and orders are validated and stored on the server. The illustrated interface retains the original food-themed design.
 
-## Important Disclaimer
-- This project is a demo/dummy site for development and learning purposes only.
-- It does not provide real-world food ordering, payment, or delivery.
-- It does not process real financial transactions.
-- Do not use this project in production as-is.
+## Run
 
-## Tech Stack
-- Frontend: HTML5, Tailwind CSS (CDN), custom CSS, vanilla JavaScript
-- Storage: Browser `localStorage`
-- External API: TheMealDB (`https://www.themealdb.com`)
+Use Node.js 24 LTS and npm. From this folder:
 
-## Run Locally
+```sh
+npm ci
+npm run build
+npm start
+```
 
-This is a static front-end project with no build step required.
+Open http://localhost:3002, register an account, then sign in. No preset credentials are shipped. `PORT` changes the port; `FOOD_DATA_DIR` changes the private data directory. Environment settings must be supplied by the shell or process manager; `.env.example` is a reference, not automatically loaded.
 
-1. Open the project folder in VS Code.
-2. Open `signin.html` directly in a browser, or use the Live Server extension pointed at the project root.
+## Features
 
-## Page Map
-- `signin.html` — sign-in for existing users
-- `register.html` — new account registration
-- `dashboard.html` — menu browsing, cart management, and checkout (protected)
+- Server sessions in HttpOnly cookies, salted scrypt passwords, authentication throttling, and account-scoped order history.
+- TheMealDB menu integration with timeouts, validation, caching, loading/error states, and a refresh action.
+- Quantity controls and integer-cent totals; the server validates menu items and determines authoritative prices and ownership.
+- Idempotent checkout with a saved, immutable retry snapshot to avoid duplicate orders after an uncertain response or page reload in the same tab.
+- Atomic JSON storage that rejects malformed or inconsistent records instead of overwriting them.
 
-## Core Features
-- Account registration and sign-in backed by `localStorage`
-- Dashboard access guard: unauthenticated users are redirected to sign-in
-- Menu loaded from TheMealDB API with loading and error states
-- Deterministic per-item pricing derived from meal ID
-- Client-side cart with quantity controls and running total
-- Checkout generates a receipt alert and clears the cart
-- Sign-out clears the active session
+This is a demonstration: prices are generated from menu IDs, order confirmation is local, and no payment, restaurant submission, or delivery occurs. The menu and images require network access to TheMealDB. Sessions reset on server restart. JSON persistence and rate limiting are designed for one server process; a deployed multi-instance service needs shared transactional storage, shared sessions, HTTPS, and operational monitoring.
 
-## Data Notes
-- All user accounts are stored in `localStorage` under the `accounts` key
-- The active session email is stored under `activeAccount`
-- Menu data is fetched from `https://www.themealdb.com/api/json/v1/1/search.php?f=a`
-- No server or database is used
+## Verify
 
-## Additional Documentation
-- See [FEATURES_GUIDE.md](FEATURES_GUIDE.md) for a detailed per-page feature breakdown.
-- See [TECHNICAL_GUIDE.md](TECHNICAL_GUIDE.md) for architecture, file structure, and implementation patterns.
-- See [TESTING.md](TESTING.md) for manual testing steps.
-- See [USER_GUIDE.md](USER_GUIDE.md) for end-user instructions.
+```sh
+npm test
+npm audit
+```
+
+The API and browser-state tests use isolated synthetic data and no external menu service. Full browser flows are in the repository's [QA suite](../qa/README.md). See [TESTING.md](TESTING.md), [TECHNICAL_GUIDE.md](TECHNICAL_GUIDE.md), [FEATURES_GUIDE.md](FEATURES_GUIDE.md), and [USER_GUIDE.md](USER_GUIDE.md).

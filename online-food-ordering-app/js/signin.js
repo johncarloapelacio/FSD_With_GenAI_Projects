@@ -1,137 +1,36 @@
-// Authentication storage keys and validation rules shared by register and sign-in flows.
-const STORAGE_KEYS = {
-    accounts: "accounts",
-    activeAccount: "activeAccount",
-    dashboardAccess: "dashKey"
-};
-
-const MIN_PASSWORD_LENGTH = 5;
-const EMAIL_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/i;
-
-// Local storage helpers keep reads and writes consistent across both pages.
-function getStoredAccounts() {
-    return JSON.parse(localStorage.getItem(STORAGE_KEYS.accounts) || "[]");
-}
-
-function saveStoredAccounts(accounts) {
-    localStorage.setItem(STORAGE_KEYS.accounts, JSON.stringify(accounts));
-}
-
-// Shared field validation prevents duplicated branching in the form handlers.
-function validateCredentials(email, password) {
-    if (!email) {
-        return "Email required";
-    }
-
-    if (!EMAIL_PATTERN.test(email)) {
-        return "Please enter an email with the required pattern\nThe special characters % . + _ - are allowed only before the @ symbol\nExample: ab%12.Cd+23_Ef-45@gh67.IJkl";
-    }
-
-    if (!password) {
-        return "Password required";
-    }
-
-    if (password.length < MIN_PASSWORD_LENGTH) {
-        return `Password must be at least ${MIN_PASSWORD_LENGTH} characters long`;
-    }
-
-    return "";
-}
-
-// Page navigation helpers remain available to the current button markup.
-function signinPage() {
-    window.location.href = "signin.html";
-}
-
-function registerPage() {
-    window.location.href = "register.html";
-}
-
-// Registration flow rejects duplicates and stores only normalized credentials.
-function register(event) {
+'use strict';
+document.addEventListener('DOMContentLoaded', () => {
+  // Remove obsolete demo credentials; authentication now comes from an HttpOnly cookie.
+  try { for (const key of ['accounts', 'activeAccount', 'dashKey']) localStorage.removeItem(key); } catch { /* storage may be disabled */ }
+  const registerForm = document.getElementById('registerForm');
+  const signinForm = document.getElementById('signinForm');
+  const form = registerForm || signinForm;
+  const message = document.createElement('p');
+  message.setAttribute('role', 'status');
+  message.setAttribute('aria-live', 'polite');
+  message.className = 'auth-message';
+  form.appendChild(message);
+  form.addEventListener('reset', () => { message.textContent = ''; });
+  document.getElementById('loginPageBtn')?.addEventListener('click', () => { window.location.href = 'signin.html'; });
+  document.getElementById('registerBtn')?.addEventListener('click', () => { window.location.href = 'register.html'; });
+  form.addEventListener('submit', async event => {
     event.preventDefault();
-
-    const form = document.getElementById("registerForm");
-    const email = document.getElementById("newEmailId").value.trim();
-    const password = document.getElementById("newPasswordId").value.trim();
-    const validationMessage = validateCredentials(email, password);
-
-    if (validationMessage) {
-        alert(validationMessage);
-        return;
-    }
-
-    const accounts = getStoredAccounts();
-    const accountExists = accounts.some((credentials) => credentials.un === email);
-
-    if (accountExists) {
-        alert("Account already exists. Please sign in.");
-        form.reset();
-        signinPage();
-        return;
-    }
-
-    accounts.push({ un: email, pw: password });
-    saveStoredAccounts(accounts);
-    alert("Account created!");
-    form.reset();
-    signinPage();
-}
-
-// Sign-in flow validates the active session before granting one dashboard entry.
-function validation(event) {
-    event.preventDefault();
-
-    const form = document.getElementById("signinForm");
-    const email = document.getElementById("emailId").value.trim();
-    const password = document.getElementById("pwId").value.trim();
-    const validationMessage = validateCredentials(email, password);
-
-    if (validationMessage) {
-        alert(validationMessage);
-        return;
-    }
-
-    const accounts = getStoredAccounts();
-    const matchingAccount = accounts.find((credentials) => credentials.un === email && credentials.pw === password);
-
-    if (!matchingAccount) {
-        alert("Invalid credentials");
-        return;
-    }
-
-    if (localStorage.getItem(STORAGE_KEYS.activeAccount)) {
-        alert("There's already an account signed in. Please sign out of the current account before signing in.");
-        return;
-    }
-
-    localStorage.setItem(STORAGE_KEYS.dashboardAccess, "true");
-    localStorage.setItem(STORAGE_KEYS.activeAccount, email);
-    form.reset();
-    alert("Welcome!");
-    window.location.href = "dashboard.html";
-}
-
-// Page-specific event wiring removes reliance on inline form submission behavior.
-document.addEventListener("DOMContentLoaded", () => {
-    const registerForm = document.getElementById("registerForm");
-    const signinForm = document.getElementById("signinForm");
-    const loginPageButton = document.getElementById("loginPageBtn");
-    const registerPageButton = document.getElementById("registerBtn");
-
-    if (registerForm) {
-        registerForm.addEventListener("submit", register);
-    }
-
-    if (signinForm) {
-        signinForm.addEventListener("submit", validation);
-    }
-
-    if (loginPageButton) {
-        loginPageButton.addEventListener("click", signinPage);
-    }
-
-    if (registerPageButton) {
-        registerPageButton.addEventListener("click", registerPage);
-    }
+    const emailInput = document.getElementById(registerForm ? 'newEmailId' : 'emailId');
+    const passwordInput = document.getElementById(registerForm ? 'newPasswordId' : 'pwId');
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { message.textContent = 'Enter a valid email address.'; emailInput.focus(); return; }
+    if (password.length < 8 || password.length > 128) { message.textContent = 'Use a password between 8 and 128 characters.'; passwordInput.focus(); return; }
+    const submit = form.querySelector('[type=submit]');
+    submit.disabled = true;
+    message.textContent = registerForm ? 'Creating account…' : 'Signing in…';
+    try {
+      await window.foodApi(registerForm ? '/api/register' : '/api/login', { method: 'POST', body: { email, password } });
+      if (registerForm) {
+        form.reset(); message.textContent = 'Account created. Continue to Sign in.';
+        document.getElementById('loginPageBtn').focus();
+      } else { window.location.href = 'dashboard.html'; }
+    } catch (error) { message.textContent = error.message; }
+    finally { submit.disabled = false; }
+  });
 });

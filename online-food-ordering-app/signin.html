@@ -4,23 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In</title>
+    <link rel="stylesheet" href="css/tailwind.css">
     <link rel="stylesheet" href="css/styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body class="h-screen bg-[url('images/signinBgImage.png')] bg-cover bg-center bg-no-repeat flex items-center justify-center min-h-screen">
+<body class="h-screen bg-[url('/images/signinBgImage.png')] bg-cover bg-center bg-no-repeat flex items-center justify-center min-h-screen">
 
     <!-- Sign-in form validates stored credentials before opening the dashboard -->
     <form id="signinForm" novalidate
-        class="bg-[url('images/choppingBoard.jpg')] bg-cover bg-center py-4 px-11 shadow-xl rounded-2xl w-full max-w-md auth-card">
+        class="bg-[url('/images/choppingBoard.jpg')] bg-cover bg-center py-4 px-11 shadow-xl rounded-2xl w-full max-w-md auth-card">
 
         <h2 class="text-orange-100 drop-shadow-md text-2xl font-bold italic font-serif my-5 text-center">Sign In</h2>
 
         <label class="sr-only" for="emailId">Email address</label>
-        <input type="email" placeholder="Enter your email address" id="emailId" autocomplete="email"
+        <input type="email" placeholder="Enter your email address" id="emailId" autocomplete="email" maxlength="254" required
             class="bg-orange-100 mb-5 px-5 py-2 shadow-xl border-green-600 border-2 rounded-2xl w-full focus:ring-2 focus:outline-none focus:ring-green-700"><br>
 
         <label class="sr-only" for="pwId">Password</label>
-        <input type="password" placeholder="Enter your password" id="pwId" autocomplete="current-password"
+        <input type="password" placeholder="Enter your password" id="pwId" autocomplete="current-password" minlength="8" maxlength="128" required
             class="bg-orange-100 mb-5 px-5 py-2 shadow-xl border-green-600 border-2 rounded-2xl w-full focus:ring-2 focus:outline-none focus:ring-green-700"><br>
 
         <!-- Form actions keep sign-in, reset, and registration navigation grouped together -->
@@ -35,6 +35,7 @@
         </div>
     </form>
 
+    <script src="js/api.js" defer></script>
     <script src="js/signin.js" defer></script>
 </body>
 </html>

@@ -10,6 +10,21 @@ body {
 	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+[hidden] { display: none !important; }
+.auth-message { margin-top: 1rem; padding: .75rem; border-radius: .5rem; background: #fff7ed; color: #292524; }
+.auth-message:empty { display: none; }
+.auth-card h2 { color: #fff7ed; text-shadow: 0 1px 3px #000; }
+.meal-card { background-color: #292524; background-blend-mode: multiply; }
+.retry-button { display: block; margin: .75rem auto 0; padding: .5rem 1rem; background: #e9d5ff; color: #1c1917; border-radius: .5rem; }
+button:disabled, input:disabled { opacity: .6; cursor: wait; }
+#orderStatus { white-space: pre-line; }
+#orderStatus:empty { display: none; }
+.brand-shell > div:first-child { min-width: 0; flex-wrap: wrap; gap: .75rem; }
+.brand-shell > div:first-child > * { margin: 0; }
+#emailDisplay { overflow-wrap: anywhere; min-width: 0; }
+.parent-container > div { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; }
+.parent-container button { margin: 0; }
+
 /* Shared panel treatments create one reusable surface style for forms and sections. */
 .auth-card,
 .panel-surface,
@@ -61,6 +76,10 @@ input[type="reset"]:focus-visible {
 		padding-left: 1.5rem;
 		padding-right: 1.5rem;
 	}
+	.brand-shell > div:first-child { flex-direction: column; width: 100%; text-align: center; }
+	.brand-shell h1 { font-size: clamp(2rem, 10vw, 3rem); }
+	#emailDisplay { font-size: 1.1rem; max-width: 100%; }
+	#itemsInCart { font-size: 1rem; }
 
 	.panel-surface {
 		padding: 1.5rem;

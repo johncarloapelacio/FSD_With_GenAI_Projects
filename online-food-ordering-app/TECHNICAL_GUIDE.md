@@ -1,138 +1,37 @@
-# Technical Implementation Guide
+# Technical guide
 
-## Project Architecture
+## Components
 
-### Technology Stack
-- **Markup**: HTML5
-- **Styling**: Tailwind CSS (CDN), custom CSS (`css/styles.css`)
-- **Logic**: Vanilla JavaScript (ES6+)
-- **Storage**: Browser `localStorage`
-- **External API**: TheMealDB
+- `server.js`: Express API, authentication, authorization, validated menu adapter, authoritative checkout, and whitelisted static assets.
+- `lib/store.js`: JSON schema checks, relationship/total/fingerprint checks, and atomic temporary-file replacement.
+- `js/api.js`: same-origin JSON transport with structured errors.
+- `js/signin.js`: shared sign-in/registration UI and removal of obsolete browser-stored credentials.
+- `js/dashboard.js`: menu/cart views, immutable checkout snapshots, account-keyed recovery, and receipt rendering.
+- `css/tailwind-input.css`: local Tailwind build input. `css/tailwind.css` is the generated asset served to browsers.
+- `tests/`: real HTTP regressions and browser-state tests using a VM harness.
 
-### Folder Structure
+## API
 
-```
-online-food-ordering-app/
-├── css/
-│   └── styles.css              (Custom styles, accessibility helpers, responsive polish)
-├── images/                     (Background and decorative assets)
-├── js/
-│   ├── signin.js               (Auth logic shared by register and sign-in pages)
-│   └── dashboard.js            (Menu loading, cart state, rendering, and checkout)
-├── signin.html                 (Sign-in page)
-├── register.html               (Registration page)
-└── dashboard.html              (Protected dashboard page)
-```
+| Method | Route | Access/purpose |
+| --- | --- | --- |
+| POST | `/api/register` | Create an account |
+| POST | `/api/login` | Verify credentials and issue a session |
+| POST | `/api/logout` | Revoke the current session |
+| GET | `/api/session` | Current authenticated account |
+| GET | `/api/menu` | Authenticated, validated menu |
+| GET | `/api/orders` | Current account's saved orders |
+| POST | `/api/orders` | Authenticated, idempotent checkout |
 
----
+Mutations require JSON. Cross-site/foreign-origin requests are rejected. Cookies are HttpOnly and SameSite=Strict, with Secure enabled under `NODE_ENV=production`. Dashboard requests include `X-Food-Account-Id` as an assertion about the displayed account; the server rejects a mismatch with `409 ACCOUNT_CHANGED`, while ownership always comes from the authenticated session. This prevents an older tab from silently ordering under an account signed into elsewhere. Content Security Policy restricts scripts/styles/connections to the app and menu images to TheMealDB. Set `TRUST_PROXY=1` only behind exactly one trusted reverse proxy. The default server binds to loopback.
 
-## Module Responsibilities
+## Persistence and retries
 
-### `js/signin.js`
-- Defines shared `localStorage` keys and validation constants
-- Provides helpers for reading and writing the accounts array
-- Exports `register()` and `signIn()` as global functions called from HTML form `onsubmit` handlers
-- Validates email format with a regex pattern and enforces the minimum password length
-- Blocks duplicate registrations and clears forms after submission
+The ignored `data/store.json` contains users with salted scrypt hashes and order snapshots. Sessions and rate counters are in memory. Stores are validated on read and before write; inconsistent stores return an error and remain intact. Back up valid data separately before maintenance. There is no automatic destructive reset or legacy plaintext migration.
 
-### `js/dashboard.js`
-- Bootstraps on `DOMContentLoaded`: validates session, caches DOM elements, binds events, and loads the menu
-- Manages a single `state` object (`cart`, `cartInView`, `total`) as the source of truth
-- Uses event delegation on `menuDisplay` and `cartItem` containers to handle dynamic button clicks
-- Fetches menu data from TheMealDB and renders meal cards using DOM nodes and `DocumentFragment`
-- Recalculates cart totals and rerenders the full cart display on every mutation
+Orders record integer-cent line prices, quantities, a derived total, authenticated user ID, request ID, and canonical item fingerprint. Rechecking after menu fetch prevents concurrent retries from saving duplicates within this process. The frontend persists a pending operation before sending it, retains it on network/server/authentication uncertainty, and reconciles saved history after reload. Browser prices, account IDs, and modified local snapshots never determine server ownership or prices.
 
----
+## Configuration
 
-## State Management
+`PORT` defaults to 3002. `FOOD_DATA_DIR` defaults to this project's `data` folder. `NODE_ENV=production` enables Secure cookies and therefore requires HTTPS. `.env.example` documents these settings; the app does not load dotenv files. A reverse proxy must preserve the public Host/protocol consistently with same-origin validation.
 
-### localStorage Keys
-
-| Key             | Purpose                                        |
-|-----------------|------------------------------------------------|
-| `accounts`      | JSON array of `{ un, pw }` credential objects  |
-| `activeAccount` | Email string of the currently signed-in user   |
-| `dashKey`       | Temporary access token cleared on dashboard load |
-
-### Dashboard State Object
-
-```javascript
-const state = {
-    cart: [],       // Array of { id, name, price, quantity }
-    cartInView: false,
-    total: 0
-};
-```
-
-All cart mutations go through `refreshCart()`, which recalculates `state.total`, calls `renderCart()`, and calls `updateCartCount()` in one pass.
-
----
-
-## API Integration
-
-### Endpoint
-```
-GET https://www.themealdb.com/api/json/v1/1/search.php?f=a
-```
-
-Returns meals whose names start with the letter `a`. The response shape is `{ meals: [...] }`.
-
-### Fields Used Per Meal
-| Field         | Usage                          |
-|---------------|-------------------------------|
-| `idMeal`      | Unique ID used for cart key and pricing |
-| `strMeal`     | Display name and button dataset attribute |
-| `strMealThumb`| Thumbnail image source          |
-
-### Error Handling
-- A loading message is rendered before the fetch begins
-- Network failures or non-`ok` responses render a static error message in place of the menu grid
-
----
-
-## Pricing Algorithm
-
-Item prices are deterministic and derived solely from the meal ID, so the same item always displays the same price without any server-side data:
-
-```javascript
-function getItemPrice(itemId) {
-    const baseCents = 799 + (Number(itemId) % 1300);
-    return Number((baseCents / 100).toFixed(2));
-}
-```
-
-This produces prices in the range $7.99–$20.98.
-
----
-
-## DOM Rendering Pattern
-
-Menu cards and cart items are built with `document.createElement` and collected into a `DocumentFragment` before a single `appendChild` call. This avoids repeated `innerHTML` assignments and keeps reflow cost low.
-
-```javascript
-const fragment = document.createDocumentFragment();
-items.forEach((item) => {
-    const card = document.createElement("article");
-    // ... build card nodes ...
-    fragment.appendChild(card);
-});
-elements.menuDisplay.appendChild(fragment);
-```
-
----
-
-## Validation Pattern
-
-Both the email format check and password length check run through a shared `validateCredentials()` function in `signin.js` before any `localStorage` read or write occurs:
-
-```javascript
-function validateCredentials(email, password) {
-    if (!email) return "Email required";
-    if (!EMAIL_PATTERN.test(email)) return "Please enter an email with the required pattern...";
-    if (!password) return "Password required";
-    if (password.length < MIN_PASSWORD_LENGTH) return `Password must be at least ${MIN_PASSWORD_LENGTH} characters long`;
-    return "";
-}
-```
-
-A non-empty return value is shown in an `alert` and the operation is aborted.
+The demo is single-process. Multi-process writes, durable shared sessions/rate counters, real payment/fulfillment integrations, account recovery, and production operations require further design.

@@ -1,52 +1,11 @@
-# User Guide
+# User guide
 
-This guide explains how to use the online food ordering demo from account creation through checkout.
+1. Start the server using the README and open http://localhost:3002.
+2. Choose Register, enter your email and an 8-128 character password, and create an account. Then sign in with those credentials.
+3. Add meals from the menu. Open Cart to adjust quantities; decreasing a quantity to zero removes that meal. Refresh menu retries the catalog and reconciles unavailable items.
+4. Choose Checkout to review the cart, then Checkout again to submit. Confirmation displays a demo order ID, items, and total. No payment or delivery is arranged.
+5. If the response is uncertain, keep the tab open and choose Checkout again. Cart edits are locked until that same request is resolved. Reloading in the same tab restores its saved checkout; sign in again if prompted. Do not clear tab storage while an order is unresolved.
+6. If another tab signs into a different account, the old dashboard returns to sign-in before submitting under that account. Sign back into the original account to recover its unresolved checkout.
+7. Choose Sign Out when finished. Ordinary carts are not saved across reloads; pending checkout recovery is saved separately for the current account in this tab.
 
-## Getting Started
-
-1. Open the app at `signin.html`.
-2. If you do not have an account yet, click `Register`.
-3. Create an account using a valid email address and a password with at least 5 characters.
-4. After registration, return to the sign-in page and log in.
-
-## Signing In
-
-1. Enter your registered email address.
-2. Enter your password.
-3. Click `Sign In`.
-4. After successful sign-in, you will be taken to the dashboard.
-
-## Browsing the Menu
-
-1. Use the `Menu` button on the dashboard to view available food items.
-2. Each item displays an image, name, and price.
-3. Click `ADD TO CART` to add an item to your order.
-
-## Managing the Cart
-
-1. Use the `Cart` button to open your cart.
-2. Review item names, prices, and quantities.
-3. Click `+` to increase quantity.
-4. Click `-` to decrease quantity.
-5. If quantity reaches zero, the item is removed from the cart automatically.
-6. The cart total updates as quantities change.
-
-## Checkout
-
-1. Click `Checkout`.
-2. If you are not already viewing the cart, the app will switch to the cart first.
-3. Click `Checkout` again with items in the cart to complete the order.
-4. A receipt summary will appear showing item names, prices, quantities, and the total charged.
-5. After checkout, your cart is cleared.
-
-## Signing Out
-
-1. Click `Sign Out` on the dashboard.
-2. You will be returned to the sign-in page.
-3. Once signed out, direct access to the dashboard is blocked until you sign in again.
-
-## Troubleshooting
-
-- If the menu does not load, refresh the page and verify your internet connection.
-- If sign-in fails, confirm that you registered the same email and password.
-- If you want a clean test run, clear the site's `localStorage` in the browser developer tools.
+Menu failures can be retried. Account passwords cannot be recovered through this demo, so use test credentials you can remember. A server restart signs everyone out while retaining accounts and saved orders.
