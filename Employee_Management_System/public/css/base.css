@@ -237,6 +237,8 @@ input:focus, select:focus, textarea:focus {
   top: 0;
   z-index: 20;
   display: flex;
+  flex-wrap: wrap;
+  gap: .7rem;
   align-items: center;
   justify-content: space-between;
   padding: .7rem 1.4rem;
@@ -255,7 +257,7 @@ input:focus, select:focus, textarea:focus {
   font-size: .92rem;
 }
 .brand-text { font-weight: 600; opacity: .95; }
-.topbar-user { display: flex; align-items: center; gap: .8rem; }
+.topbar-user { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: .8rem; max-width: 100%; }
 .user-chip { font-weight: 600; font-size: .9rem; opacity: .95; }
 .inline-form { margin: 0; }
 .topbar .btn-ghost { color: var(--topbar-text); border-color: rgba(255, 255, 255, .35); }
@@ -389,10 +391,11 @@ input:focus, select:focus, textarea:focus {
 .card-actions {
   margin-top: auto;        /* pins action row to the bottom of every card */
   display: flex;
+  flex-wrap: wrap;
   gap: .5rem;
   padding-top: 1rem;
 }
-.card-actions .btn { flex: 1; }
+.card-actions .btn { flex: 1 1 auto; }
 
 /* ---------- Read-only profile grid ---------- */
 .readonly-grid {
@@ -497,6 +500,8 @@ input:focus, select:focus, textarea:focus {
 
 /* ---------- Responsive ---------- */
 @media (max-width: 760px) {
+  .topbar-user { width: 100%; justify-content: space-between; gap: .5rem; }
+  .user-chip { overflow-wrap: anywhere; max-width: 100%; }
   .layout { flex-direction: column; }
   .sidebar {
     flex: none;

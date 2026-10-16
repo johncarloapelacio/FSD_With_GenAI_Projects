@@ -7,7 +7,7 @@ Cypress.Commands.add('loginAdmin', () => {
     method: 'POST',
     url: '/login',
     form: true,
-    body: { role: 'admin', email: 'apelacio.john@gmail.com', password: '52277225' },
+    body: { role: 'admin', email: 'admin@demo.example', password: 'DemoAdmin2026!' },
   });
 });
 
@@ -25,6 +25,7 @@ Cypress.Commands.add('createPendingEmployee', (overrides = {}) => {
   };
   return cy.loginAdmin()
     .then(() => cy.request({ method: 'POST', url: '/api/employees', body: user }))
+    .then((response) => { user.inviteToken = response.body.inviteToken; })
     .then(() => cy.clearCookie('sid'))
     .then(() => user);
 });
@@ -44,7 +45,7 @@ Cypress.Commands.add('signupEmployee', (overrides = {}) => {
       return cy.request({
         method: 'POST',
         url: '/api/signup/verify',
-        body: { name: fullUser.name, email: fullUser.email, dob: fullUser.dob },
+        body: { name: fullUser.name, email: fullUser.email, dob: fullUser.dob, inviteToken: fullUser.inviteToken },
       }).then(() => cy.request({
         method: 'POST',
         url: '/api/signup/employee',
@@ -58,7 +59,7 @@ Cypress.Commands.add('signupEmployee', (overrides = {}) => {
     });
 });
 
-// Sign up a brand new admin (uses the passcode), then log them in.
+// An existing administrator creates another administrator, then signs in as them.
 Cypress.Commands.add('signupAdmin', (overrides = {}) => {
   const stamp = `${Date.now()}${Math.floor(Math.random() * 1000)}`;
   const user = {
@@ -68,8 +69,8 @@ Cypress.Commands.add('signupAdmin', (overrides = {}) => {
     dob: '1985-04-10',
     ...overrides,
   };
-  return cy
-    .request({ method: 'POST', url: '/api/signup/admin', body: { passcode: '52277225', ...user } })
+  return cy.loginAdmin()
+    .then(() => cy.request({ method: 'POST', url: '/api/signup/admin', body: user }))
     .then(() => cy.request({
       method: 'POST',
       url: '/login',

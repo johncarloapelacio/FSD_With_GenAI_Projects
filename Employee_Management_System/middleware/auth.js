@@ -1,6 +1,7 @@
 // Figures out who is making each request and guards the pages and API routes.
-const { getSession } = require('../lib/sessions');
+const { getSession, destroySession } = require('../lib/sessions');
 const { findById } = require('../lib/db');
+const { credentialVersion } = require('../lib/passwords');
 
 const COOKIE = 'sid';
 
@@ -11,10 +12,12 @@ function attachUser(req, res, next) {
   const session = getSession(token);
   if (session) {
     const account = findById(session.accountId, session.role);
-    if (account) {
+    if (account && (account.passwordHash || account.password) && credentialVersion(account) === session.credentialVersion) {
       req.account = account;
       req.role = session.role;
       req.token = token;
+    } else {
+      destroySession(token);
     }
   }
   next();
@@ -39,6 +42,7 @@ function apiRequireAuth(req, res, next) {
 
 function apiRequireAdmin(req, res, next) {
   if (req.account && req.role === 'admin') return next();
+  if (!req.account) return res.status(401).json({ error: 'You must be signed in.' });
   return res.status(403).json({ error: 'Admin access is required.' });
 }
 

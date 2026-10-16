@@ -12,25 +12,30 @@ const {
   nextId,
   isValidEmail,
   isValidDate,
+  isValidBirthDate,
+  todayISO,
+  text,
   toPublic,
   toDirectory,
 } = require('../lib/db');
 const { apiRequireAuth, apiRequireAdmin } = require('../middleware/auth');
+const { revokeAccountSessions } = require('../lib/sessions');
+const { issueInvitation } = require('../lib/invitations');
 
 // Check the fields an admin sends when adding or editing an employee.
 function validateEmployee(body) {
-  const name = String(body.name || '').trim();
-  const designation = String(body.designation || '').trim();
-  const email = String(body.email || '').trim();
-  const department = String(body.department || '').trim();
-  const dob = String(body.dob || '').trim();
+  const name = text(body.name);
+  const designation = text(body.designation);
+  const email = text(body.email, 254);
+  const department = text(body.department);
+  const dob = body.dob;
 
   if (!name) return { error: 'Name is required.' };
   if (!designation) return { error: 'Designation is required.' };
   if (!isValidEmail(email)) return { error: 'A valid email address is required.' };
   if (!department) return { error: 'Department is required.' };
   if (!isValidDate(dob)) return { error: 'A valid date of birth is required.' };
-  if (new Date(dob).getTime() > Date.now()) return { error: 'Date of birth cannot be in the future.' };
+  if (!isValidBirthDate(dob)) return { error: 'Date of birth cannot be in the future.' };
 
   return { value: { name, designation, email, department, dob } };
 }
@@ -82,26 +87,27 @@ router.post('/', apiRequireAdmin, (req, res) => {
   }
 
   const employee = {
-    id: nextId(employees),
+    id: nextId(),
     name: value.name,
     email: value.email,
     designation: value.designation,
     department: value.department,
     contact: '',
     location: '',
-    joiningDate: new Date().toISOString().slice(0, 10),
+    joiningDate: todayISO(),
     dob: value.dob,
   };
+  const inviteToken = issueInvitation(employee);
   employees.push(employee);
   saveEmployees(employees);
-  res.status(201).json({ employee: toPublic(employee, 'employee') });
+  res.status(201).json({ employee: toPublic(employee, 'employee'), inviteToken, signupUrl: `/signup?invite=${inviteToken}` });
 });
 
 // Update. Admins only. Keeps the employee's password, phone, location and
 // joining date; only the admin-managed fields change.
 router.put('/:id', apiRequireAdmin, (req, res) => {
   const employees = getEmployees();
-  const idx = employees.findIndex((e) => e.id === Number(req.params.id));
+  const idx = employees.findIndex((e) => String(e.id) === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Employee not found.' });
 
   const { value, error } = validateEmployee(req.body);
@@ -128,11 +134,23 @@ router.put('/:id', apiRequireAdmin, (req, res) => {
 // Delete. Admins only.
 router.delete('/:id', apiRequireAdmin, (req, res) => {
   const employees = getEmployees();
-  const idx = employees.findIndex((e) => e.id === Number(req.params.id));
+  const idx = employees.findIndex((e) => String(e.id) === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Employee not found.' });
   const [removed] = employees.splice(idx, 1);
   saveEmployees(employees);
+  revokeAccountSessions(removed.id, 'employee');
   res.json({ ok: true, removed: toPublic(removed, 'employee') });
+});
+
+// Reissue a private activation link without exposing its stored hash.
+router.post('/:id/invitation', apiRequireAdmin, (req, res) => {
+  const employees = getEmployees();
+  const employee = employees.find((e) => String(e.id) === req.params.id);
+  if (!employee) return res.status(404).json({ error: 'Employee not found.' });
+  if (employee.passwordHash || employee.password) return res.status(400).json({ error: 'This employee has already signed up.' });
+  const inviteToken = issueInvitation(employee);
+  saveEmployees(employees);
+  res.json({ inviteToken, signupUrl: `/signup?invite=${inviteToken}` });
 });
 
 module.exports = router;

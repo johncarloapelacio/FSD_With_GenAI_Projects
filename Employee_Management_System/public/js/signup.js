@@ -1,7 +1,7 @@
 // Drives the signup page. Employees go through two steps: a gatekeeper form
 // (name, email, date of birth) and then, only if they match a record an admin
 // added, a second form for password, phone and location. Admins fill one form
-// with the passcode. Nobody is logged in automatically after signing up.
+// while signed in as an existing administrator. Signup does not log users in.
 (function () {
   var E = window.EMS;
   function id(x) { return document.getElementById(x); }
@@ -16,6 +16,7 @@
     var completeForm = id('emp-complete-form');
     var successPanel = id('signup-success');
     var links = id('signup-links');
+    var inviteToken = new URLSearchParams(window.location.search).get('invite') || '';
 
     // Let people type dates and phone numbers naturally; tidy them up on blur.
     E.attachDateInput(id('emp-dob'));
@@ -69,7 +70,7 @@
       try {
         await E.fetchJSON('/api/signup/verify', {
           method: 'POST',
-          body: { name: id('emp-name').value, email: id('emp-email').value, dob: dob.iso },
+          body: { name: id('emp-name').value, email: id('emp-email').value, dob: dob.iso, inviteToken: inviteToken },
         });
         hide(verifyForm);
         show(completeForm);
@@ -96,6 +97,7 @@
             password: id('emp-password').value,
             contact: contact,
             location: id('emp-location').value,
+            inviteToken: inviteToken,
           },
         });
         showSuccess();
@@ -119,7 +121,6 @@
             email: id('adm-email').value,
             dob: dob.iso,
             password: id('adm-password').value,
-            passcode: id('adm-passcode').value,
           },
         });
         showSuccess();

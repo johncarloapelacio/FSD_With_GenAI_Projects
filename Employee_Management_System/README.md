@@ -1,157 +1,154 @@
-# Employee Management System (EMS)
+# Employee Management System
 
-A full stack Employee Management System built with Node.js, Express, EJS, and the
-`fs` module for file based storage (no database), with Cypress for end to end tests.
+A Node.js/Express 5 application with EJS dashboards, role-based employee CRUD,
+private invitation-based enrollment, account settings, and file-based persistence.
+The browser uses plain JavaScript and CSS; there is no frontend build step.
 
-Admins manage the company employee directory (create, read, update, delete). Employees
-who have been added by an admin can finish signup, browse the directory, and customize
-their own account. Both dashboards work like a single page app: sections (records,
-account settings) switch in place without a full page reload.
+## Run a local demo
 
-## Tech stack
+Requires Node.js 22 or later.
 
-- Node.js and Express 5 for the server and routing
-- EJS for server rendered views
-- cookie-parser for reading the session cookie
-- the fs module so all data lives in JSON files (`admin_db.json`, `emp_db.json`)
-- Cypress for end to end tests
-
-No other runtime dependencies are used.
-
-## Getting started
-
-```bash
-npm install      # installs express, ejs, cookie-parser, and cypress
-npm start        # starts the server on http://localhost:3000
+```sh
+npm ci
+npm run demo:seed
+npm start
 ```
 
-Then open http://localhost:3000.
+Open <http://127.0.0.1:3000>. Demo seeding is an explicit local action, refuses to
+overwrite nonempty storage, and is disabled when `NODE_ENV=production`.
 
-## Accounts
+| Demo role | Email | Password |
+| --- | --- | --- |
+| Administrator | `admin@demo.example` | `DemoAdmin2026!` |
+| Employee | `olivia.smith@company.com` | `DemoEmployee2026!` |
 
-There is one login page and one signup page. On each, you pick Employee or Admin.
-Employees sign up in two steps: first they verify their name, email, and date of birth
-against an admin-created pending employee record, then they choose a password and add
-their phone number and location. Admins sign up with their name, email, date of birth,
-password, and the admin passcode.
+The other synthetic employees use the same **demo-only** employee password.
+Use a separate data directory and create your own administrator for private use.
+Accounts are not installed automatically on startup. Credentials in the data files
+are salted scrypt hashes; the demo credentials above are intentionally public.
 
-A seeded admin account is provided:
+## Create your own first administrator
 
-| Field    | Value                       |
-| -------- | --------------------------- |
-| Email    | `apelacio.john@gmail.com`   |
-| Password | `52277225`                  |
+For an empty data directory, supply the following environment variables and run
+`npm run admin:create`. The CLI only creates the initial administrator; later
+administrators are created by a signed-in administrator using **Add administrator**.
 
-The 18 seeded employees can each log in with their listed email and the password
-`password123` (a demo default they can change in account settings). For example
-`olivia.smith@company.com` / `password123`.
+PowerShell example:
 
-To create a new admin, choose Admin on the signup page and enter the admin passcode
-**`52277225`**. Employees added by an admin from the dashboard are created as pending
-accounts. They cannot log in until they complete employee signup with matching name,
-email, and date of birth.
-
-## Routes
-
-| Page               | Path               | Who can see it    |
-| ------------------ | ------------------ | ----------------- |
-| Employee dashboard | `/`                | Employee session  |
-| Admin dashboard    | `/admin/dashboard` | Admin session     |
-| Login              | `/login`           | Public            |
-| Sign up            | `/signup`          | Public            |
-
-### API
-
-| Method | Endpoint                | Who can call it     |
-| ------ | ----------------------- | ------------------- |
-| GET    | `/api/employees`        | Any signed in user  |
-| POST   | `/api/employees`        | Admin only          |
-| PUT    | `/api/employees/:id`    | Admin only          |
-| DELETE | `/api/employees/:id`    | Admin only          |
-| GET    | `/api/account/me`       | Any signed in user  |
-| PUT    | `/api/account/profile`  | Self                |
-| PUT    | `/api/account/password` | Self                |
-| POST   | `/api/signup/verify`    | Public              |
-| POST   | `/api/signup/employee`  | Public              |
-| POST   | `/api/signup/admin`     | Public              |
-
-## Access control
-
-A session is a random token stored on the server and sent to the browser as an
-httpOnly cookie, so a user cannot fake their account or role. The admin dashboard needs
-an admin session and the employee dashboard needs an employee session; anything else is
-sent back to login. Employees who call an admin only API endpoint get a 403.
-
-## What each role can change
-
-- Employees can change their contact, location, and password.
-- Admins can change their designation, department, contact, location, and password, and
-  they manage every employee record from the dashboard.
-- Admins add and edit an employee's name, email, designation, department, and date of
-  birth. Contact and location are filled in by the employee during signup or account
-  editing.
-- For everyone, name, email, joining date, and date of birth cannot be changed in account
-  settings once they are set.
-
-Age is always worked out from the date of birth, so it stays correct over time: one year
-from now everyone is a year older. Phone numbers are stored and shown as `###-###-####`
-with no country code.
-
-## Color themes
-
-- Login and signup pages: beige, brown, sky blue, grayscale
-- Admin dashboard: black, burgundy, grayscale
-- Employee dashboard: dark olive green, muted mustard yellow, grayscale
-
-## Testing (Cypress)
-
-Start the server first, then run the tests in a second terminal:
-
-```bash
-npm start            # terminal 1
-npm run cypress:run  # terminal 2, headless run
-# or
-npm run cypress:open # interactive runner
+```powershell
+$env:EMS_ADMIN_NAME = 'Your Name'
+$env:EMS_ADMIN_EMAIL = 'you@example.com'
+$env:EMS_ADMIN_DOB = '1990-01-15'
+$env:EMS_ADMIN_PASSWORD = 'Choose your own strong password here'
+npm run admin:create
+Remove-Item Env:EMS_ADMIN_PASSWORD
+npm start
 ```
 
-Specs live in `cypress/e2e/`:
+Passwords must be strings of 8–256 characters. The former public admin-passcode
+registration flow has been removed.
 
-- `auth.cy.js`
-- `admin_dashboard.cy.js`
-- `employee_dashboard.cy.js`
+## Employee enrollment
 
-The CRUD specs create unique records and clean up after themselves so you can run the
-suite again. The current app requires employee records to be created by an admin before
-employee signup can be completed, so new employee signup tests should create a pending
-employee first and then finish signup through `/api/signup/verify` and
-`/api/signup/employee`.
+1. An administrator creates a pending employee with name, email, designation,
+   department and a real, nonfuture date of birth.
+2. The dashboard displays a private signup link. Share it with that employee over
+   an appropriate private channel. Only a hash of the random token is stored.
+3. The employee opens the link, confirms their details, and sets a password,
+   contact number and location. Successful signup consumes the token.
 
-## Project structure
+Invitation links expire after seven days. **New signup link** replaces the previous
+link for a pending employee. Names, email addresses and dates of birth alone do
+not authorize account creation. Pending employees cannot sign in.
 
+## Permissions and sessions
+
+Employees can browse the directory and update their own contact, location and
+password. The directory excludes colleagues' dates of birth, ages, credentials,
+and invitation details. Only administrators manage employee HR fields or create
+additional administrators. Identity and credential fields cannot be changed
+through profile updates.
+
+Sessions use random server-side tokens with an eight-hour absolute lifetime.
+Logout and account deletion revoke sessions. Password changes revoke all earlier
+sessions and rotate the current browser's cookie. Cookies are HttpOnly and
+SameSite=Lax, and Secure over HTTPS or in production. API writes require JSON;
+cross-origin browser writes are rejected. Login has a process-local failed-attempt
+limit of 20 per IP per 15 minutes.
+
+## Data, configuration and upgrades
+
+Runtime data defaults to ignored `data/admin_db.json` and `data/emp_db.json`.
+Set `EMS_DATA_DIR` to use a different directory. The root-level JSON files are
+empty legacy templates and are not loaded automatically.
+
+Each write validates the existing file, writes and flushes a temporary file in the
+same directory, then atomically renames it. Invalid JSON, invalid account lists,
+unreadable files and failed writes return an error rather than replacing records
+with an empty dataset. Back up both files together. Restore damaged files from a
+known-good backup before retrying; do not delete a damaged file to dismiss an error.
+
+This storage design supports **one Node process**. Do not run multiple instances,
+cluster workers or simultaneous maintenance commands against the same directory.
+Use a transactional database and shared session/rate-limit storage when scaling.
+Sessions are intentionally invalidated by a server restart.
+
+To import a previous version's local files, stop the old server, back up its
+`admin_db.json` and `emp_db.json`, and run this against an empty destination:
+
+```sh
+npm run data:migrate -- /absolute/path/to/backed-up/old/files
 ```
-app.js                  Express entry point
-admin_db.json           Admin accounts
-emp_db.json             Employee accounts (also the directory)
-lib/
-  db.js                 fs based data access plus helpers (age, dates, validation)
-  sessions.js           In memory session store
-middleware/
-  auth.js               Works out who is logged in, guards pages and the API
-routes/
-  pages.js              Page routes
-  auth.js               Login and logout
-  api.signup.js         Employee and admin signup API
-  api.employees.js      Employee CRUD API
-  api.account.js        Account profile and password API
-views/                  EJS templates (login, signup, admin/, employee/, partials/)
-public/
-  css/                  base.css plus one file per theme
-  js/                   common.js, signup.js, account.js, admin.js, employee.js
-cypress/                Cypress config, support, and e2e specs
+
+The source stays untouched. Migration assigns new identities and hashes plaintext
+passwords. Pending employees need fresh invitations. Legacy records explicitly
+placed in a runtime data directory also migrate their password upon successful
+login. Public or reused old credentials should be replaced before private use.
+
+`PORT` defaults to `3000`; `HOST` defaults to `127.0.0.1`. Deployment requires an
+explicit public bind address, HTTPS, and a private dataset. If exactly one trusted
+reverse proxy sits in front of the application, set `EMS_TRUST_PROXY=1`; otherwise
+leave it unset. Do not expose the public demo accounts as a private HR service.
+This is a tested portfolio application, not a claim of a comprehensive security audit.
+
+## Tests
+
+```sh
+npm test                 # isolated HTTP/API, validation and storage regressions
+npm run test:e2e          # full Cypress browser suite, manages its own server
+npm run cypress:open     # isolated interactive Cypress runner
+npm audit
 ```
 
-## TODOS
+Both suites use synthetic temporary storage and leave local application data
+alone. Browser fixtures reset between tests. Cypress's binary is normally installed
+by `npm ci`; if installation scripts were disabled, run `npx cypress install` first.
 
-- Only Admin adds admin
-- Admin checkmark for new and signup guard
-- Message for adding admin; must be human relations
+The API regressions exercise role/privacy boundaries, deleted-session isolation,
+password hashing and migration, invitation expiry/reuse, strict calendar and type
+validation, session expiry/rotation, request-origin protections, malformed storage
+and a simulated atomic-write failure. Browser tests exercise login, signup, CRUD,
+section navigation, persisted profile updates and password changes.
+
+## API
+
+| Method | Endpoint | Access |
+| --- | --- | --- |
+| GET | `/api/employees` | Signed-in user; role-filtered fields |
+| POST | `/api/employees` | Administrator |
+| PUT / DELETE | `/api/employees/:id` | Administrator |
+| POST | `/api/employees/:id/invitation` | Administrator; pending account |
+| GET | `/api/account/me` | Own account |
+| PUT | `/api/account/profile` | Own permitted profile fields |
+| PUT | `/api/account/password` | Own account, current password required |
+| POST | `/api/signup/verify` | Pending employee details and valid invitation |
+| POST | `/api/signup/employee` | Pending employee details and valid invitation |
+| POST | `/api/signup/admin` | Signed-in administrator |
+
+## Structure
+
+`app.js` configures middleware and routes. `lib/` contains persistence, password,
+session and invitation helpers. `middleware/` enforces authorization. `routes/`
+implements the APIs and page rendering. `views/` and `public/` contain the EJS,
+CSS and browser code. `scripts/` provides setup, migration and isolated browser
+test commands. `test/` and `cypress/` contain regression and browser suites.

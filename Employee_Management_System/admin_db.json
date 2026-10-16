@@ -1,16 +1,1 @@
-{
-  "admins": [
-    {
-      "id": 1,
-      "name": "John Apelacio",
-      "email": "apelacio.john@gmail.com",
-      "password": "52277225",
-      "designation": "HR Lead",
-      "department": "Human Relations",
-      "contact": "777-555-2222",
-      "location": "Glendale, CA",
-      "joiningDate": "2026-06-09",
-      "dob": "1989-03-30"
-    }
-  ]
-}
+{"admins": []}

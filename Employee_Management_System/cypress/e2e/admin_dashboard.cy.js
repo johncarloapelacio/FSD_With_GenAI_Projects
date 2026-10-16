@@ -140,7 +140,7 @@ describe('Admin dashboard', () => {
 
   it('rejects a password change when the confirmation does not match', () => {
     cy.get('[data-cy=nav-account]').click();
-    cy.get('[data-cy=current-password]').type('52277225');
+    cy.get('[data-cy=current-password]').type('DemoAdmin2026!');
     cy.get('[data-cy=new-password]').type('newpass123');
     cy.get('[data-cy=confirm-password]').type('different123');
     cy.get('[data-cy=save-password]').click();

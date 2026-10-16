@@ -6,14 +6,20 @@
   "scripts": {
     "start": "node app.js",
     "dev": "node app.js",
-    "test": "cypress run",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "test": "node --test test/*.test.js",
+    "test:api": "node --test test/*.test.js",
+    "test:e2e": "node scripts/test-e2e.js",
+    "cypress:open": "node scripts/test-e2e.js --open",
+    "cypress:run": "node scripts/test-e2e.js",
+    "admin:create": "node scripts/create-admin.js",
+    "demo:seed": "node scripts/seed-demo.js",
+    "data:migrate": "node scripts/migrate-legacy.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "engines": { "node": ">=22" },
   "dependencies": {
     "cookie-parser": "^1.4.7",
     "ejs": "^6.0.1",

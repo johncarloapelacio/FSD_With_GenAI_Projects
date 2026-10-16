@@ -34,6 +34,7 @@
           detail('Date of Birth', E.formatDate(e.dob)) +
           detail('Age', age != null ? age : '') +
           '<div class="card-actions">' +
+            (e.active ? '' : '<button class="btn btn-dark btn-sm" data-action="invite" data-id="' + e.id + '" data-cy="invite-emp">New signup link</button>') +
             '<button class="btn btn-danger btn-sm" data-action="delete" data-id="' + e.id + '" data-cy="delete-emp">Delete</button>' +
             '<button class="btn btn-dark btn-sm" data-action="edit" data-id="' + e.id + '" data-cy="edit-emp">Edit</button>' +
           '</div>' +
@@ -121,7 +122,8 @@
       var url = editingId ? '/api/employees/' + editingId : '/api/employees';
       var method = editingId ? 'PUT' : 'POST';
       try {
-        await E.fetchJSON(url, { method: method, body: payload });
+        var result = await E.fetchJSON(url, { method: method, body: payload });
+        if (result.signupUrl) showInvitation(result.signupUrl);
         closeModal();
         E.toast(editingId ? 'Employee updated' : 'Employee added', 'success');
         await load();
@@ -131,12 +133,18 @@
     });
 
     // One click handler for all the edit and delete buttons in the grid.
-    E.qs('#emp-grid').addEventListener('click', function (e) {
+    E.qs('#emp-grid').addEventListener('click', async function (e) {
       var btn = e.target.closest('button[data-action]');
       if (!btn) return;
-      var emp = employees.find(function (x) { return x.id === Number(btn.getAttribute('data-id')); });
+      var emp = employees.find(function (x) { return String(x.id) === btn.getAttribute('data-id'); });
       if (!emp) return;
       if (btn.getAttribute('data-action') === 'edit') openModal(emp);
+      else if (btn.getAttribute('data-action') === 'invite') {
+        try {
+          var invitation = await E.fetchJSON('/api/employees/' + emp.id + '/invitation', { method: 'POST', body: {} });
+          showInvitation(invitation.signupUrl);
+        } catch (err) { E.toast(err.message, 'error'); }
+      }
       else openConfirm(emp);
     });
 
@@ -156,4 +164,8 @@
       }
     });
   });
+  function showInvitation(url) {
+    E.qs('#invitation-link').value = new URL(url, window.location.origin).href;
+    E.qs('#invitation-panel').hidden = false;
+  }
 })();

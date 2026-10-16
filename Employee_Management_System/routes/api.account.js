@@ -1,8 +1,11 @@
 // Lets the signed-in user view and edit their own account.
 const express = require('express');
 const router = express.Router();
-const { listByRole, saveByRole, toPublic, isValidPhone } = require('../lib/db');
+const { listByRole, saveByRole, toPublic, isValidPhone, text } = require('../lib/db');
 const { apiRequireAuth } = require('../middleware/auth');
+const { validPassword, verifyPassword, setPassword } = require('../lib/passwords');
+const { revokeAccountSessions } = require('../lib/sessions');
+const { startSession } = require('../lib/cookies');
 
 // The signed-in user's own profile.
 router.get('/me', apiRequireAuth, (req, res) => {
@@ -14,6 +17,10 @@ router.get('/me', apiRequireAuth, (req, res) => {
 // birth are never editable here.
 router.put('/profile', apiRequireAuth, (req, res) => {
   const { contact, location, designation, department } = req.body;
+  const allowed = req.role === 'admin' ? ['contact', 'location', 'designation', 'department'] : ['contact', 'location'];
+  if (allowed.some((key) => req.body[key] !== undefined && text(req.body[key]) === null)) {
+    return res.status(400).json({ error: 'Profile fields must be text of at most 200 characters.' });
+  }
 
   if (contact !== undefined && String(contact).trim() !== '' && !isValidPhone(contact)) {
     return res.status(400).json({ error: 'Contact must be in ###-###-#### format.' });
@@ -37,21 +44,20 @@ router.put('/profile', apiRequireAuth, (req, res) => {
 // Change password.
 router.put('/password', apiRequireAuth, (req, res) => {
   const { currentPassword, newPassword } = req.body;
-  if (!currentPassword || !newPassword) {
-    return res.status(400).json({ error: 'Both current and new passwords are required.' });
+  if (typeof currentPassword !== 'string' || !validPassword(newPassword)) {
+    return res.status(400).json({ error: 'Passwords must be text; the new password must be 8 to 256 characters.' });
   }
-  if (req.account.password !== currentPassword) {
+  if (!verifyPassword(currentPassword, req.account)) {
     return res.status(400).json({ error: 'Current password is incorrect.' });
-  }
-  if (String(newPassword).length < 6) {
-    return res.status(400).json({ error: 'New password must be at least 6 characters.' });
   }
 
   const list = listByRole(req.role);
   const account = list.find((a) => a.id === req.account.id);
   if (!account) return res.status(404).json({ error: 'Account not found.' });
-  account.password = newPassword;
+  setPassword(account, newPassword);
   saveByRole(req.role, list);
+  revokeAccountSessions(account.id, req.role);
+  startSession(req, res, account, req.role);
   res.json({ ok: true });
 });
 

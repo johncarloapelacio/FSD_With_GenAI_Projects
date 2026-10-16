@@ -1,90 +1,99 @@
-// Reads and writes our JSON data files. We use the fs module instead of a real
-// database. Admins live in admin_db.json and employees live in emp_db.json.
-const fs = require('fs');
-const path = require('path');
-
-const ADMIN_PATH = path.join(__dirname, '..', 'admin_db.json');
-const EMP_PATH = path.join(__dirname, '..', 'emp_db.json');
-
-function readJSON(file, fallback) {
+// Atomic JSON storage for a single Node process. A damaged file is never
+// silently replaced with an empty directory.
+const fs = require('node:fs');
+const path = require('node:path');
+const { randomUUID } = require('node:crypto');
+const DATA_DIR = path.resolve(process.env.EMS_DATA_DIR || path.join(__dirname, '..', 'data'));
+const ADMIN_PATH = path.join(DATA_DIR, 'admin_db.json');
+const EMP_PATH = path.join(DATA_DIR, 'emp_db.json');
+class StorageError extends Error {
+  constructor(message, cause) { super(message, { cause }); this.code = 'EMS_STORAGE_ERROR'; }
+}
+function validateRecords(records) {
+  if (!Array.isArray(records)) throw new Error('Expected account array.');
+  const ids = new Set();
+  const emails = new Set();
+  for (const record of records) {
+    if (!record || typeof record !== 'object' || Array.isArray(record) ||
+        !((typeof record.id === 'number' && Number.isSafeInteger(record.id) && record.id > 0) ||
+          (typeof record.id === 'string' && /^[a-zA-Z0-9-]{1,80}$/.test(record.id))) ||
+        typeof record.name !== 'string' || !record.name.trim() || !isValidEmail(record.email) ||
+        (record.password !== undefined && typeof record.password !== 'string') ||
+        (record.passwordHash !== undefined && typeof record.passwordHash !== 'string')) throw new Error('Invalid account record.');
+    if (ids.has(String(record.id)) || emails.has(record.email.trim().toLowerCase())) throw new Error('Duplicate account identity or email.');
+    ids.add(String(record.id));
+    emails.add(record.email.trim().toLowerCase());
+  }
+  return records;
+}
+function readRecords(file, key) {
+  let source;
+  try { source = fs.readFileSync(file, 'utf8'); }
+  catch (error) {
+    if (error.code === 'ENOENT') return [];
+    throw new StorageError('Account storage could not be read.', error);
+  }
+  try { return validateRecords(JSON.parse(source.replace(/^\uFEFF/, ''))?.[key]); }
+  catch (error) { throw new StorageError('Account storage is damaged; restore it before retrying.', error); }
+}
+function writeRecords(file, key, records) {
+  const temp = `${file}.${randomUUID()}.tmp`;
+  let fd;
   try {
-    return JSON.parse(fs.readFileSync(file, 'utf-8').replace(/^\uFEFF/, ''));
-  } catch (err) {
-    return fallback;
+    validateRecords(records);
+    readRecords(file, key);
+    fs.mkdirSync(DATA_DIR, { recursive: true, mode: 0o700 });
+    fd = fs.openSync(temp, 'wx', 0o600);
+    fs.writeFileSync(fd, JSON.stringify({ [key]: records }, null, 2) + '\n', 'utf8');
+    fs.fsyncSync(fd);
+    fs.closeSync(fd);
+    fd = undefined;
+    fs.renameSync(temp, file);
+  } catch (error) {
+    throw error instanceof StorageError ? error : new StorageError('Account changes could not be saved.', error);
+  } finally {
+    if (fd !== undefined) fs.closeSync(fd);
+    try { fs.unlinkSync(temp); } catch (error) { if (error.code !== 'ENOENT') console.error('Temporary storage cleanup failed.'); }
   }
 }
-
-function writeJSON(file, data) {
-  fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n', 'utf-8');
-}
-
-// Admin accounts.
-function getAdmins() {
-  const data = readJSON(ADMIN_PATH, { admins: [] });
-  return Array.isArray(data.admins) ? data.admins : [];
-}
-
-function saveAdmins(admins) {
-  writeJSON(ADMIN_PATH, { admins });
-}
-
-// Employee accounts (these are also the directory records).
-function getEmployees() {
-  const data = readJSON(EMP_PATH, { employees: [] });
-  return Array.isArray(data.employees) ? data.employees : [];
-}
-
-function saveEmployees(employees) {
-  writeJSON(EMP_PATH, { employees });
-}
-
-// Grab the right list for a role so the rest of the app does not have to care
-// which file the account came from.
+const getAdmins = () => readRecords(ADMIN_PATH, 'admins');
+const saveAdmins = (records) => writeRecords(ADMIN_PATH, 'admins', records);
+const getEmployees = () => readRecords(EMP_PATH, 'employees');
+const saveEmployees = (records) => writeRecords(EMP_PATH, 'employees', records);
 function listByRole(role) {
-  return role === 'admin' ? getAdmins() : getEmployees();
+  if (role === 'admin') return getAdmins();
+  if (role === 'employee') return getEmployees();
+  throw new Error('Unknown account role.');
 }
-
 function saveByRole(role, list) {
-  if (role === 'admin') saveAdmins(list);
-  else saveEmployees(list);
+  if (role === 'admin') return saveAdmins(list);
+  if (role === 'employee') return saveEmployees(list);
+  throw new Error('Unknown account role.');
 }
-
-// Login is by email, so we look people up by email within their role's list.
 function findByEmail(email, role) {
-  if (!email) return null;
-  const wanted = String(email).trim().toLowerCase();
-  return listByRole(role).find((a) => String(a.email).toLowerCase() === wanted) || null;
+  if (typeof email !== 'string') return null;
+  const wanted = email.trim().toLowerCase();
+  return listByRole(role).find((a) => a.email.trim().toLowerCase() === wanted) || null;
 }
-
-function findById(id, role) {
-  return listByRole(role).find((a) => a.id === Number(id)) || null;
-}
-
-// True if this email is already used by any admin or employee. Used so we never
-// end up with two accounts sharing an email.
-function emailTaken(email) {
-  const wanted = String(email || '').trim().toLowerCase();
-  const inAdmins = getAdmins().some((a) => String(a.email).toLowerCase() === wanted);
-  const inEmployees = getEmployees().some((e) => String(e.email).toLowerCase() === wanted);
-  return inAdmins || inEmployees;
-}
-
-// Next id for a list.
-function nextId(list) {
-  return list.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0) + 1;
-}
-
-// Treat a 'YYYY-MM-DD' string as a local date so the day never shifts by one.
+function findById(id, role) { return listByRole(role).find((a) => String(a.id) === String(id)) || null; }
+function emailTaken(email) { return !!(findByEmail(email, 'admin') || findByEmail(email, 'employee')); }
+// Random identities cannot be reassigned when a record is deleted.
+const nextId = () => randomUUID();
 function parseDateLocal(value) {
-  if (!value) return null;
-  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(value));
-  if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
-  const d = new Date(value);
-  return isNaN(d.getTime()) ? null : d;
+  if (typeof value !== 'string') return null;
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return null;
+  const [, year, month, day] = match.map(Number);
+  if (year < 1000 || month < 1 || month > 12 || day < 1 || day > 31) return null;
+  const date = new Date(year, month - 1, day);
+  return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day ? date : null;
 }
-
-// Work out someone's age from their date of birth. Because it is calculated
-// fresh each time, everyone gets a year older on their birthday automatically.
+function todayISO() {
+  const date = new Date();
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+const isValidDate = (value) => parseDateLocal(value) !== null;
+const isValidBirthDate = (value) => isValidDate(value) && value <= todayISO();
 function calcAge(dob) {
   const birth = parseDateLocal(dob);
   if (!birth) return null;
@@ -94,77 +103,26 @@ function calcAge(dob) {
   if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < birth.getDate())) age--;
   return age >= 0 ? age : null;
 }
-
-// Turn a stored date into something nice to read, like "June 9, 2026".
 function formatDate(value) {
-  const d = parseDateLocal(value);
-  if (!d) return '';
-  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const date = parseDateLocal(value);
+  return date ? date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
 }
-
-const PHONE_RE = /^\d{3}-\d{3}-\d{4}$/;
-function isValidPhone(phone) {
-  return PHONE_RE.test(String(phone || '').trim());
-}
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-function isValidEmail(email) {
-  return EMAIL_RE.test(String(email || '').trim());
-}
-
-function isValidDate(value) {
-  return parseDateLocal(value) !== null;
-}
-
-// Get a record ready to send to the browser: drop the password and add the
-// computed age plus friendly date strings. "active" tells the admin whether the
-// person has finished signing up (an employee only gets a password once they do).
-function toPublic(record, role) {
-  if (!record) return null;
-  const { password, ...rest } = record;
-  return {
-    ...rest,
-    role: role || rest.role,
-    active: !!password,
-    age: calcAge(record.dob),
-    joiningDateText: formatDate(record.joiningDate),
-    dobText: formatDate(record.dob),
-  };
-}
-
-// The trimmed-down view colleagues see in the company directory. We leave out
-// date of birth and age on purpose so they are not shared with everyone.
+const isValidPhone = (value) => typeof value === 'string' && /^\d{3}-\d{3}-\d{4}$/.test(value.trim());
+const isValidEmail = (value) => typeof value === 'string' && value.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+const text = (value, max = 200) => typeof value === 'string' && value.trim().length <= max ? value.trim() : null;
 function toDirectory(record) {
   if (!record) return null;
-  return {
-    id: record.id,
-    name: record.name,
-    designation: record.designation,
-    email: record.email,
-    contact: record.contact,
-    department: record.department,
-    location: record.location,
-    joiningDate: record.joiningDate,
-    joiningDateText: formatDate(record.joiningDate),
-  };
+  const { id, name, designation, email, contact, department, location, joiningDate } = record;
+  return { id, name, designation, email, contact, department, location, joiningDate, joiningDateText: formatDate(joiningDate) };
 }
-
+function toPublic(record, role) {
+  if (!record) return null;
+  return { ...toDirectory(record), role, active: !!(record.passwordHash || record.password), dob: record.dob, dobText: formatDate(record.dob), age: calcAge(record.dob) };
+}
 module.exports = {
-  getAdmins,
-  saveAdmins,
-  getEmployees,
-  saveEmployees,
-  listByRole,
-  saveByRole,
-  findByEmail,
-  findById,
-  emailTaken,
-  nextId,
-  calcAge,
-  formatDate,
-  isValidPhone,
-  isValidEmail,
-  isValidDate,
-  toPublic,
-  toDirectory,
+  DATA_DIR, StorageError, validateRecords, getAdmins, saveAdmins,
+  getEmployees, saveEmployees, listByRole, saveByRole, findByEmail,
+  findById, emailTaken, nextId, parseDateLocal, todayISO, calcAge,
+  formatDate, isValidPhone, isValidEmail, isValidDate, isValidBirthDate,
+  text, toPublic, toDirectory,
 };

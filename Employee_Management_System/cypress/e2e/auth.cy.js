@@ -14,17 +14,17 @@ describe('Authentication and access control', () => {
   it('logs the seeded admin in with email and password', () => {
     cy.visit('/login');
     cy.get('[data-cy=role-admin]').check({ force: true });
-    cy.get('[data-cy=email]').type('apelacio.john@gmail.com');
-    cy.get('[data-cy=password]').type('52277225');
+    cy.get('[data-cy=email]').type('admin@demo.example');
+    cy.get('[data-cy=password]').type('DemoAdmin2026!');
     cy.get('[data-cy=submit]').click();
     cy.location('pathname').should('eq', '/admin/dashboard');
-    cy.contains('Welcome, John Apelacio!').should('be.visible');
+    cy.contains('Welcome, Demo Administrator!').should('be.visible');
   });
 
   it('shows an error when admin credentials are wrong', () => {
     cy.visit('/login');
     cy.get('[data-cy=role-admin]').check({ force: true });
-    cy.get('[data-cy=email]').type('apelacio.john@gmail.com');
+    cy.get('[data-cy=email]').type('admin@demo.example');
     cy.get('[data-cy=password]').type('wrong-password');
     cy.get('[data-cy=submit]').click();
     cy.get('[data-cy=error]').should('be.visible').and('contain', 'Invalid email or password');
@@ -35,7 +35,7 @@ describe('Authentication and access control', () => {
     cy.visit('/login');
     // employee is the default role
     cy.get('[data-cy=email]').type('olivia.smith@company.com');
-    cy.get('[data-cy=password]').type('password123');
+    cy.get('[data-cy=password]').type('DemoEmployee2026!');
     cy.get('[data-cy=submit]').click();
     cy.location('pathname').should('eq', '/');
     cy.contains('Welcome, Olivia Smith!').should('be.visible');
@@ -45,40 +45,33 @@ describe('Authentication and access control', () => {
     cy.visit('/login');
     cy.get('[data-cy=role-admin]').check({ force: true });
     cy.get('[data-cy=email]').type('olivia.smith@company.com');
-    cy.get('[data-cy=password]').type('password123');
+    cy.get('[data-cy=password]').type('DemoEmployee2026!');
     cy.get('[data-cy=submit]').click();
     cy.get('[data-cy=error]').should('contain', 'Invalid email or password');
   });
 
-  it('rejects admin signup without the right passcode', () => {
-    const stamp = Date.now();
+  it('does not offer public admin signup and rejects its API without a session', () => {
     cy.visit('/signup');
-    cy.get('[data-cy=role-admin]').check({ force: true });
-    cy.get('[data-cy=admin-name]').type('Mallory');
-    cy.get('[data-cy=admin-email]').type(`mallory.${stamp}@company.com`);
-    cy.get('[data-cy=admin-dob]').type('1990-02-02');
-    cy.get('[data-cy=admin-password]').type('secret123');
-    cy.get('[data-cy=passcode]').type('00000000');
-    cy.get('[data-cy=admin-submit]').click();
-    cy.get('[data-cy=error]').should('be.visible').and('contain', 'Incorrect admin passcode');
-    cy.location('pathname').should('eq', '/signup');
+    cy.get('[data-cy=role-admin]').should('not.exist');
+    cy.request({ method: 'POST', url: '/api/signup/admin', body: {}, failOnStatusCode: false }).its('status').should('eq', 401);
   });
 
-  it('creates an admin account with the right passcode, then lets them log in', () => {
+  it('lets an existing admin create another administrator who can log in', () => {
     const stamp = Date.now();
     const email = `newadmin.${stamp}@company.com`;
+    cy.loginAdmin();
     cy.visit('/signup');
     cy.get('[data-cy=role-admin]').check({ force: true });
     cy.get('[data-cy=admin-name]').type('New Admin');
     cy.get('[data-cy=admin-email]').type(email);
     cy.get('[data-cy=admin-dob]').type('1986-08-08');
     cy.get('[data-cy=admin-password]').type('secret123');
-    cy.get('[data-cy=passcode]').type('52277225');
     cy.get('[data-cy=admin-submit]').click();
     cy.get('[data-cy=success]').should('be.visible').and('contain', 'created successfully');
     cy.location('pathname').should('eq', '/signup');
 
     cy.get('[data-cy=to-login]').click();
+    cy.get('[data-cy=logout]').click();
     cy.get('[data-cy=role-admin]').check({ force: true });
     cy.get('[data-cy=email]').type(email);
     cy.get('[data-cy=password]').type('secret123');
@@ -97,9 +90,7 @@ describe('Authentication and access control', () => {
       contact: '555-333-1212',
       location: 'Remote, US',
     };
-    cy.createPendingEmployee(user);
-
-    cy.visit('/signup');
+    cy.createPendingEmployee(user).then((pending) => cy.visit(`/signup?invite=${pending.inviteToken}`));
     cy.get('[data-cy=name]').type(user.name);
     cy.get('[data-cy=email]').type(user.email);
     cy.get('[data-cy=dob]').type(user.dob);
@@ -125,7 +116,7 @@ describe('Authentication and access control', () => {
     cy.get('[data-cy=email]').type('olivia.smith@company.com'); // already seeded
     cy.get('[data-cy=dob]').type('1992-02-02');
     cy.get('[data-cy=verify]').click();
-    cy.get('[data-cy=error]').should('contain', 'An account for this email already exists');
+    cy.get('[data-cy=error]').should('contain', 'No match found');
   });
 
   it('keeps an employee out of the admin dashboard', () => {

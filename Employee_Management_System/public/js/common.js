@@ -11,6 +11,10 @@
 
   async function fetchJSON(url, options) {
     var opts = Object.assign({ headers: {} }, options || {});
+    if (opts.method && !/^(GET|HEAD)$/i.test(opts.method)) {
+      opts.headers['Content-Type'] = 'application/json';
+      if (opts.body === undefined) opts.body = {};
+    }
     if (opts.body && typeof opts.body === 'object') {
       opts.headers['Content-Type'] = 'application/json';
       opts.body = JSON.stringify(opts.body);
@@ -28,11 +32,11 @@
 
   // Parse 'YYYY-MM-DD' as a local date (no UTC off-by-one).
   function parseDateLocal(value) {
-    if (!value) return null;
-    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(value));
-    if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
-    var d = new Date(value);
-    return isNaN(d.getTime()) ? null : d;
+    if (typeof value !== 'string') return null;
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    if (!m || +m[1] < 1000) return null;
+    var date = new Date(+m[1], +m[2] - 1, +m[3]);
+    return date.getFullYear() === +m[1] && date.getMonth() === +m[2] - 1 && date.getDate() === +m[3] ? date : null;
   }
 
   function formatDate(value) {
@@ -67,9 +71,10 @@
     if (iso) { y = +iso[1]; m = +iso[2]; d = +iso[3]; }
     else if (mdy) { m = +mdy[1]; d = +mdy[2]; y = +mdy[3]; }
     else {
-      var dt = new Date(s);
-      if (isNaN(dt.getTime())) return null;
-      y = dt.getFullYear(); m = dt.getMonth() + 1; d = dt.getDate();
+      var named = /^(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\.?\s+(\d{1,2}),?\s+(\d{4})$/i.exec(s);
+      if (!named) return null;
+      m = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'].indexOf(named[1].slice(0, 3).toLowerCase()) + 1;
+      d = +named[2]; y = +named[3];
     }
     if (m < 1 || m > 12 || d < 1 || d > 31 || y < 1900 || y > 2200) return null;
     // Make sure it is a real day (catches things like 02-30-2000).

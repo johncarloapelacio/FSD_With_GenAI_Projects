@@ -9,6 +9,7 @@
     </div>
     <div class="topbar-user">
       <span class="user-chip" data-cy="topbar-name"><%= account.name %></span>
+      <a href="/signup" class="btn btn-ghost" data-cy="add-admin">Add administrator</a>
       <form method="POST" action="/logout" class="inline-form">
         <button type="submit" class="btn btn-ghost" data-cy="logout">Logout</button>
       </form>
@@ -38,6 +39,11 @@
         </div>
 
         <h2 class="section-heading">Employee Records</h2>
+        <div class="card" id="invitation-panel" hidden>
+          <p>Share this private signup link with the employee. It expires in seven days.</p>
+          <label for="invitation-link">Employee signup link</label>
+          <input id="invitation-link" data-cy="invitation-link" readonly />
+        </div>
         <div class="emp-grid" id="emp-grid" data-cy="emp-grid">
           <div class="empty-state">Loading employees...</div>
         </div>

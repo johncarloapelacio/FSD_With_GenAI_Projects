@@ -9,19 +9,23 @@
 
       <div class="alert alert-error" id="signup-error" data-cy="error" hidden></div>
 
+      <% if (canCreateAdmin) { %>
       <div class="field">
         <span class="field-label">Account type</span>
         <div class="segmented" data-cy="role-toggle">
           <label class="seg-option">
-            <input type="radio" name="role" value="employee" data-cy="role-employee" checked />
+            <input type="radio" name="role" value="employee" data-cy="role-employee" />
             <span>Employee</span>
           </label>
           <label class="seg-option">
-            <input type="radio" name="role" value="admin" data-cy="role-admin" />
+            <input type="radio" name="role" value="admin" data-cy="role-admin" checked />
             <span>Admin</span>
           </label>
         </div>
       </div>
+      <% } else { %>
+        <p class="card-sub">Use the private signup link shared by your administrator.</p>
+      <% } %>
 
       <!-- Employee flow -->
       <div id="employee-flow">
@@ -61,7 +65,7 @@
         </form>
       </div>
 
-      <!-- Admin flow -->
+      <!-- Admin flow: submitted only by a signed-in administrator. -->
       <form id="admin-form" class="form" novalidate hidden>
         <div class="field">
           <label for="adm-name">Full Name</label>
@@ -79,21 +83,17 @@
           <label for="adm-password">Password</label>
           <input type="password" id="adm-password" autocomplete="new-password" data-cy="admin-password" required />
         </div>
-        <div class="field">
-          <label for="adm-passcode">Admin Passcode</label>
-          <input type="password" id="adm-passcode" placeholder="Passcode Required" data-cy="passcode" required />
-        </div>
         <button type="submit" class="btn btn-primary btn-block" data-cy="admin-submit">Create Account</button>
       </form>
 
       <!-- Success message (no automatic login) -->
       <div id="signup-success" hidden>
         <div class="alert alert-success" data-cy="success">Your account was created successfully.</div>
-        <a class="btn btn-primary btn-block" href="/login" data-cy="to-login">Go to login</a>
+        <a class="btn btn-primary btn-block" href="<%= canCreateAdmin ? '/admin/dashboard' : '/login' %>" data-cy="to-login"><%= canCreateAdmin ? 'Back to dashboard' : 'Go to login' %></a>
       </div>
 
       <div class="auth-links" id="signup-links">
-        <a href="/login">Already have an account? Log in</a>
+        <a href="<%= canCreateAdmin ? '/admin/dashboard' : '/login' %>"><%= canCreateAdmin ? 'Back to dashboard' : 'Already have an account? Log in' %></a>
       </div>
     </div>
   </main>

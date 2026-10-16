@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const { requireAdmin, requireEmployee } = require('../middleware/auth');
-const { getEmployees, toPublic } = require('../lib/db');
+const { toPublic } = require('../lib/db');
 
 // Send already-logged-in users straight to their dashboard.
 function dashboardFor(role) {
@@ -16,15 +16,14 @@ router.get('/login', (req, res) => {
 });
 
 router.get('/signup', (req, res) => {
-  if (req.account) return res.redirect(dashboardFor(req.role));
-  res.render('signup', { error: null, values: { role: 'employee' } });
+  if (req.account && req.role !== 'admin') return res.redirect(dashboardFor(req.role));
+  res.render('signup', { error: null, canCreateAdmin: req.role === 'admin' });
 });
 
 // Admin dashboard. Admins only.
 router.get('/admin/dashboard', requireAdmin, (req, res) => {
   res.render('admin/dashboard', {
     account: toPublic(req.account, req.role),
-    employees: getEmployees(),
   });
 });
 
@@ -32,7 +31,6 @@ router.get('/admin/dashboard', requireAdmin, (req, res) => {
 router.get('/', requireEmployee, (req, res) => {
   res.render('employee/dashboard', {
     account: toPublic(req.account, req.role),
-    employees: getEmployees(),
   });
 });
 
